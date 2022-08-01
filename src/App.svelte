@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { open } from "@tauri-apps/api/dialog";
 	import { documentDir } from "@tauri-apps/api/path";
+	import { Portfolio } from "./Utils/Portfolio";
+	import TopBar from "./Components/TopBar.svelte";
 
 	import PortfolioItem from "./Components/PortfolioItem.svelte";
 
-	let portfolios = [];
-	let selected_portfolio: number = 0;
+	let portfolios: Portfolio[] = [];
 
 	async function add_portfolio(): Promise<void> {
 		const selected = await open({
@@ -13,8 +14,9 @@
 			multiple: false,
 			defaultPath: await documentDir(),
 		});
-		portfolios = [...portfolios, selected];
+		portfolios = [...portfolios, new Portfolio(selected.toString())];
 	}
+
 </script>
 
 <main>
@@ -26,15 +28,19 @@
 			</h2>
 			<ul id="portfolio_list">
 				{#each portfolios as portfolio, i}
-					<li>
-						<PortfolioItem {portfolio}/>
-					</li>
+					<PortfolioItem {portfolio}/>
 				{/each}
 			</ul>
+			<span id="credentials">Made By <a href="https://www.github.com/CGessinger">CGessinger</a></span>
 		</div>
 	</div>
 	<div id="panel_center">
-		<div id="portfolio_view" />
+		<TopBar/>
+		<div id="portfolio_view" >
+			<ul>
+
+			</ul>
+		</div>
 	</div>
 </main>
 
@@ -54,20 +60,20 @@
 	#panel_left {
 		flex-grow: 1;
 		height: 100%;
+		width: 20%;
 	}
 
 	#portfolio_list_view {
 		height: 100%;
-		background-color: gray;
-		border-radius: 20px;
+		background-color: #912F40;
+		color: whitesmoke;
 	}
 
 	#portfolio_list_view h2 {
 		margin: 0;
-		padding: 0;
+		padding: 1.5rem 0 0 0;
 		text-align: center;
-		font-size: 1.5rem;
-		color: black;
+		font-size: 1.2rem;
 	}
 
 	#add_portfolio {
@@ -76,26 +82,33 @@
 
 	#portfolio_list {
 		list-style: none;
-		padding: 0;
+		padding: 1rem;
 		margin: 0;
 	}
 
-	#portfolio_list li {
-		padding: 0.5rem;
-		margin: 1rem;
-		cursor: pointer;
-		background-color: darkgray;
-		border-radius: 20px;
-	}
-
 	#panel_center {
-		flex-grow: 2;
+		flex-grow: 5;
 		height: 100%;
 	}
 
 	#portfolio_view {
 		height: 100%;
-		background-color: gray;
-		border-radius: 20px;
+	}
+
+	#portfolio_view ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	#credentials {
+		position: fixed;
+		bottom: 0;
+		padding: 0 0 0.5rem 0.5rem;
+	}
+	
+	#credentials a {
+		color: whitesmoke;
+		font-weight: bold;
 	}
 </style>
