@@ -1,22 +1,20 @@
 <script lang="ts">
-	import { open } from "@tauri-apps/api/dialog";
-	import { documentDir } from "@tauri-apps/api/path";
-	import { Portfolio } from "./Utils/Portfolio";
+	import { settings } from "./Utils/Settings";
 	import TopBar from "./Components/TopBar.svelte";
-
 	import PortfolioItem from "./Components/PortfolioItem.svelte";
 
-	let portfolios: Portfolio[] = [];
+	let sett: settings = new settings();
 
-	async function add_portfolio(): Promise<void> {
-		const selected = await open({
-			directory: true,
-			multiple: false,
-			defaultPath: await documentDir(),
+	settings.get_settings_from_config().then(s => sett = s);
+
+	async function add_portfolio() {
+		sett.add_portfolio()
+		.finally(() => {
+			sett.safe_settings();
+			sett = sett;
 		});
-		portfolios = [...portfolios, new Portfolio(selected.toString())];
 	}
-
+	
 </script>
 
 <main>
@@ -24,10 +22,10 @@
 		<div id="portfolio_list_view">
 			<h2>
 				Portfolios
-				<span id="add_portfolio" on:click={add_portfolio}>+</span>
+				<span id="add_portfolio" on:click="{_ => add_portfolio()}">+</span>
 			</h2>
 			<ul id="portfolio_list">
-				{#each portfolios as portfolio, i}
+				{#each sett.portfolios as portfolio}
 					<PortfolioItem {portfolio}/>
 				{/each}
 			</ul>
