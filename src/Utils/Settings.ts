@@ -21,7 +21,6 @@ export class settings {
     }
 
     public async safe_settings() {
-        // const settings_dir = await appDir() + "config/";
         await createDir("config", {
             dir: BaseDirectory.App,
             recursive: true,

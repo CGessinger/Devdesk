@@ -5,6 +5,7 @@ export class Portfolio {
     path: string;
     projects: string[];
     types = ["Concept", "Sandbox", "Release"];
+
     constructor(path: string) {
         this.uid = path;
         this.path = path;

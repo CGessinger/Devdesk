@@ -19,10 +19,11 @@
 		<LeftPanel {s} {set_focus}/>
 	</div>
 	<div id="panel_center">
-		<TopBar/>
+		<TopBar {focus}/>
 		{#if focus}
 			<ContentPanel {focus}/>
 		{/if}
+		<button id="add_project" class="fa">&#xf067;</button>
 	</div>
 </main>
 
@@ -36,7 +37,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		column-gap: 1rem;
 	}
 
 	#panel_left {
@@ -49,4 +49,17 @@
 		flex-grow: 5;
 		height: 100%;
 	}
+
+    #add_project {
+        display: inline-block;
+		position: fixed;
+        border: none;
+        cursor: pointer;
+		bottom: 0;
+		right: 0;
+		padding: 1rem;
+		margin: 1rem;
+		background-color: #912F40;
+		color: whitesmoke;
+    }
 </style>
