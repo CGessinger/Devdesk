@@ -39,7 +39,7 @@ export class settings {
             sett = new settings();
         });
         
-        return sett;
+        return Object.assign(new settings, sett);
     }
 
 }
