@@ -1,8 +1,9 @@
 <script lang="ts">
-	import PortfolioItem from "./PortfolioItem.svelte";
     import type { settings } from "../Utils/Settings";
+	import type { Portfolio } from "../Utils/Portfolio";
 
     export let s: settings;
+	export let set_focus: (p: Portfolio) => void;
 
     function add_portfolio() {
 		s.add_portfolio()
@@ -20,13 +21,30 @@
     </h2>
     <ul id="portfolio_list">
         {#each s.portfolios as portfolio}
-            <PortfolioItem {portfolio}/>
+			<li class="portfolio_item">
+				<h3 class="portfolio_head" on:click={() => (set_focus(portfolio))}>
+					📖{portfolio.path}
+				</h3>
+			</li>
         {/each}
     </ul>
     <span id="credentials">Made By <a href="https://www.github.com/CGessinger">CGessinger</a></span>
 </div>
 
 <style>
+    .portfolio_item {
+        padding-top: 1rem;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .portfolio_head {
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
 	#portfolio_list_view {
 		height: 100%;
 		background-color: #912F40;

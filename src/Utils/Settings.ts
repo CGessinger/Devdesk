@@ -33,7 +33,12 @@ export class settings {
     public static async get_settings_from_config(): Promise<settings> {
         let sett: settings;
         await readTextFile("config/settings.json", { dir: BaseDirectory.App }).then(read => {
-            sett = JSON.parse(read);
+            sett = JSON.parse(read, (key, value) => {
+                if (key === "portfolios") {
+                    return value.map(p => new Portfolio(p.path));
+                }
+                return value;
+            });
         }).catch(err => {
             console.log("Error reading settings file: " + err);
             sett = new settings();

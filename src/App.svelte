@@ -3,19 +3,26 @@
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
 	import ContentPanel from "./Components/ContentPanel.svelte";
+	import type { Portfolio } from "./Utils/Portfolio";
 
 	let s: settings = new settings();
 	settings.get_settings_from_config().then(s_ => s = s_);
-	
+
+	let focus: Portfolio = undefined;
+	let set_focus = (p: Portfolio) => {
+		p.load_projects().then(() => focus = p);
+	};
 </script>
 
 <main>
 	<div id="panel_left">
-		<LeftPanel {s}/>
+		<LeftPanel {s} {set_focus}/>
 	</div>
 	<div id="panel_center">
 		<TopBar/>
-		<ContentPanel/>
+		{#if focus}
+			<ContentPanel {focus}/>
+		{/if}
 	</div>
 </main>
 
