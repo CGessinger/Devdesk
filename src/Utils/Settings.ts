@@ -34,7 +34,7 @@ export class settings {
         await readTextFile("config/settings.json", { dir: BaseDirectory.App }).then(read => {
             sett = JSON.parse(read, (key, value) => {
                 if (key === "portfolios") {
-                    return value.map(p => new Portfolio(p.path));
+                    return value.map(p => Object.assign(new Portfolio(""), p));
                 }
                 return value;
             });

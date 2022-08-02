@@ -12,6 +12,7 @@
 	let set_focus = (p: Portfolio) => {
 		p.load_projects().then(() => focus = p);
 	};
+
 </script>
 
 <main>
@@ -19,7 +20,7 @@
 		<LeftPanel {s} {set_focus}/>
 	</div>
 	<div id="panel_center">
-		<TopBar {focus}/>
+		<TopBar {focus} on:safe-settings="{_ => s.safe_settings()}"/>
 		{#if focus}
 			<ContentPanel {focus}/>
 		{/if}

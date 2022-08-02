@@ -16,4 +16,9 @@ export class Portfolio {
         let projects: string[] = await invoke("read_dir", {path: this.path});
         this.projects = projects;
     }
+
+    toJSON(): any {
+        const {projects, ...omitted} = this;
+        return omitted;
+    }
 }

@@ -15,10 +15,7 @@
 </script>
 
 <div id="portfolio_list_view">
-    <h2>
-        Portfolios
-        <span id="add_portfolio" on:click="{_ => add_portfolio()}">+</span>
-    </h2>
+    <h2> Portfolios </h2>
     <ul id="portfolio_list">
         {#each s.portfolios as portfolio}
 			<li class="portfolio_item">
@@ -28,6 +25,8 @@
 			</li>
         {/each}
     </ul>
+
+	<button id="add_portfolio" class="fa" on:click="{_ => add_portfolio()}">&#xf067;</button>
     <span id="credentials">Made By <a href="https://www.github.com/CGessinger">CGessinger</a></span>
 </div>
 
@@ -46,6 +45,7 @@
     }
 
 	#portfolio_list_view {
+		position: relative;
 		height: 100%;
 		background-color: #912F40;
 		color: whitesmoke;
@@ -59,7 +59,16 @@
 	}
 
 	#add_portfolio {
-		cursor: pointer;
+		position: absolute;
+        display: inline-block;
+        border: none;
+        cursor: pointer;
+		bottom: 0;
+		right: 0;
+		padding: 1rem;
+		margin: 1rem;
+		background-color: whitesmoke;
+		color: #40434e;
 	}
 
 	#portfolio_list {

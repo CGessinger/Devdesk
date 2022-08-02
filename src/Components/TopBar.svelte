@@ -1,5 +1,7 @@
 <script lang="ts">
     import type { Portfolio } from "../Utils/Portfolio";
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 
     export let focus: Portfolio;
     let focused_type: string = "all";
@@ -7,10 +9,22 @@
     function focus_type(f: string) {
         focused_type = f;
     }
+
+    function add_type() {
+        const input = document.getElementById("type_input") as HTMLInputElement;
+        const name = input.value;
+        if (name.length > 0 && !focus.types.includes(name)) {
+            focus.types.push(name);
+            input.value = "";
+            dispatch('safe-settings');
+            focus = focus;
+        }
+    }
 </script>
 
 <div class="TopBar">
     <input id="search_input" type="text" placeholder="Search..." />
+    <button id="search_button" class="button">Search</button>
 
     <div id="type_nav">
         {#if focus}
@@ -28,6 +42,8 @@
                     {/if}
                 </div>
             {/each}
+            <input id="type_input" type="text" placeholder="Add type..." />
+            <button id="type_add" on:click="{e => add_type()}">Add</button>
         {/if}
     </div>
 </div>
