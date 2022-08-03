@@ -23,6 +23,12 @@
             dispatch('refresh-focus')
         }
     }
+
+    function remove_type(i: number) {
+        focus.types.splice(i, 1);
+        dispatch('safe-settings');
+        dispatch('refresh-focus')
+    }
 </script>
 
 <div class="TopBar">
@@ -41,6 +47,7 @@
                 <div class="type_item" on:click="{_ => focus_type(i)}">
                     {type}
                     {#if type == focus.get_focused_type()}
+                        <i class="fa fa-minus remove_type" on:click="{_ => remove_type(i)}"></i>
                         <hr>
                     {/if}
                 </div>
@@ -78,4 +85,15 @@
         text-align: center;
         padding: 8px 10px;
     }
+
+    .remove_type {
+        cursor: pointer;
+        color: #912F40;
+        padding-left: 2px;
+    }
+
+    .remove_type:hover {
+        color: #cb5c6e;
+    }
+
 </style>
