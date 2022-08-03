@@ -10,7 +10,13 @@
 
 	let focus: Portfolio = undefined;
 	let set_focus = (p: Portfolio) => {
-		p.load_projects().then(() => focus = p);
+		if (focus == p)
+			return;
+
+		if (p)
+			p.load_projects_from_type().then(() => focus = p);
+		else
+			focus = undefined;
 	};
 
 </script>
@@ -20,7 +26,7 @@
 		<LeftPanel {s} {set_focus}/>
 	</div>
 	<div id="panel_center">
-		<TopBar {focus} on:safe-settings="{_ => s.safe_settings()}"/>
+		<TopBar {focus} on:safe-settings="{_ => s.safe_settings()}" on:refresh-focus="{_ => focus = focus}"/>
 		{#if focus}
 			<ContentPanel {focus}/>
 		{/if}

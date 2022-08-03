@@ -15,11 +15,11 @@
 </script>
 
 <div id="portfolio_list_view">
-    <h2> Portfolios </h2>
+    <h2 on:click="{_ => set_focus(undefined)}"> Portfolios </h2>
     <ul id="portfolio_list">
         {#each s.portfolios as portfolio}
 			<li class="portfolio_item">
-				<h3 class="portfolio_head" on:click={() => (set_focus(portfolio))}>
+				<h3 class="portfolio_head" on:click={_ => set_focus(portfolio)}>
 					📖{portfolio.path}
 				</h3>
 			</li>
@@ -56,6 +56,7 @@
 		padding: 1.5rem 0 0 0;
 		text-align: center;
 		font-size: 1.2rem;
+		cursor: pointer;
 	}
 
 	#add_portfolio {

@@ -4,10 +4,13 @@
 	const dispatch = createEventDispatcher();
 
     export let focus: Portfolio;
-    let focused_type: string = "all";
 
-    function focus_type(f: string) {
-        focused_type = f;
+    function focus_type(i: number) {
+        if (focus.focused_type == i)
+            return;
+
+        focus.focused_type = i;
+        focus.load_projects_from_type().then(() => dispatch('refresh-focus'));
     }
 
     function add_type() {
@@ -17,7 +20,7 @@
             focus.types.push(name);
             input.value = "";
             dispatch('safe-settings');
-            focus = focus;
+            dispatch('refresh-focus')
         }
     }
 </script>
@@ -28,16 +31,16 @@
 
     <div id="type_nav">
         {#if focus}
-            <div class="type_item" on:click="{_ => focus_type("all")}">
+            <div class="type_item" on:click="{_ => focus_type(-1)}">
                 All
-                {#if "all" == focused_type}
+                {#if "all" == focus.get_focused_type()}
                     <hr>
                 {/if}
             </div>
-            {#each focus.types as type}
-                <div class="type_item" on:click="{_ => focus_type(type)}">
+            {#each focus.types as type, i}
+                <div class="type_item" on:click="{_ => focus_type(i)}">
                     {type}
-                    {#if type == focused_type}
+                    {#if type == focus.get_focused_type()}
                         <hr>
                     {/if}
                 </div>
