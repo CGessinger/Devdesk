@@ -2,6 +2,10 @@
 	import type { Portfolio } from "../Utils/Portfolio";
 
 	export let focus: Portfolio;
+
+	function add_project() {
+
+	}
 </script>
 
 <div id="portfolio_view">
@@ -10,6 +14,7 @@
 			<li>{project}</li>
 		{/each}
     </ul>
+	<button id="add_project" class="fa" on:click="{_ => add_project()}">&#xf067;</button>
 </div>
 
 <style>
@@ -21,5 +26,18 @@
 		list-style: none;
 		padding: 0;
 		margin: 0;
+	}
+
+	#add_project {
+		display: inline-block;
+		position: fixed;
+		border: none;
+		cursor: pointer;
+		bottom: 0;
+		right: 0;
+		padding: 1rem;
+		margin: 1rem;
+		background-color: #912F40;
+		color: whitesmoke;
 	}
 </style>

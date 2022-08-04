@@ -25,6 +25,7 @@
     }
 
     function remove_type(i: number) {
+        focus.focused_type = i - 1;
         focus.types.splice(i, 1);
         dispatch('safe-settings');
         dispatch('refresh-focus')
@@ -52,8 +53,8 @@
                     {/if}
                 </div>
             {/each}
-            <input id="type_input" type="text" placeholder="Add type..." />
-            <button id="type_add" on:click="{e => add_type()}">Add</button>
+            <input id="type_input" type="text" placeholder="Add type..." on:keypress="{e => { if(e.key == "Enter") add_type() }}"/>
+            <button id="type_add" on:click="{_ => add_type()}">Add</button>
         {/if}
     </div>
 </div>
