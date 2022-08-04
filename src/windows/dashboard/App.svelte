@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { settings } from "./Utils/Settings";
-	import TopBar from "./Components/TopBar.svelte";
-	import LeftPanel from "./Components/LeftPanel.svelte";
-	import ContentPanel from "./Components/ContentPanel.svelte";
-	import type { Portfolio } from "./Utils/Portfolio";
+	import { settings } from "../../Utils/Settings";
+	import TopBar from "../../windows/dashboard/Components/TopBar.svelte";
+	import LeftPanel from "../../windows/dashboard/Components/LeftPanel.svelte";
+	import ContentPanel from "../../windows/dashboard/Components/ContentPanel.svelte";
+	import type { Portfolio } from "../../Utils/Portfolio";
 
 	let s: settings = new settings();
 	settings.get_settings_from_config().then(s_ => s = s_);
