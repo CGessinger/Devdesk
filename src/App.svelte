@@ -21,7 +21,7 @@
 
 </script>
 
-<main>
+<div id="main">
 	<div id="panel_left">
 		<LeftPanel {s} {set_focus}/>
 	</div>
@@ -31,10 +31,10 @@
 			<ContentPanel {focus}/>
 		{/if}
 	</div>
-</main>
+</div>
 
 <style>
-	main {
+	#main {
 		margin: 0;
 		padding: 0;
 		width: 100%;

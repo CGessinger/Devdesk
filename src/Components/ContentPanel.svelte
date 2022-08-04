@@ -1,10 +1,26 @@
 <script lang="ts">
 	import type { Portfolio } from "../Utils/Portfolio";
+	import { WebviewWindow, appWindow } from '@tauri-apps/api/window'
+	import { emit } from '@tauri-apps/api/event'
 
 	export let focus: Portfolio;
 
-	function add_project() {
+	async function add_project() {
+		const webview = new WebviewWindow('theUniqueLabel', {
+			url: '../../project-creation-index.html',
+			width: 400,
+			height: 600,
+			alwaysOnTop: true,
+			title: 'Create A New Project',
+		});
 
+		webview.once('request_portfolio', function () {
+			emit("project_portfolio", focus);
+		});
+
+		webview.once("create_project", e => {
+			console.log("receiving event", e.payload);
+		});
 	}
 </script>
 

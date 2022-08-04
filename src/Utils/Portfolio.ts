@@ -39,7 +39,7 @@ export class Portfolio {
     }
 
     toJSON(): any {
-        const {projects, ...omitted} = this;
+        const {projects, focused_type, ...omitted} = this;
         return omitted;
     }
 }

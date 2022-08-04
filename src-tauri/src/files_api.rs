@@ -1,5 +1,6 @@
 use std::path::{Path};
-use std::{fs};
+use std::{fs, io};
+use image::io::Reader as ImageReader;
 
 #[tauri::command]
 pub fn read_dir(path: String) -> Result<Vec<String>, String> {
@@ -10,4 +11,14 @@ pub fn read_dir(path: String) -> Result<Vec<String>, String> {
     files.push(entry.file_name().to_string_lossy().to_string());
   }
   Ok(files)
+}
+
+#[tauri::command]
+pub fn load_image(path: String) -> Result<String, String> {
+  let path = Path::new(&path);
+  let _img = ImageReader::open(path).map_err(|e| e.to_string())?;
+  let img = _img.decode().map_err(|e| e.to_string())?;
+  let mut buf = Vec::new();
+  img.write_to(&mut io::Cursor::new(&mut buf), image::ImageOutputFormat::Png).map_err(|e| e.to_string())?;
+  Ok(base64::encode(&buf))
 }
