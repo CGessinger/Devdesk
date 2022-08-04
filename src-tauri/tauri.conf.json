@@ -3,23 +3,18 @@
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
-    "devPath": "http://localhost:8080",
-    "distDir": "../public"
+    "devPath": "http://localhost:5173",
+    "distDir": "../dist"
   },
   "package": {
-    "productName": "project-assistant-svelte",
+    "productName": "project-assistant",
     "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
       "all": true,
       "dialog":{
-        "all": false,
-        "ask": false,
-        "confirm": false,
-        "message": false,
-        "open": false,
-        "save": false
+        "open": false
       },
       "path": {
         "all": true
