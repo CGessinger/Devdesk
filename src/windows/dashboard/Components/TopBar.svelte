@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Portfolio } from "../../../Utils/Portfolio";
+    import type { Portfolio } from "$utils/Portfolio";
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 

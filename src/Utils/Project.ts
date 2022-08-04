@@ -1,5 +1,5 @@
-import type { Error, Result} from "../Utils/Result";
-import { Ok, Err } from "../Utils/Result";
+import type { Error, Result} from "$utils/Result";
+import { Ok, Err } from "$utils/Result";
 
 export class Project{
     name: string;

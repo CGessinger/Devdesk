@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { settings } from "../../../Utils/Settings";
-	import type { Portfolio } from "../../../Utils/Portfolio";
+    import type { settings } from "$utils/Settings";
+	import type { Portfolio } from "$utils/Portfolio";
 
     export let s: settings;
 	export let set_focus: (p: Portfolio) => void;

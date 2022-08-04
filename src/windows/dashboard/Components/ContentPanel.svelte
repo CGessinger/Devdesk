@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Portfolio } from "../../../Utils/Portfolio";
+	import type { Portfolio } from "$utils/Portfolio";
 	import { WebviewWindow, appWindow } from '@tauri-apps/api/window'
 	import { emit } from '@tauri-apps/api/event'
 

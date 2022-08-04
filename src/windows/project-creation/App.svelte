@@ -2,9 +2,9 @@
 	import { open } from '@tauri-apps/api/dialog'
     import { emit, once } from '@tauri-apps/api/event'
     import { invoke } from '@tauri-apps/api/tauri';
-    import { Portfolio } from '../../Utils/Portfolio';
-    import { Project } from '../../Utils/Project';
-    import { isErr } from '../../Utils/Result';
+    import { Portfolio } from '$utils/Portfolio';
+    import { Project } from '$utils/Project';
+    import { isErr } from '$utils/Result';
 
     const builder = Project.Builder.get();
 
