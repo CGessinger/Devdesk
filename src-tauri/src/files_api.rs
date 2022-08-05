@@ -22,3 +22,16 @@ pub fn load_image(path: String) -> Result<String, String> {
   img.write_to(&mut io::Cursor::new(&mut buf), image::ImageOutputFormat::Png).map_err(|e| e.to_string())?;
   Ok(base64::encode(&buf))
 }
+
+#[tauri::command]
+pub fn folder_exists(path: String) -> Result<bool, String> {
+  let path = Path::new(&path);
+  Ok(path.exists() && path.is_dir())
+}
+
+#[tauri::command]
+pub fn create_folder(path: String) -> Result<(), String> {
+  let path = Path::new(&path);
+  fs::create_dir_all(path).map_err(|e| e.to_string())?;
+  Ok(())
+}

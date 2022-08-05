@@ -26,4 +26,12 @@ export function isErr<E, T>(res: Result<E, T>): boolean {
     return res.kind === "error";
 }
 
+export function unwrap<E, T>(res: Result<E, T>): E {
+    if (isErr(res)) {
+        throw new Error(`unwrap called on error: ${res.value}`);
+    }
+    return res.value as E;
+}
+
 export type Result<E, T> = Success<E> | Error<T>;
+export type PromisedResult<E, T> = Promise<Result<E, T>>;

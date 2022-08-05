@@ -4,9 +4,9 @@
     import { invoke } from '@tauri-apps/api/tauri';
     import { Portfolio } from '$utils/Portfolio';
     import { Project } from '$utils/Project';
-    import { isErr } from '$utils/Result';
+    import { isErr, unwrap } from '$utils/Result';
 
-    const builder = Project.Builder.get();
+    let builder = Project.Builder.get();
 
     let focus: Portfolio = new Portfolio("");
     emit("request_portfolio");
@@ -26,8 +26,11 @@
             console.log("error: ", built);
             return;
         }
-        console.log("success", built);
-        emit("create_project", "ayoo");
+        const fb = new Project.Folder(unwrap(built));
+        fb.createConfigFolder().then(res => {
+            console.log("res: ", res);
+        });
+        // emit("create_project", "ayoo");
         // appWindow.close();
     }
 
@@ -41,6 +44,16 @@
         });
         builder.withImageB64(await invoke("load_image", { path: selected.toString() }));
     }
+
+    async function on_type_change(e) {
+        builder.withType(e.target.value);
+        builder = builder;
+    }
+
+    async function on_name_change(e) {
+        builder.withName(e.target.value);
+        builder = builder;
+    }
 </script>
 
 <div id="main">
@@ -48,17 +61,17 @@
         <div>
             <img id="thumbnail" src="data:image/png;base64, {builder.p.image}" alt="P" on:click="{_ => change_icon()}" />
         </div>
-        <input type="text" id="project_name" placeholder="Project Name" on:change="{e => builder.withName(e.currentTarget.value)}" />
+        <input type="text" id="project_name" placeholder="Project Name" on:change="{on_name_change}" />
     </div>
     <div id="main_wrapper">
         <textarea type="text" id="project_description" placeholder="Project Description" on:change="{e => builder.withDescription(e.currentTarget.value)}" />
-        <select id="project_type" on:change="{e => builder.withType(e.currentTarget.value)}">
+        <select id="project_type" on:change="{on_type_change}">
             {#each focus.types as type}
                 <option value="{type}">{type}</option>
             {/each}
         </select>
         <p>
-            <span>Create in: <i>{focus.path}</i></span>
+            <span>Create in: <i>{builder.target_path(focus.path)}</i></span>
         </p>
         <button id="create_project" on:click="{_ => create_project()}">Create Project</button>
     </div>

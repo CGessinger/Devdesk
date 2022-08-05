@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Portfolio } from "$utils/Portfolio";
-	import { WebviewWindow, appWindow } from '@tauri-apps/api/window'
+	import { WebviewWindow } from '@tauri-apps/api/window'
 	import { emit } from '@tauri-apps/api/event'
 
 	export let focus: Portfolio;

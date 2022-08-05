@@ -1,7 +1,8 @@
-import type { Error, Result} from "$utils/Result";
-import { Ok, Err } from "$utils/Result";
+import type { PromisedResult, Result } from "$utils/Result";
+import { Ok, Err, isErr, unwrap } from "$utils/Result";
+import { invoke } from "@tauri-apps/api";
 
-export class Project{
+export class Project {
     name: string;
     description: string;
     path: string;
@@ -10,6 +11,15 @@ export class Project{
     technologies: string[];
     date: string;
     type: string;
+
+    config_folder_path = (): string => {
+        return this.path + "/.ppa";
+    }
+
+    config_path = (): string => {
+        return this.path + "/.ppa/config.json";
+    }
+    
     constructor() {
         this.name = "";
         this.description = "";
@@ -18,10 +28,14 @@ export class Project{
         this.tags = [];
         this.technologies = [];
         this.date = "";
+        this.type= "";
     }
 
     static Builder = class {
         p: Project;
+        target_path = (tree: string): string => {
+            return this.buildFormattedPath(tree).value;
+        }
         constructor() {
             this.p = new Project();
         }
@@ -82,7 +96,7 @@ export class Project{
             return str.replace(/\s+/g, "-").toLowerCase();
         }
 
-        tryBuildPath(tree: string): Result<typeof this, string> {
+        buildFormattedPath(tree: string): Result<string, string> {
             const form_type = this.formattedType();
             const form_name = this.formattedName();
 
@@ -92,7 +106,15 @@ export class Project{
                 return Err("No name provided");
             }
 
-            return Ok(this.withPath(tree + "/" + form_type + "/" + form_name));
+            return Ok(`${tree}/${form_type}/${form_name}`);
+        }
+
+        tryBuildPath(tree: string): Result<typeof this, string> {
+            const path = this.buildFormattedPath(tree);
+            if (isErr(path)) {
+                return Err(path.value);
+            }
+            return Ok(this.withPath(unwrap(path)));
         }
 
         build(): Result<Project, string> {
@@ -105,4 +127,43 @@ export class Project{
             return Ok(this.p);
         }
     }
+
+    static Folder = class {
+        p: Project;
+        constructor(p_: Project) {
+            this.p = p_;
+        }
+
+        private async createFolder(path_: string): PromisedResult<typeof this, string> {
+            try {
+                let exists = await invoke("folder_exists", { path: path_ });
+                if (!exists) {
+                    invoke("create_folder", { path: path_ }).catch(err => {
+                        return Err(err);
+                    });
+                    return Ok(this);
+                }
+
+                return Err("Folder already exists");
+            }
+            catch (err) {
+                return Err(err);
+            }
+        }
+
+        async createProjectFolder(): PromisedResult<typeof this, string> {
+            const path = this.p.path;
+            if (path == "") return Err("No path provided");
+
+            return this.createFolder(path);
+        }
+
+        async createConfigFolder(): PromisedResult<typeof this, string> {
+            if (this.p.path == "") return Err("No path provided");
+
+            const path = this.p.path + "/.ppa";
+            return this.createFolder(path);
+        }
+    }
+
 }
