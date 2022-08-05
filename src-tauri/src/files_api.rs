@@ -24,6 +24,15 @@ pub fn load_image(path: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+pub fn write_image(path: String, data: String) -> Result<(), String> {
+  let path = Path::new(&path);
+  let data = base64::decode(&data).map_err(|e| e.to_string())?;
+  let img = image::load_from_memory(&data).map_err(|e| e.to_string())?;
+  img.save(path).map_err(|e| e.to_string())?;
+  Ok(())
+}
+
+#[tauri::command]
 pub fn folder_exists(path: String) -> Result<bool, String> {
   let path = Path::new(&path);
   Ok(path.exists() && path.is_dir())
@@ -33,5 +42,12 @@ pub fn folder_exists(path: String) -> Result<bool, String> {
 pub fn create_folder(path: String) -> Result<(), String> {
   let path = Path::new(&path);
   fs::create_dir_all(path).map_err(|e| e.to_string())?;
+  Ok(())
+}
+
+#[tauri::command]
+pub fn write_to_file(path: String, content: String) -> Result<(), String> {
+  let path = Path::new(&path);
+  fs::write(path, content.as_bytes()).map_err(|e| e.to_string())?;
   Ok(())
 }

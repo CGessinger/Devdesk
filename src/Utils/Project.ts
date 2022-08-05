@@ -1,5 +1,6 @@
 import type { PromisedResult, Result } from "$utils/Result";
 import { Ok, Err, isErr, unwrap } from "$utils/Result";
+import { typeFromPath, joinPath, nameFromPath } from "$utils/Path";
 import { invoke } from "@tauri-apps/api";
 
 export class Project {
@@ -161,8 +162,72 @@ export class Project {
         async createConfigFolder(): PromisedResult<typeof this, string> {
             if (this.p.path == "") return Err("No path provided");
 
-            const path = this.p.path + "/.ppa";
+            const path = joinPath(this.p.path, ".ppa");
             return this.createFolder(path);
+        }
+
+        async writeToConfig(): PromisedResult<typeof this, string> {
+            if (this.p.path == "") return Err("No path provided");
+
+            const path = this.p.config_path();
+            const config = {
+                name: this.p.name,
+                description: this.p.description,
+                tags: this.p.tags,
+                technologies: this.p.technologies,
+            };
+
+            if (this.p.image != "") {
+                const res = invoke("write_image", { path: this.p.config_folder_path(), image: this.p.image });
+                console.log(res);
+            }
+
+            return invoke("write_to_file", { path: path, content: JSON.stringify(config) }).then(() => {
+                return Ok(this);
+            }).catch(err => {
+                return Err(err);
+            });
+        }
+
+        static async readFromFolder(path_: string): PromisedResult<Project, string> {
+            try {
+                const exists: boolean = await invoke("folder_exists", { path: path_ });
+                if (!exists) {
+                    return Err("Folder does not exist");
+                }
+
+                const config_path = joinPath(path_, ".ppa", "config.json");
+                const config_result = await Project.Folder.readFromConfig(config_path);
+                let project;
+                if (isErr(config_result)) {
+                    project = new Project()
+                    project.name = nameFromPath(path_);
+                } else {
+                    project = unwrap(config_result);
+                }
+
+                project.path = path_;
+                project.type = typeFromPath(path_);
+                return Ok(project);
+            }
+            catch (err) {
+                return Err(err);
+            }
+        }
+
+        static async readFromConfig(path_: string): PromisedResult<Project, string> {
+            try {
+                const exists: boolean = await invoke("file_exists", { path: path_ });
+                if (!exists) {
+                    return Err("Config does not exist");
+                }
+
+                const content: string = await invoke("read_file", { path: path_ });
+                return Ok(Object.assign(new Project(), JSON.parse(content)));
+            }
+            catch (err) {
+                return Err(err);
+            }
         }
     }
 

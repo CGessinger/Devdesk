@@ -31,7 +31,16 @@
 </div>
 
 <style>
+	#portfolio_list_view {
+		position: relative;
+		display: inline-block;
+		height: 100%;
+		background-color: #912F40;
+		color: whitesmoke;
+	}
+
     .portfolio_item {
+		word-wrap: break-word;
         padding-top: 1rem;
         display: inline-block;
         width: 100%;
@@ -43,13 +52,6 @@
         font-size: 1rem;
         cursor: pointer;
     }
-
-	#portfolio_list_view {
-		position: relative;
-		height: 100%;
-		background-color: #912F40;
-		color: whitesmoke;
-	}
 
 	#portfolio_list_view h2 {
 		margin: 0;

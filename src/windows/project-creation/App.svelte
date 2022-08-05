@@ -43,6 +43,7 @@
             ],
         });
         builder.withImageB64(await invoke("load_image", { path: selected.toString() }));
+        builder = builder;
     }
 
     async function on_type_change(e) {

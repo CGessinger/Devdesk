@@ -41,18 +41,17 @@
 		height: 100%;
 
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		align-items: stretch;
+		justify-content: start;
 	}
 
 	#panel_left {
-		flex-grow: 1;
-		height: 100%;
-		width: 20%;
+		display: inline-block;
+		flex: 1;
 	}
 
 	#panel_center {
-		flex-grow: 5;
-		height: 100%;
+		display: inline-block;
+		flex: 3;
 	}
 </style>
