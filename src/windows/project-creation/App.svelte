@@ -4,7 +4,6 @@
     import { invoke } from '@tauri-apps/api/tauri';
     import { Portfolio } from '$utils/Portfolio';
     import { Project } from '$utils/Project';
-    import { isErr, unwrap } from '$utils/Result';
 
     let builder = Project.Builder.get();
 
@@ -17,16 +16,16 @@
 
     function create_project() {
         const res = builder.tryBuildPath(focus.path);
-        if (isErr(res)) {
+        if (res.is_err()) {
             console.log("error: ", res);
             return;
         }
         const built = builder.build();
-        if (isErr(built)) {
+        if (built.is_err()) {
             console.log("error: ", built);
             return;
         }
-        const fb = new Project.Folder(unwrap(built));
+        const fb = new Project.Folder(built.unwrap() as Project);
         fb.createConfigFolder().then(() => {
             fb.writeToConfig();
         });

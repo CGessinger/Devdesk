@@ -1,7 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { joinPath } from './Path';
 import { Project } from './Project';
-import { isErr, unwrap } from './Result';
 
 export class Portfolio {
     uid: string;
@@ -27,9 +26,11 @@ export class Portfolio {
         let folders: string[] = await invoke("read_dir", {path: path_});
         let projects: Project[] = [];
         for (let f of folders) {
-            const p = await Project.Folder.readFromFolder(joinPath(path_, f));
-            if (!isErr(p))
-                projects.push(unwrap(p));
+            await Project.Folder.readFromFolder(joinPath(path_, f)).then(p =>{
+                projects.push(p);
+            }).catch(err => {
+                console.log(err);
+            });      
         }
 
         return projects;
@@ -41,11 +42,10 @@ export class Portfolio {
 
     async load_projects_from_type(): Promise<void> {
         const t = this.get_focused_type();
-        const p = t == "all" ? this.path : this.path + "/" + t;
+        const p = t == "all" ? this.path : joinPath(this.path, t);
         this.projects = await this.load_projects_from(p).then(projects => {
             return projects
-        }).catch(err => {
-            console.log(err);
+        }).catch(_ => {
             return [];
         });
     }

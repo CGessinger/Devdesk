@@ -4,30 +4,33 @@
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
 	import ContentPanel from "./Components/ContentPanel.svelte";
-import { isErr } from "$src/utils/Result";
 
 	let s: settings = new settings();
 	settings.get_settings_from_config().then(s_ => s = s_);
 
 	let focus: Portfolio = undefined;
-	let set_focus = (p: Portfolio) => {
+	function set_focus (p: Portfolio) {
 		if (focus == p)
-			return;
+			refresh_focus();
 
 		if (p) {
-			p.load_projects_from_type().then(() => focus = p);
+			p.load_projects_from_type().then(() => {
+				focus = p;
+				refresh_focus();
+			});
 		}
 		else
 			focus = undefined;
-	};
+	}
 
 	function refresh_focus() {
+		if (!focus)
+			return;
+
 		focus.projects.forEach(project => {
 			project.load_image().then(res => {
-				if (!isErr(res)) {
-					focus = focus;
-				}
-			});
+				focus = focus;
+			}).catch(_ => {});
 		});
 		focus = focus;
 	}
@@ -36,7 +39,7 @@ import { isErr } from "$src/utils/Result";
 
 <div id="main">
 	<div id="panel_left">
-		<LeftPanel {s} {set_focus}/>
+		<LeftPanel {s} on:set-focus="{e => set_focus(e.detail)}"/>
 	</div>
 	<div id="panel_center">
 		<TopBar {focus} on:safe-settings="{_ => s.safe_settings()}" on:refresh-focus="{_ => refresh_focus()}"/>

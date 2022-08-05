@@ -1,9 +1,10 @@
 <script lang="ts">
     import type { settings } from "$utils/Settings";
 	import type { Portfolio } from "$utils/Portfolio";
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 
     export let s: settings;
-	export let set_focus: (p: Portfolio) => void;
 
     function add_portfolio() {
 		s.add_portfolio()
@@ -12,6 +13,11 @@
 			s = s;
 		});
 	}
+
+	function set_focus(f: Portfolio) {
+		dispatch('set-focus', f);
+	}
+
 </script>
 
 <div id="portfolio_list_view">

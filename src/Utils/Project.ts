@@ -1,7 +1,7 @@
-import type { PromisedResult, Result } from "$utils/Result";
-import { Ok, Err, isErr, unwrap } from "$utils/Result";
+import type { Result } from "$utils/Result";
+import { Ok, Err } from "$utils/Result";
 import { typeFromPath, joinPath, nameFromPath } from "$utils/Path";
-import { invoke } from "@tauri-apps/api";
+import { http, invoke } from "@tauri-apps/api";
 
 export class Project {
     name: string;
@@ -32,17 +32,17 @@ export class Project {
         this.type= "";
     }
 
-    async load_image(): PromisedResult<void, string> {
+    async load_image(): Promise<void> {
         const img_path = joinPath(this.config_folder_path(), "icon.png");
         try {
             if(!await invoke("file_exists", {path: img_path}))
-                return Err("Image not found");
+                return Err("Image not found").asRejected();
     
             this.image = await invoke("load_image", { path: img_path })
-            return Ok(null);
+            return Ok(null).asResolved();
         }
         catch (err) {
-            return Err(err);
+            return Err(err).asRejected();
         }
     }
 
@@ -126,10 +126,10 @@ export class Project {
 
         tryBuildPath(tree: string): Result<typeof this, string> {
             const path = this.buildFormattedPath(tree);
-            if (isErr(path)) {
+            if (path.is_err()) {
                 return Err(path.value);
             }
-            return Ok(this.withPath(unwrap(path)));
+            return Ok(this.withPath(path.unwrap()));
         }
 
         build(): Result<Project, string> {
@@ -149,39 +149,39 @@ export class Project {
             this.p = p_;
         }
 
-        private async createFolder(path_: string): PromisedResult<typeof this, string> {
+        private async createFolder(path_: string): Promise<this> {
             try {
                 let exists = await invoke("folder_exists", { path: path_ });
                 if (!exists) {
                     invoke("create_folder", { path: path_ }).catch(err => {
                         return Err(err);
                     });
-                    return Ok(this);
+                    return Ok(this).asResolved();
                 }
 
-                return Err("Folder already exists");
+                return Err("Folder already exists").asRejected();
             }
             catch (err) {
-                return Err(err);
+                return Err(err).asRejected();
             }
         }
 
-        async createProjectFolder(): PromisedResult<typeof this, string> {
+        async createProjectFolder(): Promise<this> {
             const path = this.p.path;
-            if (path == "") return Err("No path provided");
+            if (path == "") return Err("No path provided").asRejected();
 
             return this.createFolder(path);
         }
 
-        async createConfigFolder(): PromisedResult<typeof this, string> {
-            if (this.p.path == "") return Err("No path provided");
+        async createConfigFolder(): Promise<this> {
+            if (this.p.path == "") return Err("No path provided").asRejected();
 
             const path = joinPath(this.p.path, ".ppa");
             return this.createFolder(path);
         }
 
-        async writeToConfig(): PromisedResult<typeof this, string> {
-            if (this.p.path == "") return Err("No path provided");
+        async writeToConfig(): Promise<this> {
+            if (this.p.path == "") return Err("No path provided").asRejected();
 
             const path = this.p.config_path();
             const config = {
@@ -197,51 +197,46 @@ export class Project {
             }
 
             return invoke("write_to_file", { path: path, content: JSON.stringify(config) }).then(() => {
-                return Ok(this);
+                return Ok(this).asResolved();
             }).catch(err => {
-                return Err(err);
+                return Err(err).asRejected();
             });
         }
 
-        static async readFromFolder(path_: string): PromisedResult<Project, string> {
-            try {
-                const exists: boolean = await invoke("folder_exists", { path: path_ });
-                if (!exists) {
-                    return Err("Folder does not exist");
-                }
+        static async readFromFolder(path_: string): Promise<Project> {
+            const exists: boolean = await invoke("folder_exists", { path: path_ });
+            if (!exists) {
+                return Err("Folder does not exist: " + path_).asRejected();
+            }
 
-                const config_path = joinPath(path_, ".ppa");
-                const config_result = await Project.Folder.readFromConfig(config_path);
-                let project;
-                if (isErr(config_result)) {
-                    project = new Project()
-                    project.name = nameFromPath(path_);
-                } else {
-                    project = unwrap(config_result);
-                }
-
+            const config_path = joinPath(path_, ".ppa");
+            let project;
+            await Project.Folder.readFromConfig(config_path).then(p => {
+                project = p;
+            }).catch(_ => {
+                project = new Project()
+                project.name = nameFromPath(path_);
+            }).finally(() => {
                 project.path = path_;
                 project.type = typeFromPath(path_);
-                return Ok(project);
-            }
-            catch (err) {
-                return Err(err);
-            }
+            });
+
+            return Ok(project).asResolved();
         }
 
-        static async readFromConfig(path_: string): PromisedResult<Project, string> {
+        static async readFromConfig(path_: string): Promise<Project> {
             const file_path = joinPath(path_, "config.json");
             try {
                 const exists: boolean = await invoke("file_exists", { path: file_path });
                 if (!exists) {
-                    return Err("Config does not exist");
+                    return Err("Config does not exist").asRejected();
                 }
 
                 const content: string = await invoke("read_file", { path: file_path });
-                return Ok(Object.assign(new Project(), JSON.parse(content)));
+                return Ok(Object.assign(new Project(), JSON.parse(content))).asResolved();
             }
             catch (err) {
-                return Err(err);
+                return Err(err).asRejected();
             }
         }
     }

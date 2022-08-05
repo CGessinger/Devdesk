@@ -1,37 +1,43 @@
-export interface Error<T> {
-    kind: "error";
+interface ResultType<T> {
+    kind: "success" | "error";
     value: T;
+    is_ok(): boolean;
+    is_err(): boolean;
+    unwrap(): T;
 }
 
-export interface Success<E> {
-    kind: "success";
-    value: E;
+interface Error<T> extends ResultType<T>{
+    kind: "error";
+    asRejected(): Promise<any>;
 }
 
-export function Err<T>(value: T): Error<T> {
-    return { 
+export const Err = <T>(value: T): Error<T> => {
+    return {
+        kind: "error",
         value,
-        kind: "error"
+        asRejected: () => Promise.reject(value),
+        is_ok: () => false,
+        is_err: () => true,
+        unwrap: () => {
+            throw new Error("Unwrap called on Error: ", value);
+        }
     };
+};
+
+export interface Success<E> extends ResultType<E> {
+    kind: "success";
+    asResolved(): Promise<E>;
 }
 
-export function Ok<E>(val: E): Success<E> {
+export function Ok<E>(value: E): Success<E> {
     return { 
-        value: val,
-        kind: "success"
+        kind: "success",
+        value,
+        asResolved: () => Promise.resolve(value),
+        is_ok: () => true,
+        is_err: () => false,
+        unwrap:() => value
     };
-}
-
-export function isErr<E, T>(res: Result<E, T>): boolean {
-    return res.kind === "error";
-}
-
-export function unwrap<E, T>(res: Result<E, T>): E {
-    if (isErr(res)) {
-        throw new Error(`unwrap called on error: ${res.value}`);
-    }
-    return res.value as E;
 }
 
 export type Result<E, T> = Success<E> | Error<T>;
-export type PromisedResult<E, T> = Promise<Result<E, T>>;
