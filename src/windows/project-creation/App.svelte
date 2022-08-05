@@ -27,8 +27,8 @@
             return;
         }
         const fb = new Project.Folder(unwrap(built));
-        fb.createConfigFolder().then(res => {
-            console.log("res: ", res);
+        fb.createConfigFolder().then(() => {
+            fb.writeToConfig();
         });
         // emit("create_project", "ayoo");
         // appWindow.close();

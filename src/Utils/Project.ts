@@ -32,6 +32,20 @@ export class Project {
         this.type= "";
     }
 
+    async load_image(): PromisedResult<void, string> {
+        const img_path = joinPath(this.config_folder_path(), "icon.png");
+        try {
+            if(!await invoke("file_exists", {path: img_path}))
+                return Err("Image not found");
+    
+            this.image = await invoke("load_image", { path: img_path })
+            return Ok(null);
+        }
+        catch (err) {
+            return Err(err);
+        }
+    }
+
     static Builder = class {
         p: Project;
         target_path = (tree: string): string => {
@@ -178,8 +192,8 @@ export class Project {
             };
 
             if (this.p.image != "") {
-                const res = invoke("write_image", { path: this.p.config_folder_path(), image: this.p.image });
-                console.log(res);
+                const img_path = joinPath(this.p.config_folder_path(), "icon.png");
+                invoke("write_image", { path: img_path, data: this.p.image });
             }
 
             return invoke("write_to_file", { path: path, content: JSON.stringify(config) }).then(() => {
@@ -196,7 +210,7 @@ export class Project {
                     return Err("Folder does not exist");
                 }
 
-                const config_path = joinPath(path_, ".ppa", "config.json");
+                const config_path = joinPath(path_, ".ppa");
                 const config_result = await Project.Folder.readFromConfig(config_path);
                 let project;
                 if (isErr(config_result)) {
@@ -216,13 +230,14 @@ export class Project {
         }
 
         static async readFromConfig(path_: string): PromisedResult<Project, string> {
+            const file_path = joinPath(path_, "config.json");
             try {
-                const exists: boolean = await invoke("file_exists", { path: path_ });
+                const exists: boolean = await invoke("file_exists", { path: file_path });
                 if (!exists) {
                     return Err("Config does not exist");
                 }
 
-                const content: string = await invoke("read_file", { path: path_ });
+                const content: string = await invoke("read_file", { path: file_path });
                 return Ok(Object.assign(new Project(), JSON.parse(content)));
             }
             catch (err) {

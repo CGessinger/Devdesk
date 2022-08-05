@@ -17,6 +17,12 @@ export class Portfolio {
         this.projects = [];
     }
 
+    async load_projects_image(): Promise<void> {
+        for (let p of this.projects) {
+            await p.load_image();
+        }
+    }
+
     private async load_projects_from(path_: string): Promise<Project[]> {
         let folders: string[] = await invoke("read_dir", {path: path_});
         let projects: Project[] = [];

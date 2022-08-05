@@ -14,6 +14,13 @@ pub fn read_dir(path: String) -> Result<Vec<String>, String> {
 }
 
 #[tauri::command]
+pub fn read_file (path: String) -> Result<String, String> {
+  let path = Path::new(&path);
+  let contents = fs::read_to_string(&path).map_err(|e| e.to_string())?;
+  Ok(contents)
+}
+
+#[tauri::command]
 pub fn load_image(path: String) -> Result<String, String> {
   let path = Path::new(&path);
   let _img = ImageReader::open(path).map_err(|e| e.to_string())?;
@@ -30,6 +37,12 @@ pub fn write_image(path: String, data: String) -> Result<(), String> {
   let img = image::load_from_memory(&data).map_err(|e| e.to_string())?;
   img.save(path).map_err(|e| e.to_string())?;
   Ok(())
+}
+
+#[tauri::command]
+pub fn file_exists (path: String) -> Result<bool, String> {
+  let path = Path::new(&path);
+  Ok(path.exists() && path.is_file())
 }
 
 #[tauri::command]

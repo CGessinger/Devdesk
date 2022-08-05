@@ -9,9 +9,11 @@ fn main() {
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![
       files_api::read_dir,
+      files_api::read_file,
       files_api::load_image,
       files_api::write_image,
       files_api::folder_exists,
+      files_api::file_exists,
       files_api::create_folder,
       files_api::write_to_file
       ])

@@ -27,10 +27,10 @@
 <div id="portfolio_view">
     <ul>
 		{#each focus.projects as project}
-			<li class="project_item">
+			<li class="project_item" on:click="{_ => focus = focus}">
 				<div class="project_name">
-					<img src="{project.image}" alt="{project.name}">
-					{project.name}
+					<img async class="project_logo" src="data:image/png;base64, {project.image}" alt="{project.name}">
+					<span>{project.name}</span>
 				</div>
 				<div class="project_git">
 					<svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-eye">
@@ -92,6 +92,11 @@
 		grid-area: header;
 		font-size: 1.5rem;
 		font-weight: bold;
+	}
+
+	.project_logo {
+		width: 32px;
+		height: 32px;
 	}
 
 	.project_git {
