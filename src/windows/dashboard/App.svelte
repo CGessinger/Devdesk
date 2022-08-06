@@ -23,15 +23,15 @@
 			focus = undefined;
 	}
 
-	function refresh_focus() {
+	async function refresh_focus() {
 		if (!focus)
 			return;
 
-		focus.projects.forEach(project => {
-			project.load_image().then(res => {
-				focus = focus;
-			}).catch(_ => {});
-		});
+		// focus.projects.forEach(project => {
+		// 	project.load_image().then(res => {
+		// 		focus = focus;
+		// 	}).catch(_ => {});
+		// });
 		focus = focus;
 	}
 
@@ -67,7 +67,9 @@
 	}
 
 	#panel_center {
-		display: inline-block;
+		display: grid;
+		grid-template-rows: 5rem 1fr;
 		flex: 3;
 	}
+
 </style>

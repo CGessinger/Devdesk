@@ -33,8 +33,10 @@
 </script>
 
 <div class="TopBar">
-    <input id="search_input" type="text" placeholder="Search..." />
-    <button id="search_button" class="button">Search</button>
+    <div id="search_nav">
+        <input id="search_input" type="text" placeholder="Search..." />
+        <button id="search_button" class="button">Search</button>
+    </div>
 
     <div id="type_nav">
         {#if focus}
@@ -61,30 +63,44 @@
 
 <style>
     .TopBar {
-        position: relative;
+        grid-row: 1;
+        display: grid;
+        grid-template-columns: 16em 1fr;
         top: 0;
         padding: 1rem;
+        padding-bottom: calc(1rem - 5px);
         color: #40434E;
-        width: 100%;
+    }
+
+    #search_nav {
+        grid-column: 1;
+        padding-top: 3px;
     }
 
     #search_input {
-        width: 20%;
+        width: 10em;
+        float: left;
+    }
+
+    #search_button {
+        width: 4.5em;
+        margin-left: 0.5rem;
+        float: left;
+        grid-column: 1;
     }
 
     #type_nav {
-        display: inline-block;
-        position: absolute;
-        top: 0;
-        padding: 1rem;
         border: none;
-        cursor: pointer;
+        overflow-x: scroll;
+        white-space: nowrap;
+        grid-column: 2;
     }
 
     .type_item {
-        float: left;
+        display: inline-block;
         text-align: center;
         padding: 8px 10px;
+        cursor: pointer;
     }
 
     .remove_type {

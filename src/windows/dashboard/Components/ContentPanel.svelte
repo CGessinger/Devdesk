@@ -29,7 +29,9 @@
 		{#each focus.projects as project}
 			<li class="project_item" on:click="{_ => focus = focus}">
 				<div class="project_name">
-					<img async class="project_logo" src="data:image/png;base64, {project.image}" alt="{project.name}">
+					{#if project.image != ""}
+						<img async class="project_logo" src="data:image/png;base64, {project.image}" alt="{project.name}">
+					{/if}
 					<span>{project.name}</span>
 				</div>
 				<div class="project_git">
@@ -52,7 +54,9 @@
 
 <style>
 	#portfolio_view {
-		padding: 1rem;
+		grid-row: 2;
+		padding: 0 1rem;
+		overflow-y: scroll;
 	}
 
 	#portfolio_view ul {
@@ -72,6 +76,7 @@
 		margin: 1rem;
 		background-color: #912F40;
 		color: whitesmoke;
+		border: whitesmoke 4px solid;
 	}
 
 	.project_item {
