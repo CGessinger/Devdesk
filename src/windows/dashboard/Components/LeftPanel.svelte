@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { focused_portfolio } from "$src/windows/store.js";
+	import { focused_portfolio, focused_project } from "$src/windows/store";
     import type { settings } from "$utils/Settings";
 	import type { Portfolio } from "$utils/Portfolio";
-	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
 
     export let s: settings;
 
@@ -16,6 +14,7 @@
 	}
 
 	function set_focus(f: Portfolio) {
+		focused_project.update(pr => pr = undefined);
 		focused_portfolio.update(p => p = f);
 	}
 

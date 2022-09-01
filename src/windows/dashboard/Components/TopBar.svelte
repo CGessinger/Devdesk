@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { focused_portfolio } from "$src/windows/store.js";
+	import { focused_portfolio, focused_project } from "$src/windows/store";
     import type { Portfolio } from "$utils/Portfolio";
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
@@ -10,9 +10,7 @@
 	});
 
     function focus_type(i: number) {
-        if (focus.focused_type == i)
-            return;
-
+        focused_project.update(pr => pr = undefined);
         focus.focused_type = i;
         focus.load_projects_from_type().then(() => focused_portfolio.update(p => p = p));
     }
@@ -24,7 +22,7 @@
             focus.types.push(name);
             input.value = "";
             dispatch('safe-settings');
-            dispatch('refresh-focus')
+            focused_portfolio.update(p => p = p);
         }
     }
 
@@ -32,7 +30,7 @@
         focus.focused_type = i - 1;
         focus.types.splice(i, 1);
         dispatch('safe-settings');
-        dispatch('refresh-focus')
+        focused_portfolio.update(p => p = p);
     }
 </script>
 

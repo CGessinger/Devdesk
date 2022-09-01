@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { focused_portfolio } from "$src/windows/store.js";
-	import type { Portfolio } from "$utils/Portfolio";
+	import { focused_portfolio, focused_project } from "$src/windows/store";
 	import { WebviewWindow } from '@tauri-apps/api/window'
 	import { emit } from '@tauri-apps/api/event'
+	import type { Project } from "$src/utils/Project";
 
 	async function add_project() {
 		const webview = new WebviewWindow('theUniqueLabel', {
@@ -21,12 +21,16 @@
 			console.log("receiving event", e.payload);
 		});
 	}
+
+	function project_click (pr_: Project) {
+		focused_project.update(pr => pr = pr_);
+	}
 </script>
 
 <div id="portfolio_view">
     <ul>
 		{#each $focused_portfolio.projects as project}
-			<li class="project_item" on:click="{_ => ""}">
+			<li class="project_item" on:click="{_ => project_click(project)}">
 				<div class="project_name">
 					{#if project.image != ""}
 						<img async class="project_logo" src="data:image/png;base64, {project.image}" alt="{project.name}">

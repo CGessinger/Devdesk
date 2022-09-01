@@ -1,7 +1,7 @@
 import type { Result } from "$utils/Result";
 import { Ok, Err } from "$utils/Result";
 import { typeFromPath, joinPath, nameFromPath } from "$utils/Path";
-import { http, invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api";
 
 export class Project {
     name: string;
