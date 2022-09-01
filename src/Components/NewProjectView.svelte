@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { open } from '@tauri-apps/api/dialog'
-    import { emit, once } from '@tauri-apps/api/event'
     import { invoke } from '@tauri-apps/api/tauri';
-    import { Portfolio } from '$utils/Portfolio';
+    import type { Portfolio } from '$utils/Portfolio';
+    import { focused_portfolio, new_project } from '$src/store';
     import { Project } from '$utils/Project';
 
     let builder = Project.Builder.get();
-
-    let focus: Portfolio = new Portfolio("");
-    emit("request_portfolio");
-    once('project_portfolio', (e) => {
-        focus = Object.assign(new Portfolio(""), JSON.parse(e.payload as string));
-        builder.withType(focus.focused_type == -1 ? focus.types[0] : focus.get_focused_type());
+    let focus: Portfolio;
+    focused_portfolio.subscribe((value) => {
+        focus = value;
     });
+    
+    builder.withType(focus.focused_type == -1 ? focus.types[0] : focus.get_focused_type());
 
     function create_project() {
         const res = builder.tryBuildPath(focus.path);
@@ -56,7 +55,7 @@
     }
 </script>
 
-<div id="main">
+<div id="newproject_view">
     <div id="top_wrapper">
         <div>
             <img id="thumbnail" src="data:image/png;base64, {builder.p.image}" alt="P" on:click="{_ => change_icon()}" />
@@ -67,7 +66,11 @@
         <textarea type="text" id="project_description" placeholder="Project Description" on:change="{e => builder.withDescription(e.currentTarget.value)}" />
         <select id="project_type" on:change="{on_type_change}">
             {#each focus.types as type}
-                <option value="{type}">{type}</option>
+                {#if type == focus.get_focused_type()}
+                    <option value="{type}" selected>{type}</option>
+                {:else}
+                    <option value="{type}">{type}</option>
+                {/if}
             {/each}
         </select>
         <p>
@@ -78,8 +81,11 @@
 </div>
 
 <style>
-    #main {
+    #newproject_view {
         height: 100%;
+		padding: 0 1rem;
+		overflow-y: scroll;
+        color: var(--font-color-light)
     }
 
     #top_wrapper {
@@ -114,6 +120,10 @@
         height: 50%;
         padding: 0.5rem;
         margin: 0.5rem 0;
+    }
+
+    #project_type {
+        color: var(--font-color-light);
     }
 
 </style>

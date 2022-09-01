@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cached_settings } from "$src/windows/store";
+    import { cached_settings } from "$src/store";
     import type { Settings } from "$src/utils/Settings";
 
     let s: Settings;

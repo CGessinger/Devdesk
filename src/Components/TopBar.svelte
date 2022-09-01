@@ -1,19 +1,27 @@
 <script lang="ts">
-	import { focused_portfolio, focused_project, focus_settings } from "$src/windows/store";
+    import {
+        focused_portfolio,
+        focused_project,
+        focus_settings,
+new_project,
+    } from "$src/store";
     import type { Portfolio } from "$utils/Portfolio";
-	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
+    import { createEventDispatcher } from "svelte";
+    const dispatch = createEventDispatcher();
 
     let focus: Portfolio;
-	focused_portfolio.subscribe(value => {
-		focus = value;
-	});
+    focused_portfolio.subscribe((value) => {
+        focus = value;
+    });
 
     function focus_type(i: number) {
-        focused_project.update(pr => pr = undefined);
-        focus_settings.update(fs => fs = false);
+        focused_project.update((pr) => (pr = undefined));
+        focus_settings.update((fs) => (fs = false));
+        new_project.update((np) => (np = undefined));
         focus.focused_type = i;
-        focus.load_projects_from_type().then(() => focused_portfolio.update(p => p = p));
+        focus
+            .load_projects_from_type()
+            .then(() => focused_portfolio.update((p) => (p = p)));
     }
 
     function add_type() {
@@ -22,16 +30,16 @@
         if (name.length > 0 && !focus.types.includes(name)) {
             focus.types.push(name);
             input.value = "";
-            dispatch('safe-settings');
-            focused_portfolio.update(p => p = p);
+            dispatch("safe-settings");
+            focused_portfolio.update((p) => (p = p));
         }
     }
 
     function remove_type(i: number) {
         focus.focused_type = i - 1;
         focus.types.splice(i, 1);
-        dispatch('safe-settings');
-        focused_portfolio.update(p => p = p);
+        dispatch("safe-settings");
+        focused_portfolio.update((p) => (p = p));
     }
 </script>
 
@@ -43,23 +51,33 @@
 
     <div id="type_nav">
         {#if focus}
-            <div class="type_item" on:click="{_ => focus_type(-1)}">
+            <div class="type_item" on:click={(_) => focus_type(-1)}>
                 All
                 {#if "all" == focus.get_focused_type()}
-                    <hr>
+                    <hr />
                 {/if}
             </div>
             {#each focus.types as type, i}
-                <div class="type_item" on:click="{_ => focus_type(i)}">
+                <div class="type_item" on:click={(_) => focus_type(i)}>
                     {type}
                     {#if type == focus.get_focused_type()}
-                        <i class="fa fa-minus remove_type" on:click="{_ => remove_type(i)}"></i>
-                        <hr>
+                        <i
+                            class="fa fa-minus remove_type"
+                            on:click={(_) => remove_type(i)}
+                        />
+                        <hr />
                     {/if}
                 </div>
             {/each}
-            <input id="type_input" type="text" placeholder="Add type..." on:keypress="{e => { if(e.key == "Enter") add_type() }}"/>
-            <button id="type_add" on:click="{_ => add_type()}">Add</button>
+            <input
+                id="type_input"
+                type="text"
+                placeholder="Add type..."
+                on:keypress={(e) => {
+                    if (e.key == "Enter") add_type();
+                }}
+            />
+            <button id="type_add" on:click={(_) => add_type()}>Add</button>
         {/if}
     </div>
 </div>
@@ -115,5 +133,4 @@
     .remove_type:hover {
         color: #cb5c6e;
     }
-
 </style>

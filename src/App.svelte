@@ -3,8 +3,9 @@
 		focused_portfolio,
 		focused_project,
 		focus_settings,
-		cached_settings
-	} from "$src/windows/store";
+		cached_settings,
+		new_project
+	} from "$src/store";
 	import { Settings } from "$utils/Settings";
 	import type { Portfolio } from "$utils/Portfolio";
 	import TopBar from "./Components/TopBar.svelte";
@@ -12,6 +13,7 @@
 	import PortfolioView from "./Components/PortfolioView.svelte";
 	import type { Project } from "$src/utils/Project";
 	import ProjectView from "./Components/ProjectView.svelte";
+	import NewProjectView from "./Components/NewProjectView.svelte";
 	import SettingsView from "./Components/SettingsView.svelte";
 
 	let s: Settings;
@@ -47,6 +49,8 @@
 		<TopBar on:safe-settings={(_) => s.safe_settings()} />
 		{#if $focus_settings}
 			<SettingsView/>
+		{:else if $new_project}
+			<NewProjectView/>
 		{:else if focus_project}
 			<ProjectView project={focus_project} />
 		{:else if focus}
