@@ -24,6 +24,6 @@
         margin: 0;
         text-align: center;
         color: white;
-        background-color: #912F40;
+        background-color: var(--primary-color);
     }
 </style>

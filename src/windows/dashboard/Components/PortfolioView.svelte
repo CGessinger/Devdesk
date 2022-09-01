@@ -77,7 +77,7 @@
 		right: 0;
 		padding: 1rem;
 		margin: 1rem;
-		background-color: #912F40;
+		background-color: var(--primary-color);
 		color: whitesmoke;
 		border: whitesmoke 4px solid;
 	}
@@ -88,7 +88,7 @@
 			'header header header header git git'
 			'main main main main right right'
 			'footer footer footer footer footer footer';
-		background-color: #912F40;
+		background-color: var(--primary-color);
 		color: whitesmoke;
 		margin-bottom: 1rem;
 		padding: 10px;

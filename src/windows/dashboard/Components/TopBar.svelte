@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { focused_portfolio, focused_project } from "$src/windows/store";
+	import { focused_portfolio, focused_project, focus_settings } from "$src/windows/store";
     import type { Portfolio } from "$utils/Portfolio";
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
@@ -11,6 +11,7 @@
 
     function focus_type(i: number) {
         focused_project.update(pr => pr = undefined);
+        focus_settings.update(fs => fs = false);
         focus.focused_type = i;
         focus.load_projects_from_type().then(() => focused_portfolio.update(p => p = p));
     }
@@ -71,7 +72,6 @@
         top: 0;
         padding: 1rem;
         padding-bottom: calc(1rem - 5px);
-        color: #40434E;
     }
 
     #search_nav {
@@ -103,11 +103,12 @@
         text-align: center;
         padding: 8px 10px;
         cursor: pointer;
+        color: var(--font-color-light);
     }
 
     .remove_type {
         cursor: pointer;
-        color: #912F40;
+        color: var(--primary-color);
         padding-left: 2px;
     }
 

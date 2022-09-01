@@ -1,27 +1,36 @@
 <script lang="ts">
-	import { focused_portfolio, focused_project } from "$src/windows/store";
-    import type { settings } from "$utils/Settings";
+	import { focused_portfolio, focused_project, cached_settings, focus_settings } from "$src/windows/store";
+    import type { Settings } from "$utils/Settings";
 	import type { Portfolio } from "$utils/Portfolio";
 
-    export let s: settings;
+    let s: Settings;
+	cached_settings.subscribe((value) => (s = value));
 
     function add_portfolio() {
 		s.add_portfolio()
 		.finally(() => {
 			s.safe_settings();
-			s = s;
+			cached_settings.update(settings => settings = s);
 		});
 	}
 
 	function set_focus(f: Portfolio) {
 		focused_project.update(pr => pr = undefined);
+		focus_settings.update(fs => fs = false);
 		focused_portfolio.update(p => p = f);
+	}
+
+	function set_focus_settings() {
+		focus_settings.update(fs => fs = !fs);
 	}
 
 </script>
 
 <div id="portfolio_list_view">
-    <h2 on:click="{_ => set_focus(undefined)}"> Portfolios </h2>
+    <h2> 
+		Portfolios 
+		<span id="settings" class="fa fa-cog" on:click="{set_focus_settings}"></span> 
+	</h2>
     <ul id="portfolio_list">
         {#each s.portfolios as portfolio}
 			<li class="portfolio_item">
@@ -41,7 +50,7 @@
 		position: relative;
 		display: inline-block;
 		height: 100%;
-		background-color: #912F40;
+		background-color: var(--primary-color);
 		color: whitesmoke;
 	}
 
@@ -63,6 +72,11 @@
 		margin: 0;
 		padding: 1.5rem 0 0 0;
 		text-align: center;
+		font-size: 1.2rem;
+	}
+
+	#settings {
+		padding-left: 1rem;
 		font-size: 1.2rem;
 		cursor: pointer;
 	}

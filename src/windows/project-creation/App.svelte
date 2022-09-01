@@ -87,7 +87,7 @@
         flex-direction: row;
         justify-content: stretch;
         align-items: center;
-        background-color: #912F40;
+        background-color: var(--primary-color);
         padding: 1rem;
     }
 

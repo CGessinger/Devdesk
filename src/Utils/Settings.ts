@@ -4,11 +4,13 @@ import { open } from "@tauri-apps/api/dialog";
 import { documentDir, appDir, BaseDirectory } from "@tauri-apps/api/path";
 import { readTextFile, writeTextFile, createDir } from "@tauri-apps/api/fs";
 
-export class settings {
+export class Settings {
     portfolios: Portfolio[];
+    dark_mode: boolean;
 
     constructor() {
         this.portfolios = [];
+        this.dark_mode = true;
     }
 
     public async add_portfolio() {
@@ -29,8 +31,8 @@ export class settings {
         await writeTextFile({path: await appDir() + "config/settings.json", contents: settings_json});
     }
 
-    public static async get_settings_from_config(): Promise<settings> {
-        let sett: settings;
+    public static async get_settings_from_config(): Promise<Settings> {
+        let sett: Settings;
         await readTextFile("config/settings.json", { dir: BaseDirectory.App }).then(read => {
             sett = JSON.parse(read, (key, value) => {
                 if (key === "portfolios") {
@@ -40,10 +42,10 @@ export class settings {
             });
         }).catch(err => {
             console.log("Error reading settings file: " + err);
-            sett = new settings();
+            sett = new Settings();
         });
         
-        return Object.assign(new settings, sett);
+        return Object.assign(new Settings, sett);
     }
 
 }

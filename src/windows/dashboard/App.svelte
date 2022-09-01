@@ -1,37 +1,56 @@
 <script lang="ts">
-	import { focused_portfolio, focused_project } from "$src/windows/store";
-	import { settings } from "$utils/Settings";
+	import {
+		focused_portfolio,
+		focused_project,
+		focus_settings,
+		cached_settings
+	} from "$src/windows/store";
+	import { Settings } from "$utils/Settings";
 	import type { Portfolio } from "$utils/Portfolio";
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
 	import PortfolioView from "./Components/PortfolioView.svelte";
 	import type { Project } from "$src/utils/Project";
-import ProjectView from "./Components/ProjectView.svelte";
+	import ProjectView from "./Components/ProjectView.svelte";
+	import SettingsView from "./Components/SettingsView.svelte";
 
-	let s: settings = new settings();
-	settings.get_settings_from_config().then(s_ => s = s_);
-	
+	let s: Settings;
+	cached_settings.subscribe((value) => (s = value));
+	Settings.get_settings_from_config().then((s_) =>
+		cached_settings.update((s) => (s = s_))
+	);
+    $: {
+        if (s.dark_mode) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }    
+    }
+
 	let focus: Portfolio;
-	focused_portfolio.subscribe(value => {
+	focused_portfolio.subscribe((value) => {
 		focus = value;
 	});
 
 	let focus_project: Project;
-	focused_project.subscribe(value => {
+	focused_project.subscribe((value) => {
 		focus_project = value;
 	});
 </script>
 
 <div id="main">
 	<div id="panel_left">
-		<LeftPanel {s}/>
+		<LeftPanel/>
 	</div>
 	<div id="panel_center">
-		<TopBar on:safe-settings="{_ => s.safe_settings()}"/>
-		{#if focus_project}
-			<ProjectView project={focus_project}/>
+		<TopBar on:safe-settings={(_) => s.safe_settings()} />
+		{#if $focus_settings}
+			<SettingsView/>
+		{:else if focus_project}
+			<ProjectView project={focus_project} />
 		{:else if focus}
-			<PortfolioView/>
+			<PortfolioView />
 		{/if}
 	</div>
 </div>
@@ -58,5 +77,4 @@ import ProjectView from "./Components/ProjectView.svelte";
 		grid-template-rows: 5rem 1fr;
 		flex: 3;
 	}
-
 </style>
