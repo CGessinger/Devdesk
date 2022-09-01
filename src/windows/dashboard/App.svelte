@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { focused_portfolio } from "$src/windows/store.js";
 	import { settings } from "$utils/Settings";
 	import type { Portfolio } from "$utils/Portfolio";
 	import TopBar from "./Components/TopBar.svelte";
@@ -7,44 +8,21 @@
 
 	let s: settings = new settings();
 	settings.get_settings_from_config().then(s_ => s = s_);
-
-	let focus: Portfolio = undefined;
-	function set_focus (p: Portfolio) {
-		if (focus == p)
-			refresh_focus();
-
-		if (p) {
-			p.load_projects_from_type().then(() => {
-				focus = p;
-				refresh_focus();
-			});
-		}
-		else
-			focus = undefined;
-	}
-
-	async function refresh_focus() {
-		if (!focus)
-			return;
-
-		// focus.projects.forEach(project => {
-		// 	project.load_image().then(res => {
-		// 		focus = focus;
-		// 	}).catch(_ => {});
-		// });
-		focus = focus;
-	}
-
+	
+	let focus: Portfolio;
+	focused_portfolio.subscribe(value => {
+		focus = value;
+	});
 </script>
 
 <div id="main">
 	<div id="panel_left">
-		<LeftPanel {s} on:set-focus="{e => set_focus(e.detail)}"/>
+		<LeftPanel {s}/>
 	</div>
 	<div id="panel_center">
-		<TopBar {focus} on:safe-settings="{_ => s.safe_settings()}" on:refresh-focus="{_ => refresh_focus()}"/>
+		<TopBar on:safe-settings="{_ => s.safe_settings()}"/>
 		{#if focus}
-			<ContentPanel {focus} on:refresh-focus="{_ => focus = focus}"/>
+			<ContentPanel/>
 		{/if}
 	</div>
 </div>

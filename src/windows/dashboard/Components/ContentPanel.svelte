@@ -1,9 +1,8 @@
 <script lang="ts">
+	import { focused_portfolio } from "$src/windows/store.js";
 	import type { Portfolio } from "$utils/Portfolio";
 	import { WebviewWindow } from '@tauri-apps/api/window'
 	import { emit } from '@tauri-apps/api/event'
-
-	export let focus: Portfolio;
 
 	async function add_project() {
 		const webview = new WebviewWindow('theUniqueLabel', {
@@ -15,7 +14,7 @@
 		});
 
 		webview.once('request_portfolio', function () {
-			emit("project_portfolio", focus);
+			emit("project_portfolio", $focused_portfolio);
 		});
 
 		webview.once("create_project", e => {
@@ -26,8 +25,8 @@
 
 <div id="portfolio_view">
     <ul>
-		{#each focus.projects as project}
-			<li class="project_item" on:click="{_ => focus = focus}">
+		{#each $focused_portfolio.projects as project}
+			<li class="project_item" on:click="{_ => ""}">
 				<div class="project_name">
 					{#if project.image != ""}
 						<img async class="project_logo" src="data:image/png;base64, {project.image}" alt="{project.name}">

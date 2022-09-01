@@ -1,16 +1,20 @@
 <script lang="ts">
+	import { focused_portfolio } from "$src/windows/store.js";
     import type { Portfolio } from "$utils/Portfolio";
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
-    export let focus: Portfolio;
+    let focus: Portfolio;
+	focused_portfolio.subscribe(value => {
+		focus = value;
+	});
 
     function focus_type(i: number) {
         if (focus.focused_type == i)
             return;
 
         focus.focused_type = i;
-        focus.load_projects_from_type().then(() => dispatch('refresh-focus'));
+        focus.load_projects_from_type().then(() => focused_portfolio.update(p => p = p));
     }
 
     function add_type() {
