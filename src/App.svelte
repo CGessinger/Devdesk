@@ -46,7 +46,7 @@
 		<LeftPanel/>
 	</div>
 	<div id="panel_center">
-		<TopBar on:safe-settings={(_) => s.safe_settings()} />
+		<TopBar/>
 		{#if $focus_settings}
 			<SettingsView/>
 		{:else if $new_project}

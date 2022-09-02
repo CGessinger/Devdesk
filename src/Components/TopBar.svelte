@@ -3,7 +3,8 @@
         focused_portfolio,
         focused_project,
         focus_settings,
-new_project,
+        new_project,
+        cached_settings
     } from "$src/store";
     import type { Portfolio } from "$utils/Portfolio";
     import { createEventDispatcher } from "svelte";
@@ -30,7 +31,7 @@ new_project,
         if (name.length > 0 && !focus.types.includes(name)) {
             focus.types.push(name);
             input.value = "";
-            dispatch("safe-settings");
+            $cached_settings.safe_settings();
             focused_portfolio.update((p) => (p = p));
         }
     }
@@ -38,7 +39,7 @@ new_project,
     function remove_type(i: number) {
         focus.focused_type = i - 1;
         focus.types.splice(i, 1);
-        dispatch("safe-settings");
+        $cached_settings.safe_settings();
         focused_portfolio.update((p) => (p = p));
     }
 </script>

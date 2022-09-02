@@ -27,9 +27,9 @@
         const fb = new Project.Folder(built.unwrap() as Project);
         fb.createConfigFolder().then(() => {
             fb.writeToConfig();
+        }).then(() => {
+            new_project.update(np => np = undefined);
         });
-        // emit("create_project", "ayoo");
-        // appWindow.close();
     }
 
     async function change_icon() {
