@@ -1,12 +1,12 @@
-import type { Portfolio } from '$src/utils/Portfolio';
-import type { Project } from '$src/utils/Project';
-import { Settings } from '$src/utils/Settings';
+import { SettingsModel } from '$src/Settings/utils/SettingsModel';
 import { writable } from 'svelte/store';
+import type { PortfolioModel } from './Portfolio/utils/PortfolioModel';
+import type { ProjectModel } from './Project/utils/ProjectModel';
 
 // Listed By Priority
 export const focus_settings = writable<boolean>(false);
-export const new_project = writable<Project>(undefined);
-export const focused_project = writable<Project>(undefined);
-export const focused_portfolio = writable<Portfolio>(undefined);
+export const new_project = writable<ProjectModel>(undefined);
+export const focused_project = writable<ProjectModel>(undefined);
+export const focused_portfolio = writable<PortfolioModel>(undefined);
 
-export const cached_settings = writable<Settings>(new Settings());
+export const cached_settings = writable<SettingsModel>(new SettingsModel());

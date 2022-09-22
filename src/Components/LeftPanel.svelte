@@ -6,10 +6,10 @@
 		focus_settings,
 		new_project
 	} from "$src/store";
-	import type { Settings } from "$utils/Settings";
-	import type { Portfolio } from "$utils/Portfolio";
+	import type { SettingsModel } from "$src/Settings/utils/SettingsModel";
+	import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 
-	let s: Settings;
+	let s: SettingsModel;
 	cached_settings.subscribe((value) => (s = value));
 
 	function add_portfolio() {
@@ -19,7 +19,7 @@
 		});
 	}
 
-	function set_focus(f: Portfolio) {
+	function set_focus(f: PortfolioModel) {
 		focused_project.update((pr) => (pr = undefined));
 		focus_settings.update((fs) => (fs = false));
         new_project.update((np) => (np = undefined));

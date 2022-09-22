@@ -6,23 +6,24 @@
 		cached_settings,
 		new_project
 	} from "$src/store";
-	import { Settings } from "$utils/Settings";
-	import type { Portfolio } from "$utils/Portfolio";
+	import { SettingsModel } from "$src/Settings/utils/SettingsModel";
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
-	import PortfolioView from "./Components/PortfolioView.svelte";
-	import type { Project } from "$src/utils/Project";
-	import ProjectView from "./Components/ProjectView.svelte";
-	import NewProjectView from "./Components/NewProjectView.svelte";
-	import SettingsView from "./Components/SettingsView.svelte";
+	import PortfolioView from "./Portfolio/Display/PortfolioDisplayView.svelte";
+	import ProjectView from "./Project/Display/ProjectDisplayView.svelte";
+	import NewProjectView from "./Project/Create/ProjectCreateView.svelte";
+	import SettingsView from "./Settings/Display/SettingsDisplayView.svelte";
+    import type { ProjectModel } from "./Project/utils/ProjectModel";
+    import type { ViewModel } from "./utils/ViewModel";
 
-	let s: Settings;
-	cached_settings.subscribe((value) => (s = value));
-	Settings.get_settings_from_config().then((s_) =>
-		cached_settings.update((s) => (s = s_))
-	);
+	let settings: SettingsModel;
+	cached_settings.subscribe((value) => (settings = value));
+	SettingsModel.get_settings_from_config().then((s_) => {
+		cached_settings.update(s => (s = s_))
+	});
+
     $: {
-        if (s.dark_mode) {
+        if (settings.dark_mode) {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
         else {
@@ -30,12 +31,7 @@
         }    
     }
 
-	let focus: Portfolio;
-	focused_portfolio.subscribe((value) => {
-		focus = value;
-	});
-
-	let focus_project: Project;
+	let focus_project: ProjectModel;
 	focused_project.subscribe((value) => {
 		focus_project = value;
 	});
@@ -53,8 +49,8 @@
 			<NewProjectView/>
 		{:else if focus_project}
 			<ProjectView project={focus_project} />
-		{:else if focus}
-			<PortfolioView />
+		{:else if $focused_portfolio}
+			<PortfolioView/>
 		{/if}
 	</div>
 </div>

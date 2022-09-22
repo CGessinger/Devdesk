@@ -1,19 +1,26 @@
 <script lang="ts">
-	import { focused_portfolio, focused_project, new_project } from "$src/store";
-	import { Project } from "$src/utils/Project";
+    import { ProjectModel } from "$src/Project/utils/ProjectModel";
+	import { focused_project, new_project } from "$src/store";
+    import { Model } from "./PortfolioDisplayModel";
 
-	async function add_project() {
-		new_project.update((project) => (project = new Project()));
+	let model = new Model();
+	let ViewData = model.GetViewData();
+	model.onViewDataChange = (_) => {
+		ViewData = model.GetViewData();
 	}
 
-	function project_click(pr_: Project) {
+	async function add_project() {
+		new_project.update((project) => (project = new ProjectModel()));
+	}
+
+	function project_click(pr_: ProjectModel) {
 		focused_project.update((pr) => (pr = pr_));
 	}
 </script>
 
 <div id="portfolio_view">
 	<ul>
-		{#each $focused_portfolio.projects as project}
+		{#each ViewData["projects"] as project}
 			<li class="project_item" on:click={(_) => project_click(project)}>
 				<div class="project_name">
 					{#if project.image != ""}

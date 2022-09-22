@@ -1,11 +1,10 @@
-import { Portfolio } from "./Portfolio";
-
 import { open } from "@tauri-apps/api/dialog";
 import { documentDir, appDir, BaseDirectory } from "@tauri-apps/api/path";
 import { readTextFile, writeTextFile, createDir } from "@tauri-apps/api/fs";
+import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 
-export class Settings {
-    portfolios: Portfolio[];
+export class SettingsModel {
+    portfolios: PortfolioModel[];
     dark_mode: boolean;
 
     constructor() {
@@ -19,7 +18,7 @@ export class Settings {
             multiple: false,
             defaultPath: await documentDir(),
         });
-        this.portfolios = [...this.portfolios, new Portfolio(selected.toString())];
+        this.portfolios = [...this.portfolios, new PortfolioModel(selected.toString())];
     }
 
     public async safe_settings() {
@@ -31,21 +30,21 @@ export class Settings {
         await writeTextFile({path: await appDir() + "config/settings.json", contents: settings_json});
     }
 
-    public static async get_settings_from_config(): Promise<Settings> {
-        let sett: Settings;
+    public static async get_settings_from_config(): Promise<SettingsModel> {
+        let sett: SettingsModel;
         await readTextFile("config/settings.json", { dir: BaseDirectory.App }).then(read => {
             sett = JSON.parse(read, (key, value) => {
                 if (key === "portfolios") {
-                    return value.map(p => Object.assign(new Portfolio(""), p));
+                    return value.map(p => Object.assign(new PortfolioModel(""), p));
                 }
                 return value;
             });
         }).catch(err => {
             console.log("Error reading settings file: " + err);
-            sett = new Settings();
+            sett = new SettingsModel();
         });
         
-        return Object.assign(new Settings, sett);
+        return Object.assign(new SettingsModel, sett);
     }
 
 }

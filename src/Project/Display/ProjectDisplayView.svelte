@@ -1,6 +1,9 @@
 <script lang="ts">
-    import type { Project } from "$src/utils/Project";
-    export let project: Project;
+    import type { ProjectModel } from "../utils/ProjectModel";
+    import { Model } from "./ProjectDisplayModel";
+
+    export let project: ProjectModel;
+    let model = new Model();
 </script>
 
 <div id="project_view">

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
     import {
         focused_portfolio,
         focused_project,
@@ -6,11 +7,8 @@
         new_project,
         cached_settings
     } from "$src/store";
-    import type { Portfolio } from "$utils/Portfolio";
-    import { createEventDispatcher } from "svelte";
-    const dispatch = createEventDispatcher();
 
-    let focus: Portfolio;
+    let focus: PortfolioModel;
     focused_portfolio.subscribe((value) => {
         focus = value;
     });
