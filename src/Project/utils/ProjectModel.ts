@@ -44,4 +44,8 @@ export class ProjectModel {
             return Err(err).asRejected();
         }
     }
+
+    async config_exists(): Promise<boolean> {
+        return await invoke("file_exists", {path: this.config_path()});
+    }
 }

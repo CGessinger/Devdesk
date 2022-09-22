@@ -1,7 +1,9 @@
 <script lang="ts">
     import { Model } from "$src/Project/Create/ProjectCreateModel";
 
-    let model = new Model();
+    export let edit;
+
+    let model = new Model(edit);
 	let ViewData = model.GetViewData();
 	model.onViewDataChange = (_) => {
 		ViewData = model.GetViewData();
@@ -14,6 +16,10 @@
     async function on_name_change(e) {
         model.change_name(e.target.value);
     }
+
+    async function on_description_change(e) {
+        model.change_description(e.currentTarget.value);
+    }
 </script>
 
 <div id="newproject_view">
@@ -21,10 +27,10 @@
         <div>
             <img id="thumbnail" src="data:image/png;base64, {model.builder.p.image}" alt="P" on:click="{_ => model.change_icon()}" />
         </div>
-        <input type="text" id="project_name" placeholder="Project Name" on:input="{on_name_change}" />
+        <input type="text" id="project_name" placeholder="Project Name" on:input="{on_name_change}" value="{ViewData["name"]}"/>
     </div>
     <div id="main_wrapper">
-        <textarea type="text" id="project_description" placeholder="Project Description" on:change="{e => model.builder.withDescription(e.currentTarget.value)}" />
+        <textarea type="text" id="project_description" placeholder="Project Description" on:change="{on_description_change}" value="{ViewData["description"]}" />
         <select id="project_type" on:change="{on_type_change}">
             {#each ViewData["types"] as type}
                 {#if type == ViewData["focused_type"]}
@@ -37,7 +43,11 @@
         <p>
             <span>Create in: <i>{ViewData["path_preview"]}</i></span>
         </p>
-        <button id="create_project" on:click="{_ => model.create_project()}">Create Project</button>
+        {#if ViewData["config_exists"]}
+            <button id="create_project" on:click="{_ => model.edit_project()}">Edit Project</button>
+        {:else}
+            <button id="create_project" on:click="{_ => model.create_project()}">Create Project</button>
+        {/if}
     </div>
 </div>
 

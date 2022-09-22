@@ -7,8 +7,8 @@ export class ModelBuilder {
         return this.buildFormattedPath(tree).value;
     }
     
-    constructor() {
-        this.p = new ProjectModel();
+    constructor(_p?: ProjectModel) {
+        this.p = _p ?? new ProjectModel();
     }
 
     withName(name: string) {

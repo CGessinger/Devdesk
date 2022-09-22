@@ -45,7 +45,7 @@
 		{#if $focus_settings}
 			<SettingsView/>
 		{:else if $new_project}
-			<NewProjectView/>
+			<NewProjectView edit={$new_project}/>
 		{:else if focus_project}
 			<ProjectView project={focus_project} />
 		{:else if $focused_portfolio}

@@ -3,12 +3,21 @@
     import { Model } from "./ProjectDisplayModel";
 
     export let project: ProjectModel;
-    let model = new Model();
+    let model = new Model(project);
+	let ViewData = model.GetViewData();
+	model.onViewDataChange = (_) => {
+		ViewData = model.GetViewData();
+	}
 </script>
 
 <div id="project_view">
     <h1 id="project_name">
         {project.name}
+        {#if ViewData["config_exists"]}
+            <span id="edit_button" on:click="{_ => model.edit_model(project)}">Edit</span>
+        {:else}
+            <span id="edit_button" on:click="{_ => model.init_model(project)}">Init</span>
+        {/if}
     </h1>
     <div id="project_description">
         {project.description}
@@ -26,7 +35,19 @@
         font-weight: 600;
         margin: 0;
         text-align: center;
-        color: white;
+        color: var(--font-color-dark);
         background-color: var(--primary-color);
+    }
+
+    #edit_button {
+        float: right;
+        font-size: small;
+        margin: 0.6rem;
+    }
+
+    #project_description {
+        font-size: 1.2rem;
+        margin: 1rem 1rem 0 1rem;
+        color: var(--font-color-dark);
     }
 </style>

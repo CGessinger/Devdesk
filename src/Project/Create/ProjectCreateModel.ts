@@ -17,7 +17,16 @@ export class Model extends ViewModel{
         super();
         this.subscribeStores();
 
-        this.builder = new ModelBuilder();
+        this.builder = new ModelBuilder(edit);
+        super.ViewDataChange("name", this.builder.p.name);
+        super.ViewDataChange("focused_type", this.builder.p.type);
+        super.ViewDataChange("description", this.builder.p.description);
+        
+        super.ViewDataChange("config_exists", false);
+        this.builder.p.config_exists().then((exists) => {
+            super.ViewDataChange("config_exists", exists);
+        });
+
         this.builder.withType(this.focus.focused_type == -1 ? this.focus.types[0] : this.focus.get_focused_type());
         super.ViewDataChange("path_preview", this.builder.target_path(this.focus.path));
     }
@@ -53,6 +62,10 @@ export class Model extends ViewModel{
         });
     }
 
+    edit_project() {
+
+    }
+
     async change_icon() {
         const selected = await open({
             multiple: false,
@@ -72,6 +85,11 @@ export class Model extends ViewModel{
     change_name(name: string) {
         this.builder.withName(name);
         super.ViewDataChange("path_preview", this.builder.target_path(this.focus.path));
+    }
+
+    change_description(description: string) {
+        this.builder.withDescription(description);
+        super.ViewDataChange("description", this.builder.p.description);
     }
 
 }
