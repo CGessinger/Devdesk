@@ -1,6 +1,6 @@
 import { ProjectFileHandler } from '$src/Project/utils/ProjectFileHandler';
 import type { ProjectModel } from '$src/Project/utils/ProjectModel';
-import { joinPath } from '$src/utils/Path';
+import { fs } from '$src/utils/Path';
 import { invoke } from '@tauri-apps/api/tauri';;
 
 export class PortfolioModel {
@@ -27,7 +27,7 @@ export class PortfolioModel {
         let folders: string[] = await invoke("read_dir", {path: path_});
         let projects: ProjectModel[] = [];
         for (let f of folders) {
-            await ProjectFileHandler.readFromFolder(joinPath(path_, f)).then(p =>{
+            await ProjectFileHandler.readFromFolder(fs.joinPath(path_, f)).then(p =>{
                 projects.push(p);
             }).catch(err => {
                 console.log(err);
@@ -43,7 +43,7 @@ export class PortfolioModel {
 
     async load_projects_from_type(): Promise<void> {
         const t = this.get_focused_type();
-        const p = t == "all" ? this.path : joinPath(this.path, t);
+        const p = t == "all" ? this.path : fs.joinPath(this.path, t);
         this.projects = await this.load_projects_from(p).then(projects => {
             return projects
         }).catch(_ => {

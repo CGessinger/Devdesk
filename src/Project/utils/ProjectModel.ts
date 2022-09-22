@@ -1,5 +1,5 @@
+import { fs } from "$src/utils/Path";
 import { Ok, Err } from "$utils/Result";
-import { joinPath } from "$utils/Path";
 import { invoke } from "@tauri-apps/api";
 
 export class ProjectModel {
@@ -32,7 +32,7 @@ export class ProjectModel {
     }
 
     async load_image(): Promise<void> {
-        const img_path = joinPath(this.config_folder_path(), "icon.png");
+        const img_path = fs.joinPath(this.config_folder_path(), "icon.png");
         try {
             if(!await invoke("file_exists", {path: img_path}))
                 return Err("Image not found").asRejected();

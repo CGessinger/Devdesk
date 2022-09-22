@@ -1,6 +1,5 @@
 import { ProjectModel } from "./ProjectModel";
-import { invoke } from "@tauri-apps/api";
-import { joinPath, nameFromPath, typeFromPath } from "$utils/Path";
+import { fs } from "$utils/Path";
 import { Ok, Err } from "$utils/Result";
 
 export class ProjectFileHandler {
@@ -11,9 +10,9 @@ export class ProjectFileHandler {
 
     private async createFolder(path_: string): Promise<this> {
         try {
-            let exists = await invoke("folder_exists", { path: path_ });
+            let exists = await fs.folder_exists(path_);
             if (!exists) {
-                invoke("create_folder", { path: path_ }).catch(err => {
+                fs.create_folder(path_).catch(err => {
                     return Err(err);
                 });
                 return Ok(this).asResolved();
@@ -36,7 +35,7 @@ export class ProjectFileHandler {
     async createConfigFolder(): Promise<this> {
         if (this.p.path == "") return Err("No path provided").asRejected();
 
-        const path = joinPath(this.p.path, ".ppa");
+        const path = fs.joinPath(this.p.path, ".ppa");
         return this.createFolder(path);
     }
 
@@ -52,11 +51,11 @@ export class ProjectFileHandler {
         };
 
         if (this.p.image != "") {
-            const img_path = joinPath(this.p.config_folder_path(), "icon.png");
-            invoke("write_image", { path: img_path, data: this.p.image });
+            const img_path = fs.joinPath(this.p.config_folder_path(), "icon.png");
+            fs.write_image(img_path, this.p.image);
         }
 
-        return invoke("write_to_file", { path: path, content: JSON.stringify(config) }).then(() => {
+        return fs.write_to_file(path, JSON.stringify(config)).then(() => {
             return Ok(this).asResolved();
         }).catch(err => {
             return Err(err).asRejected();
@@ -64,35 +63,35 @@ export class ProjectFileHandler {
     }
 
     static async readFromFolder(path_: string): Promise<ProjectModel> {
-        const exists: boolean = await invoke("folder_exists", { path: path_ });
+        const exists: boolean = await fs.folder_exists(path_);
         if (!exists) {
             return Err("Folder does not exist: " + path_).asRejected();
         }
 
-        const config_path = joinPath(path_, ".ppa");
+        const config_path = fs.joinPath(path_, ".ppa");
         let project;
         await this.readFromConfig(config_path).then(p => {
             project = p;
         }).catch(_ => {
             project = new ProjectModel()
-            project.name = nameFromPath(path_);
+            project.name = fs.nameFromPath(path_);
         }).finally(() => {
             project.path = path_;
-            project.type = typeFromPath(path_);
+            project.type = fs.typeFromPath(path_);
         });
 
         return Ok(project).asResolved();
     }
 
     static async readFromConfig(path_: string): Promise<ProjectModel> {
-        const file_path = joinPath(path_, "config.json");
+        const file_path = fs.joinPath(path_, "config.json");
         try {
-            const exists: boolean = await invoke("file_exists", { path: file_path });
+            const exists: boolean = await fs.file_exists(file_path);
             if (!exists) {
                 return Err("Config does not exist").asRejected();
             }
 
-            const content: string = await invoke("read_file", { path: file_path });
+            const content: string = await fs.read_file(file_path);
             return Ok(Object.assign(new ProjectModel(), JSON.parse(content))).asResolved();
         }
         catch (err) {
