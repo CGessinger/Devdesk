@@ -6,6 +6,7 @@ export class ModelBuilder {
     target_path = (tree: string): string => {
         return this.buildFormattedPath(tree).value;
     }
+    
     constructor() {
         this.p = new ProjectModel();
     }

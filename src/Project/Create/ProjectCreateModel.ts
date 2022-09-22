@@ -13,12 +13,13 @@ export class Model extends ViewModel{
     public builder: ModelBuilder;
     private focus: PortfolioModel;
 
-    constructor() {
+    constructor(edit?: ProjectModel) {
         super();
         this.subscribeStores();
 
         this.builder = new ModelBuilder();
         this.builder.withType(this.focus.focused_type == -1 ? this.focus.types[0] : this.focus.get_focused_type());
+        super.ViewDataChange("path_preview", this.builder.target_path(this.focus.path));
     }
 
     subscribeStores() {
@@ -46,6 +47,9 @@ export class Model extends ViewModel{
             fb.writeToConfig();
         }).then(() => {
             new_project.update(np => np = undefined);
+            this.focus
+                .load_projects_from_type()
+                .then(() => focused_portfolio.update((p) => (p = p)));
         });
     }
 
@@ -58,6 +62,16 @@ export class Model extends ViewModel{
             ],
         });
         this.builder.withImageB64(await invoke("load_image", { path: selected.toString() }));
+    }
+    
+    change_type(type: string) {
+        this.builder.withType(type);
+        super.ViewDataChange("path_preview", this.builder.target_path(this.focus.path));
+    }
+
+    change_name(name: string) {
+        this.builder.withName(name);
+        super.ViewDataChange("path_preview", this.builder.target_path(this.focus.path));
     }
 
 }

@@ -14,7 +14,6 @@
 	import NewProjectView from "./Project/Create/ProjectCreateView.svelte";
 	import SettingsView from "./Settings/Display/SettingsDisplayView.svelte";
     import type { ProjectModel } from "./Project/utils/ProjectModel";
-    import type { ViewModel } from "./utils/ViewModel";
 
 	let settings: SettingsModel;
 	cached_settings.subscribe((value) => (settings = value));

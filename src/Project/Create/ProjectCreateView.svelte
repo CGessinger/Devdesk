@@ -8,13 +8,11 @@
 	}
     
     async function on_type_change(e) {
-        model.builder.withType(e.target.value);
-        model = model;
+        model.change_type(e.target.value);
     }
 
     async function on_name_change(e) {
-        model.builder.withName(e.target.value);
-        model = model;
+        model.change_name(e.target.value);
     }
 </script>
 
@@ -23,7 +21,7 @@
         <div>
             <img id="thumbnail" src="data:image/png;base64, {model.builder.p.image}" alt="P" on:click="{_ => model.change_icon()}" />
         </div>
-        <input type="text" id="project_name" placeholder="Project Name" on:change="{on_name_change}" />
+        <input type="text" id="project_name" placeholder="Project Name" on:input="{on_name_change}" />
     </div>
     <div id="main_wrapper">
         <textarea type="text" id="project_description" placeholder="Project Description" on:change="{e => model.builder.withDescription(e.currentTarget.value)}" />
@@ -37,7 +35,7 @@
             {/each}
         </select>
         <p>
-            <span>Create in: <i>{model.builder.target_path(ViewData["path_preview"])}</i></span>
+            <span>Create in: <i>{ViewData["path_preview"]}</i></span>
         </p>
         <button id="create_project" on:click="{_ => model.create_project()}">Create Project</button>
     </div>
