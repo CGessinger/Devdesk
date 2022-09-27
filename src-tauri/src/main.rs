@@ -4,6 +4,7 @@
 )]
 
 mod files_api;
+mod cmd_api;
 
 fn main() {
   tauri::Builder::default()
@@ -15,8 +16,11 @@ fn main() {
       files_api::folder_exists,
       files_api::file_exists,
       files_api::create_folder,
-      files_api::write_to_file
+      files_api::write_to_file,
+      cmd_api::terminal_at,
+      cmd_api::vscode_at,
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
+
 }

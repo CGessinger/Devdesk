@@ -19,6 +19,14 @@
             <span id="edit_button" on:click="{_ => model.init_model(project)}">Init</span>
         {/if}
     </h1>
+    <div id="scripts_nav">
+        <span class="script_item" on:click="{_ => model.terminal_here()}">
+            Terminal Here
+        </span>
+        <span class="script_item" on:click="{_ => model.vscode_here()}">
+            VS Code Here
+        </span>
+    </div>
     <div id="project_description">
         {project.description}
     </div>
@@ -34,6 +42,7 @@
         font-size: 2rem;
         font-weight: 600;
         margin: 0;
+        padding: 0.5rem;
         text-align: center;
         color: var(--font-color-dark);
         background-color: var(--primary-color);
@@ -43,6 +52,23 @@
         float: right;
         font-size: small;
         margin: 0.6rem;
+    }
+
+    #scripts_nav {
+        margin: 0;
+        padding: 0;
+        margin-top: 0.8rem;
+    }
+
+    .script_item {
+        display: inline-block;
+        text-align: center;
+        padding: 8px 10px;
+        cursor: pointer;
+        background-color: var(--primary-color);
+        color: var(--font-color-dark);
+        border-radius: 5px;
+        cursor: pointer;
     }
 
     #project_description {

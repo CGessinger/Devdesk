@@ -1,5 +1,6 @@
 import { new_project } from "$src/store";
 import { ViewModel } from "$src/utils/ViewModel";
+import { terminal } from "$utils/scripts";
 import type { ProjectModel } from "../utils/ProjectModel";
 
 export class Model extends ViewModel {
@@ -23,5 +24,13 @@ export class Model extends ViewModel {
 
     init_model(model: ProjectModel) {
         new_project.update(np => np = model);
+    }
+
+    terminal_here() {
+        terminal.terminal_here(this.display.path);
+    }
+
+    vscode_here() {
+        terminal.vscode_here(this.display.path);
     }
 }
