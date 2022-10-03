@@ -14,6 +14,7 @@ export class Model extends ViewModel {
         focused_portfolio.subscribe((value) => {
             this.focus = value;
             this.ViewDataChange("projects", this.focus.projects);
+            this.ViewDataChange("focused_type", this.focus.get_focused_type());
         });
     }
 }

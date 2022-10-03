@@ -10,7 +10,9 @@
 	}
 
 	async function add_project() {
-		new_project.update((project) => (project = new ProjectModel()));
+		var p = new ProjectModel();
+		p.type = model.GetViewData()["focused_type"];
+		new_project.update((project) => (project = p));
 	}
 
 	function project_click(pr_: ProjectModel) {
