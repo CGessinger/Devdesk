@@ -55,6 +55,16 @@ export class ModelBuilder {
         return this;
     }
 
+    withGitUrl(git: string) {
+        this.p.git.url = git;
+        return this;
+    }
+
+    withGitBranch(branch: string) {
+        this.p.git.branch = branch;
+        return this;
+    }
+
     formattedType() {
         return this.formattedString(this.p.type);
     }

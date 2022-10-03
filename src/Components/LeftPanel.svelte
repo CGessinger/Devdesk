@@ -8,6 +8,12 @@
 	} from "$src/store";
 	import type { SettingsModel } from "$src/Settings/utils/SettingsModel";
 	import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
+	import { getVersion } from '@tauri-apps/api/app';
+
+	let appVersion = "";
+	getVersion().then((v) => {
+		appVersion = v;
+	});
 
 	let s: SettingsModel;
 	cached_settings.subscribe((value) => (s = value));
@@ -52,10 +58,11 @@
 	<button id="add_portfolio" class="fa" on:click={(_) => add_portfolio()}
 		>&#xf067;</button
 	>
-	<span id="credentials"
-		>Made By <a href="https://www.github.com/CGessinger">CGessinger</a
-		></span
-	>
+	<span id="credentials">
+		Made By 
+		<a href="https://www.github.com/CGessinger">CGessinger</a>
+		<span>({appVersion})</span>
+	</span>
 </div>
 
 <style>

@@ -17,6 +17,14 @@
         model.change_name(e.target.value);
     }
 
+    async function on_git_url_change(e) {
+        model.change_git(e.target.value, null);
+    }
+
+    async function on_git_branch_change(e) {
+        model.change_git(null, e.target.value);
+    }
+
     async function on_description_change(e) {
         model.change_description(e.currentTarget.value);
     }
@@ -30,6 +38,10 @@
         <input type="text" id="project_name" placeholder="Project Name" on:input="{on_name_change}" value="{ViewData["name"]}"/>
     </div>
     <div id="main_wrapper">
+        <div id="git">
+            <input type="text" id="git_url" placeholder="Git URL" on:change="{on_git_url_change}"/>
+            <input type="text" id="git_branch" placeholder="Git Branch" on:change="{on_git_branch_change}"/>
+        </div>
         <textarea type="text" id="project_description" placeholder="Project Description" on:change="{on_description_change}" value="{ViewData["description"]}" />
         <select id="project_type" on:change="{on_type_change}">
             {#each ViewData["types"] as type}
@@ -95,6 +107,24 @@
 
     #project_type {
         color: var(--font-color-light);
+    }
+
+    #git {
+        display: flex;
+        flex-direction: row;
+        justify-content: stretch;
+        align-items: left;
+    }
+
+    #git_url {
+        width: 100%;
+        height: 40px;
+        margin-right: 5px;
+    }
+
+    #git_branch {
+        width: 30%;
+        height: 40px;
     }
 
 </style>

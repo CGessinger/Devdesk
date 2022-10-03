@@ -52,6 +52,7 @@ export class Model extends ViewModel{
         const fb = new ProjectFileHandler(built.unwrap() as ProjectModel);
         fb.createConfigFolder().then(() => {
             fb.writeToConfig();
+            fb.cloneGit();
         }).then(() => {
             new_project.update(np => np = undefined);
             this.focus
@@ -83,6 +84,17 @@ export class Model extends ViewModel{
     change_name(name: string) {
         this.builder.withName(name);
         super.ViewDataChange("path_preview", this.builder.target_path(this.focus.path));
+    }
+
+    change_git(url?: string, branch?: string) {
+        if (url)
+            this.builder.withGitUrl(url);
+
+        if (branch)
+            this.builder.withGitBranch(branch);
+            
+        // ToDo check if github url is valid
+        // super.ViewDataChange("git_valid", this.builder.target_path(this.focus.path));
     }
 
     change_description(description: string) {

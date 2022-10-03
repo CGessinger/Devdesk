@@ -36,6 +36,7 @@
 	});
 </script>
 
+<div id="beta_alert">This is a beta and is not fully tested yet. Use at your own risk!</div>
 <div id="main">
 	<div id="panel_left">
 		<LeftPanel/>
@@ -55,6 +56,17 @@
 </div>
 
 <style>
+	#beta_alert {
+		width: 100%;
+		background-color: rgba(255, 0, 0, 0.6);
+		z-index: 100;
+		text-align: center;
+		color: white;
+		position: fixed;
+		height: 0.8rem;
+		font-size: 0.5rem;
+	}
+
 	#main {
 		margin: 0;
 		padding: 0;

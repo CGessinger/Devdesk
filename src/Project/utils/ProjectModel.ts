@@ -7,6 +7,10 @@ export class ProjectModel {
     description: string;
     path: string;
     image: string;
+    git: {
+        url: string;
+        branch: string;
+    };
     tags: string[];
     technologies: string[];
     date: string;
@@ -29,6 +33,10 @@ export class ProjectModel {
         this.technologies = [];
         this.date = "";
         this.type= "";
+        this.git = {
+            url: "",
+            branch: ""
+        };
     }
 
     async load_image(): Promise<void> {
@@ -45,6 +53,7 @@ export class ProjectModel {
         }
     }
 
+    // ToDo Purge Invoke. Use fs instead
     async config_exists(): Promise<boolean> {
         return await invoke("file_exists", {path: this.config_path()});
     }

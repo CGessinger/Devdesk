@@ -68,3 +68,28 @@ pub fn vscode_at(path: String) -> Result<(), String> {
     }
     Ok(())
 }
+
+#[tauri::command]
+pub fn git_clone(url: String, branch: String, path: String) -> Result<(), String> {
+    Command::new("git")
+        .current_dir(&path)
+        .arg("init")
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    Command::new("git")
+        .current_dir(&path)
+        .arg("remote")
+        .arg("add")
+        .arg("origin")
+        .arg(url)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    Command::new("git")
+        .current_dir(&path)
+        .arg("pull")
+        .arg("origin")
+        .arg(branch)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}

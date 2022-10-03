@@ -1,5 +1,6 @@
 import { ProjectModel } from "./ProjectModel";
 import { fs } from "$utils/Path";
+import { terminal } from "$utils/Scripts";
 import { Ok, Err } from "$utils/Result";
 
 export class ProjectFileHandler {
@@ -60,6 +61,18 @@ export class ProjectFileHandler {
         }).catch(err => {
             return Err(err).asRejected();
         });
+    }
+
+    async cloneGit(): Promise<void> {
+        if (!fs.folder_exists(this.p.path)) {
+            return Err("Target Project does not exist. Cannot clone git repository").asRejected();
+        } else if (this.p.git.url == "") {
+            return Err("No git repository provided").asRejected();
+        } else if (this.p.git.branch == "") {
+            return Err("No git branch provided").asRejected();
+        }
+
+        terminal.clone_git_repo(this.p.git, this.p.path);
     }
 
     static async readFromFolder(path_: string): Promise<ProjectModel> {

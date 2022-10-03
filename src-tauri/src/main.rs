@@ -19,6 +19,7 @@ fn main() {
       files_api::write_to_file,
       cmd_api::terminal_at,
       cmd_api::vscode_at,
+      cmd_api::git_clone,
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
