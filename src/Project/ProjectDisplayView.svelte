@@ -1,29 +1,43 @@
 <script lang="ts">
-    import type { ProjectModel } from "../utils/ProjectModel";
-    import { Model } from "./ProjectDisplayModel";
+    import type { ProjectModel } from "./utils/ProjectModel";
+    import { new_project } from "$src/store";
+    import { terminal } from "$utils/Scripts";
 
     export let project: ProjectModel;
-    let model = new Model(project);
-	let ViewData = model.GetViewData();
-	model.onViewDataChange = (_) => {
-		ViewData = model.GetViewData();
-	}
+    let configExists = false;
+    project.config_exists().then(exists => configExists = exists);
+
+    function editModel() {
+        new_project.update(np => np = project);
+    }
+
+    function initModel() {
+        new_project.update(np => np = project);
+    }
+
+    function terminalHere() {
+        terminal.terminal_here(project.path);
+    }
+
+    function vscodeHere() {
+        terminal.vscode_here(project.path);
+    }
 </script>
 
 <div id="project_view">
     <h1 id="project_name">
         {project.name}
-        {#if ViewData["config_exists"]}
-            <span id="edit_button" on:click="{_ => model.edit_model(project)}">Edit</span>
+        {#if configExists}
+            <span id="edit_button" on:click="{_ => editModel()}">Edit</span>
         {:else}
-            <span id="edit_button" on:click="{_ => model.init_model(project)}">Init</span>
+            <span id="edit_button" on:click="{_ => initModel()}">Init</span>
         {/if}
     </h1>
     <div id="scripts_nav">
-        <span class="script_item" on:click="{_ => model.terminal_here()}">
+        <span class="script_item" on:click="{_ => terminalHere()}">
             Terminal Here
         </span>
-        <span class="script_item" on:click="{_ => model.vscode_here()}">
+        <span class="script_item" on:click="{_ => vscodeHere()}">
             VS Code Here
         </span>
     </div>

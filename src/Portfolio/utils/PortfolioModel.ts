@@ -41,7 +41,7 @@ export class PortfolioModel {
         this.projects = await this.load_projects_from(this.path);
     }
 
-    async load_projects_from_type(): Promise<void> {
+    async load_projects_from_type(): Promise<ProjectModel[]> {
         const t = this.get_focused_type();
         const p = t == "all" ? this.path : fs.joinPath(this.path, t);
         this.projects = await this.load_projects_from(p).then(projects => {
@@ -49,6 +49,7 @@ export class PortfolioModel {
         }).catch(_ => {
             return [];
         });
+        return this.projects;
     }
 
     get_focused_type(): string {

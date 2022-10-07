@@ -18,9 +18,7 @@
         focus_settings.update((fs) => (fs = false));
         new_project.update((np) => (np = undefined));
         focus.focused_type = i;
-        focus
-            .load_projects_from_type()
-            .then(() => focused_portfolio.update((p) => (p = p)));
+        focused_portfolio.update((p) => (p = p));
     }
 
     function add_type() {

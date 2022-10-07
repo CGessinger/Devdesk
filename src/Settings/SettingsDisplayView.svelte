@@ -1,10 +1,15 @@
 <script lang="ts">
-    import { Model } from "./SettingsDisplayModel";
-    let model = new Model();
-	let ViewData = model.GetViewData();
-	model.onViewDataChange = (_) => {
-		ViewData = model.GetViewData();
-	}
+    import { cached_settings } from "$src/store";
+    import type { SettingsModel } from "./utils/SettingsModel";
+
+    let settings: SettingsModel;
+    cached_settings.subscribe((s) => settings = s);
+
+    function toggle_dark_mode(): void {
+        settings.dark_mode = !settings.dark_mode;
+        cached_settings.update((_settings) => (_settings = settings));
+        settings.safe_settings();
+    }
 </script>
 
 <div id="settings_view">
@@ -15,8 +20,8 @@
             <input
                 type="checkbox"
                 id="checkbox"
-                checked={ViewData["dark_mode"]}
-                on:change={(_) => model.toggle_dark_mode()}
+                checked={settings.dark_mode}
+                on:change={(_) => toggle_dark_mode()}
             />
             <div class="slider round" />
         </label>

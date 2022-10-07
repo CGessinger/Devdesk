@@ -9,10 +9,10 @@
 	import { SettingsModel } from "$src/Settings/utils/SettingsModel";
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
-	import PortfolioView from "./Portfolio/Display/PortfolioDisplayView.svelte";
-	import ProjectView from "./Project/Display/ProjectDisplayView.svelte";
-	import NewProjectView from "./Project/Create/ProjectCreateView.svelte";
-	import SettingsView from "./Settings/Display/SettingsDisplayView.svelte";
+	import PortfolioView from "./Portfolio/PortfolioDisplayView.svelte";
+	import ProjectView from "./Project/ProjectDisplayView.svelte";
+	import NewProjectView from "./Project/ProjectCreateView.svelte";
+	import SettingsView from "./Settings/SettingsDisplayView.svelte";
     import type { ProjectModel } from "./Project/utils/ProjectModel";
 
 	let settings: SettingsModel;

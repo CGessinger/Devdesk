@@ -1,7 +1,7 @@
 import { ProjectModel } from "$src/Project/utils/ProjectModel";
 import { Ok, Err, type Result } from "$utils/Result";
 
-export class ModelBuilder {
+export class ProjectModelBuilder {
     p: ProjectModel;
     target_path = (tree: string): string => {
         return this.buildFormattedPath(tree).value;
@@ -94,13 +94,24 @@ export class ModelBuilder {
         return Ok(this.withPath(path.unwrap()));
     }
 
-    build(): Result<ProjectModel, string> {
+    isValid(): Result<{}, string> {
         if (this.p.name == "") {
             return Err("No name provided");
         } else if (this.p.path == "") {
             return Err("No path provided");
         }
+        return Ok({});
+    }
+
+    build(): Result<ProjectModel, string> {
+        const valid = this.isValid();
+        if (valid.is_err())
+            return Err(valid.value as string);
 
         return Ok(this.p);
+    }
+
+    forceBuild(): ProjectModel {
+        return this.p;
     }
 }
