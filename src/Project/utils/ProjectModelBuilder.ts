@@ -1,14 +1,25 @@
+import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 import { ProjectModel } from "$src/Project/utils/ProjectModel";
 import { Ok, Err, type Result } from "$utils/Result";
 
 export class ProjectModelBuilder {
     p: ProjectModel;
-    target_path = (tree: string): string => {
-        return this.buildFormattedPath(tree).value;
+    targetPortfolio: PortfolioModel;
+
+    targetPath = (): Result<string, string> => {
+        if (this.targetPortfolio) 
+            return this.buildFormattedPath(this.targetPortfolio.path);
+        
+        return Err("No target portfolio found")
     }
     
     constructor(_p?: ProjectModel) {
         this.p = _p ?? new ProjectModel();
+    }
+
+    withPortfolio(portfolio: PortfolioModel): ProjectModelBuilder {
+        this.targetPortfolio = portfolio;
+        return this;
     }
 
     withName(name: string) {
@@ -86,8 +97,8 @@ export class ProjectModelBuilder {
         return Ok(`${tree}/${form_type}/${form_name}`);
     }
 
-    tryBuildPath(tree: string): Result<typeof this, string> {
-        const path = this.buildFormattedPath(tree);
+    tryBuildPath(): Result<typeof this, string> {
+        const path = this.targetPath();
         if (path.is_err()) {
             return Err(path.value);
         }

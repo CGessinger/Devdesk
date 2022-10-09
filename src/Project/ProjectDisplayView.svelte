@@ -1,32 +1,35 @@
 <script lang="ts">
     import type { ProjectModel } from "./utils/ProjectModel";
-    import { new_project } from "$src/store";
     import { terminal } from "$utils/Scripts";
 
-    export let project: ProjectModel;
+    export let data: ProjectModel;
     let configExists = false;
-    project.config_exists().then(exists => configExists = exists);
+    data.config_exists().then(exists => configExists = exists);
 
     function editModel() {
-        new_project.update(np => np = project);
+        // ToDo implement
+        throw new Error("Not implemented"); 
+        // StateController.switchToProjectCreation(new ProjectModelBuilder(data))
     }
 
     function initModel() {
-        new_project.update(np => np = project);
+        // ToDo implement
+        throw new Error("Not implemented");
+        // StateController.switchToProjectCreation(new ProjectModelBuilder(data))
     }
 
     function terminalHere() {
-        terminal.terminal_here(project.path);
+        terminal.terminal_here(data.path);
     }
 
     function vscodeHere() {
-        terminal.vscode_here(project.path);
+        terminal.vscode_here(data.path);
     }
 </script>
 
 <div id="project_view">
     <h1 id="project_name">
-        {project.name}
+        {data.name}
         {#if configExists}
             <span id="edit_button" on:click="{_ => editModel()}">Edit</span>
         {:else}
@@ -42,7 +45,7 @@
         </span>
     </div>
     <div id="project_description">
-        {project.description}
+        {data.description}
     </div>
 </div>
 

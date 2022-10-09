@@ -5,9 +5,11 @@
 
 mod files_api;
 mod cmd_api;
+mod db_api;
 
 fn main() {
   tauri::Builder::default()
+    .manage(db_api::Database::new())
     .invoke_handler(tauri::generate_handler![
       files_api::read_dir,
       files_api::read_file,
@@ -20,6 +22,10 @@ fn main() {
       cmd_api::terminal_at,
       cmd_api::vscode_at,
       cmd_api::git_clone,
+      db_api::insert_project,
+      db_api::insert_projects,
+      db_api::get_projects,
+      db_api::clear_db,
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

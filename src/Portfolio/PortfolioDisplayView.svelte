@@ -1,39 +1,33 @@
 <script lang="ts">
     import ProjectTileView from "$src/Project/ProjectTileView.svelte";
 	import { ProjectModel } from "$src/Project/utils/ProjectModel";
-	import { focused_project, new_project, focused_portfolio } from "$src/store";
+    import { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
+	import { StateController } from "$src/store";
     import type { PortfolioModel } from "./utils/PortfolioModel";
 
-	let projects = [];
-	let portfolio: PortfolioModel;
-	focused_portfolio.subscribe((fp) => {
-		portfolio = fp;
-		(async () => {
-			projects = await portfolio.load_projects_from_type();
-		})();
-	})
+	export let data: PortfolioModel;
 
-	async function add_project() {
+	async function addProject() {
 		// ToDo use ProjectBuilder instead
-		var p = new ProjectModel();
-		p.type = portfolio.get_focused_type();
-		new_project.update((project) => (project = p));
+		const p = new ProjectModel();
+		p.type = data.getFocusedTypeString();
+		StateController.switchToProjectCreation(new ProjectModelBuilder(p).withPortfolio(data));
 	}
 
-	function project_click(pr_: ProjectModel) {
-		focused_project.update((pr) => (pr = pr_));
+	function clickProject(project: ProjectModel) {
+		StateController.switchToProject(project);
 	}
 </script>
 
 <div class="portfolio-scroll">
 	<ul class="overflow-scroll h-100 list-group">
-		{#each projects as project}
-		<li on:click={(_) => project_click(project)}>
+		{#each data.projects as project}
+		<li on:click={(_) => clickProject(project)}>
 			<ProjectTileView {project}/>
 		</li>
 		{/each}
 	</ul>
-	<button class="add-project btn btn-dark sticky-bottom border border-white" on:click={(_) => add_project()}>
+	<button class="add-project btn btn-dark sticky-bottom border border-white" on:click={(_) => addProject()}>
 		<i class="bi bi-plus"/>
 	</button>
 </div>

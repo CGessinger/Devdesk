@@ -1,14 +1,14 @@
 <script lang="ts">
-    import { ProjectModelBuilder } from "./utils/ProjectModelBuilder";
-    import { focused_portfolio, new_project } from '$src/store';
+    import type { ProjectModelBuilder } from "./utils/ProjectModelBuilder";
     import type { ProjectModel } from "./utils/ProjectModel";
     import { ProjectFileHandler } from "./utils/ProjectFileHandler";
+    import { StateController } from "$src/store";
 
-    export let edit: ProjectModel;
-    const builder = new ProjectModelBuilder(edit);
-    let targetPathPreview = builder.target_path($focused_portfolio.path);
+    export let data: ProjectModelBuilder;
+
+    let targetPathPreview: string = data.targetPath().value;
     let configExists = false;
-    edit.config_exists().then(exists => configExists = exists);
+    data.p.config_exists().then(exists => configExists = exists);
 
     function inputEvent(e, handler) {
         const val = e.target.value;
@@ -16,34 +16,34 @@
     }
     
     function changeType(type: string) {
-        builder.withType(type);
-        targetPathPreview = builder.target_path($focused_portfolio.path);
+        data.withType(type);
+        targetPathPreview = data.targetPath().value;
     }
 
     function changeName (name: string) {
-        builder.withName(name);
-        builder.target_path($focused_portfolio.path);
+        data.withName(name);
+        targetPathPreview = data.targetPath().value;
     }
 
     function changeGitUrl(url: string) {
-        builder.withGitUrl(url);
+        data.withGitUrl(url);
     }
 
     function changeGitBranch(branch: string) {
-        builder.withGitBranch(branch);
+        data.withGitBranch(branch);
     }
 
     function changeDescription(description: string) {
-        builder.withDescription(description);
+        data.withDescription(description);
     }
 
     async function createProject() {
-        const res = builder.tryBuildPath($focused_portfolio.path);
+        const res = data.tryBuildPath();
         if (res.is_err()) {
             console.log("error: ", res);
             return;
         }
-        const built = builder.build();
+        const built = data.build();
         if (built.is_err()) {
             console.log("error: ", built);
             return;
@@ -54,8 +54,7 @@
         await fb.writeToConfig();
         fb.cloneGit();
         
-        new_project.update(np => np = undefined);
-        focused_portfolio.update((p) => (p = p));
+        StateController.switchToPortfolio(data.targetPortfolio);
     }
 
     function editProject() {
@@ -65,17 +64,17 @@
 
 <div id="newproject_view">
     <div id="top_wrapper">
-        <input type="text" id="project_name" placeholder="Project Name" on:input="{(e) => inputEvent(e, changeName)}" value="{edit.name}"/>
+        <input type="text" id="project_name" placeholder="Project Name" on:input="{(e) => inputEvent(e, changeName)}" value="{data.p.name}"/>
     </div>
     <div id="main_wrapper">
         <div id="git">
             <input type="text" id="git_url" placeholder="Git URL" on:change="{(e) => inputEvent(e, changeGitUrl)}"/>
             <input type="text" id="git_branch" placeholder="Git Branch" on:change="{(e) => inputEvent(e, changeGitBranch)}"/>
         </div>
-        <textarea type="text" id="project_description" placeholder="Project Description" on:change="{(e) => inputEvent(e, changeDescription)}" value="{edit.description}" />
+        <textarea type="text" id="project_description" placeholder="Project Description" on:change="{(e) => inputEvent(e, changeDescription)}" value="{data.p.description}" />
         <select id="project_type" on:change="{(e) => inputEvent(e, changeType)}">
-            {#each $focused_portfolio.types as type}
-                {#if type == edit.type}
+            {#each data.targetPortfolio.types as type}
+                {#if type == data.p.type}
                     <option value="{type}" selected>{type}</option>
                 {:else}
                     <option value="{type}">{type}</option>

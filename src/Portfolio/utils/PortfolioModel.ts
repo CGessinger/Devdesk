@@ -1,7 +1,7 @@
 import { ProjectFileHandler } from '$src/Project/utils/ProjectFileHandler';
 import type { ProjectModel } from '$src/Project/utils/ProjectModel';
+import { projectdb } from '$src/utils/Database';
 import { fs } from '$src/utils/Path';
-import { invoke } from '@tauri-apps/api/tauri';;
 
 export class PortfolioModel {
     uid: string;
@@ -17,17 +17,11 @@ export class PortfolioModel {
         this.projects = [];
     }
 
-    async load_projects_image(): Promise<void> {
-        for (let p of this.projects) {
-            await p.load_image();
-        }
-    }
-
-    private async load_projects_from(path_: string): Promise<ProjectModel[]> {
-        let folders: string[] = await invoke("read_dir", {path: path_});
-        let projects: ProjectModel[] = [];
-        for (let f of folders) {
-            await ProjectFileHandler.readFromFolder(fs.joinPath(path_, f)).then(p =>{
+    private async loadProjectsInPath(path: string): Promise<ProjectModel[]> {
+        const folders: string[] = await fs.read_dir(path);
+        const projects: ProjectModel[] = [];
+        for (const f of folders) {
+            await ProjectFileHandler.readFromFolder(fs.joinPath(path, f)).then(p =>{
                 projects.push(p);
             }).catch(err => {
                 console.log(err);
@@ -37,22 +31,26 @@ export class PortfolioModel {
         return projects;
     }
 
-    async load_projects(): Promise<void> {
-        this.projects = await this.load_projects_from(this.path);
-    }
-
-    async load_projects_from_type(): Promise<ProjectModel[]> {
-        const t = this.get_focused_type();
+    async loadProjects(): Promise<ProjectModel[]> {
+        const t = this.getFocusedTypeString();
         const p = t == "all" ? this.path : fs.joinPath(this.path, t);
-        this.projects = await this.load_projects_from(p).then(projects => {
+        this.projects = await this.loadProjectsInPath(p).then(projects => {
             return projects
         }).catch(_ => {
             return [];
         });
+
+        // Clear db
+        projectdb.clear_db();
+        // Write Projects to db
+        projectdb.insert_projects(this.projects);
+
+        console.log("Loaded projects: ", await projectdb.get_projects());
+
         return this.projects;
     }
 
-    get_focused_type(): string {
+    getFocusedTypeString(): string {
         return this.focused_type == -1 ? "all" : this.types[this.focused_type];
     }
 

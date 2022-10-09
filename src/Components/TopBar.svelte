@@ -1,62 +1,69 @@
 <script lang="ts">
     import {Modal} from "bootstrap"
-    import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
-    import {
-        focused_portfolio,
-        focused_project,
-        focus_settings,
-        new_project,
-        cached_settings
-    } from "$src/store";
+    import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
+    import { StateController, cached_settings } from "$src/store";
 
-    let focus: PortfolioModel;
-    focused_portfolio.subscribe((value) => {
-        focus = value;
-    });
+    $: value = $StateController.value;
+    $: prevValue = $StateController._prevValue;
+
+    $: portfolio = ((): PortfolioModel => {
+        if (value instanceof PortfolioModel) 
+            return value;
+        else if (prevValue instanceof PortfolioModel)
+            return prevValue;
+
+        return null;
+    })()
 
     function focusType(i: number) {
-        focused_project.update((pr) => (pr = undefined));
-        focus_settings.update((fs) => (fs = false));
-        new_project.update((np) => (np = undefined));
-        focus.focused_type = i;
-        focused_portfolio.update((p) => (p = p));
+        if (!portfolio)
+            return;
+
+        portfolio.focused_type = i;
+        StateController.switchToPortfolio(portfolio);
     }
 
     function addType(e) {
+        if (!portfolio)
+            return;
+
         const inputObject = e.target.firstChild;
         console.log(inputObject);
         if (!inputObject || inputObject.value == "") 
             return;
         
         const input = inputObject.value;
-        if(!focus.types.includes(input)) {
-            const i = focus.types.push(input);
-            focus.focused_type = i-1;
+        if(!portfolio.types.includes(input)) {
+            const i = portfolio.types.push(input);
+            portfolio.focused_type = i - 1;
             $cached_settings.safeSettings();
-            focused_portfolio.update((p) => (p = p));
+            StateController.switchToPortfolio(portfolio);
             inputObject.value = "";
         }
     }
 
     function removeType(e) {
-        const targettedTypeIndex = focus.focused_type;
-        focus.focused_type = targettedTypeIndex - 1;
-        focus.types.splice(targettedTypeIndex, 1);
+        if (!portfolio)
+            return;
+
+        const targettedTypeIndex = portfolio.focused_type;
+        portfolio.focused_type = targettedTypeIndex - 1;
+        portfolio.types.splice(targettedTypeIndex, 1);
         $cached_settings.safeSettings();
-        focused_portfolio.update((p) => (p = p));
+        StateController.switchToPortfolio(portfolio);
     }
 </script>
 
 <div class="top-bar-all mt-3 w-100">
-    {#if focus}
+    {#if portfolio}
         <form class="mb-3 d-flex">
             <input class="form-control text-bg-dark me-2" type="text" placeholder="Search..." />
-            <button class="btn btn-dark dropdown-toggle w-25 me-2" data-bs-toggle="dropdown" aria-expanded="false">{focus.get_focused_type()}</button>
+            <button class="btn btn-dark dropdown-toggle w-25 me-2" data-bs-toggle="dropdown" aria-expanded="false">{portfolio.getFocusedTypeString()}</button>
             <button class="btn btn-dark" type="button" on:click="{removeType}">
                 <i class="bi bi-trash"/>
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
-                {#each focus.types as type, i}
+                {#each portfolio.types as type, i}
                     <li class="dropdown-item text-white" on:click={(_) => focusType(i)}>
                         {type}
                     </li>
