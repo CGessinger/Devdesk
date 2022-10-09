@@ -23,18 +23,18 @@
     }
 
     function addType(e) {
-        const inputObject = e.target.firstChild.firstChild;
+        const inputObject = e.target.firstChild;
+        console.log(inputObject);
         if (!inputObject || inputObject.value == "") 
             return;
         
         const input = inputObject.value;
         if(!focus.types.includes(input)) {
-            focus.types.push(input);
+            const i = focus.types.push(input);
+            focus.focused_type = i-1;
             $cached_settings.safeSettings();
             focused_portfolio.update((p) => (p = p));
             inputObject.value = "";
-            const modalCloseButton = document.getElementById('new-type-modal-close');
-            modalCloseButton.click();
         }
     }
 
@@ -47,63 +47,40 @@
     }
 </script>
 
-<div class="top-bar-all mt-3">
+<div class="top-bar-all mt-3 w-100">
     {#if focus}
-        <form class="mb-3">
-            <input class="form-control text-bg-dark" type="text" placeholder="Search..." />
-        </form>
-        <div class="d-flex justify-content-center mb-3">
-            <ul class="nav justify-content-center pt-pb-1 ms-auto overflow-auto">
-                <li class="nav-link text-white" on:click={(_) => focusType(-1)}>All</li>
+        <form class="mb-3 d-flex">
+            <input class="form-control text-bg-dark me-2" type="text" placeholder="Search..." />
+            <button class="btn btn-dark dropdown-toggle w-25 me-2" data-bs-toggle="dropdown" aria-expanded="false">{focus.get_focused_type()}</button>
+            <button class="btn btn-dark" type="button" on:click="{removeType}">
+                <i class="bi bi-trash"/>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
                 {#each focus.types as type, i}
-                    <li class="nav-link text-white" on:click={(_) => focusType(i)}>
+                    <li class="dropdown-item text-white" on:click={(_) => focusType(i)}>
                         {type}
                     </li>
                 {/each}
+                <li><hr class="dropdown-divider"></li>
+                <li class="dropdown-item">
+                    <form class="d-flex" on:submit|preventDefault="{addType}">
+                        <input type="text" class="form-control text-bg-dark me-1" placeholder="New Type"/>
+                        <button class="btn btn-dark" type="submit">
+                            <i class="bi bi-plus text-white"/>
+                        </button>
+                    </form>
+                </li>
             </ul>
-            <div class="text-white ms-auto me-1">
-                <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#new-type-modal">
-                    <i class="bi bi-plus text-white"/>
-                </button>
-            </div>
-            <div class="text-white">
-                <button class="btn btn-dark" type="button" on:click="{removeType}">
-                    <i class="bi bi-trash"/>
-                </button>
-            </div>
-        </div>
+        </form>
     {/if}
 </div>
-<div class="modal" id="new-type-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content text-bg-dark">
-        <div class="modal-header">
-          <h5 class="modal-title">New Type</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form on:submit|preventDefault="{addType}">
-            <div class="modal-body">
-                <input class="form-control" type="text" id="type-input" placeholder="New Type" aria-label="Type">
-            </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Save changes</button>
-            <button type="button" id="new-type-modal-close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
 <style>
     .top-bar-all {
-        height: 7rem;
-    }
-
-    .nav {
         height: 3rem;
     }
 
-    .nav-link {
+    .dropdown-item {
         cursor: pointer;
     }
 </style>
