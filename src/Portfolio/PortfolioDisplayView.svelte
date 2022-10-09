@@ -3,6 +3,8 @@
 	import { ProjectModel } from "$src/Project/utils/ProjectModel";
     import { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
 	import { StateController } from "$src/store";
+    import { projectdb } from "$src/utils/Database";
+    import { listen } from "@tauri-apps/api/event";
     import type { PortfolioModel } from "./utils/PortfolioModel";
 
 	export let data: PortfolioModel;
@@ -11,6 +13,13 @@
 	$: (async () => {
 		projects = await data.getProjects();
 	})();
+
+	listen<string>('searchInputChange', (event) => {
+		const query = new projectdb.query({ textSearch: [event.payload] });
+		(async () => {
+			projects = await data.getProjects(query);
+		})();
+	})
 
 	async function addProject() {
 		// ToDo use ProjectBuilder instead

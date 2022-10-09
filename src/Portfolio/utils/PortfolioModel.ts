@@ -50,7 +50,6 @@ export class PortfolioModel {
             if(type == "All") {
                 for(const t of this.types) {
                     const path = fs.joinPath(this.path, t);
-                    console.log(path);
                     projects = [...projects, ...await loadOrEmpty(path)];
                 }
             } else {
@@ -59,8 +58,6 @@ export class PortfolioModel {
             }
             return projects;
         })();
-        
-        console.log("loaded: ", projects);
 
         // Clear db
         await projectdb.clear_db();
@@ -68,25 +65,16 @@ export class PortfolioModel {
         await projectdb.insert_projects(projects);
     }
 
-    async getProjects(filter?: string): Promise<ProjectModel[]> {
-        // ToDo create sqlite query builder
-        const f: string = (() => {
-            if (filter) {
-                if (this.getFocusedTypeString() != "All")
-                    return filter + ` AND type LIKE '${this.getFocusedTypeString()}'`;
+    async getProjects(filter?: projectdb.query): Promise<ProjectModel[]> {
+        const query = filter ?? new projectdb.query();
+        const focusedType = this.getFocusedTypeString();
 
-                return filter;
-            } else {
-                if (this.getFocusedTypeString() != "All")
-                    return `type LIKE '${this.getFocusedTypeString()}'`
+        if (focusedType == "All")
+            query.withTypes(this.types);
+        else
+            query.withTypes([focusedType]);
 
-                return null;
-            }
-        })();
-
-        const where = f ? "SELECT * FROM project WHERE " + f : null;
-
-        return await projectdb.get_projects(where);
+        return await projectdb.get_projects(query.build());
     }
 
     toJSON(): any {

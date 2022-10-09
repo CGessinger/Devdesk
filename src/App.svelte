@@ -3,6 +3,7 @@
 	import { SettingsModel } from "$src/Settings/utils/SettingsModel";
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
+    import { projectdb } from "./utils/Database";
 
 	let settings: SettingsModel;
 	cached_settings.subscribe((value) => (settings = value));
@@ -33,15 +34,6 @@
 	<div class="w-100 h-100 container">
 		<TopBar/>
 		<svelte:component this="{component}" {data}></svelte:component>
-		<!-- {#if $focus_settings}
-			<SettingsView/>
-		{:else if $new_project}
-			<NewProjectView edit={$new_project}/>
-		{:else if focus_project}
-			<ProjectView project={focus_project} />
-		{:else if $focused_portfolio}
-			<PortfolioView/>
-		{/if} -->
 	</div>
 </div>
 

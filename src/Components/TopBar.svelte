@@ -2,6 +2,8 @@
     import {Modal} from "bootstrap"
     import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
     import { StateController, cached_settings } from "$src/store";
+    import { emit } from "@tauri-apps/api/event";
+    import { projectdb } from "$src/utils/Database";
 
     $: value = $StateController.value;
     $: prevValue = $StateController._prevValue;
@@ -52,12 +54,20 @@
         $cached_settings.safeSettings();
         StateController.switchToPortfolio(portfolio);
     }
+
+    function searchChange(e) {
+        if (!portfolio)
+            return;
+
+        const value: String = e.target.value;
+        emit('searchInputChange', value);
+    }
 </script>
 
 <div class="top-bar-all mt-3 w-100">
     {#if portfolio}
         <form class="mb-3 d-flex">
-            <input class="form-control text-bg-dark me-2" type="text" placeholder="Search..." />
+            <input class="form-control text-bg-dark me-2" type="text" placeholder="Search..." on:input="{searchChange}" />
             <button class="btn btn-dark dropdown-toggle w-25 me-2" data-bs-toggle="dropdown" aria-expanded="false">{portfolio.getFocusedTypeString()}</button>
             <button class="btn btn-dark" type="button" on:click="{removeType}">
                 <i class="bi bi-trash"/>
