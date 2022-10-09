@@ -7,12 +7,16 @@ export class PortfolioModel {
     uid: string;
     path: string;
     focused_type: number;
-    types = ["Concept", "Sandbox", "Release"];
+    types = ["All", "Concept", "Sandbox", "Release"];
 
     constructor(path: string) {
         this.uid = path;
         this.path = path;
-        this.focused_type = -1;
+        this.focused_type = 0;
+    }
+
+    getFocusedTypeString(): string {
+        return this.focused_type >= this.types.length ? "" : this.types[this.focused_type];
     }
 
     private async loadProjectsInPath(path: string): Promise<ProjectModel[]> {
@@ -30,13 +34,33 @@ export class PortfolioModel {
     }
 
     async loadProjects() {
-        const t = this.getFocusedTypeString();
-        const p = t == "all" ? this.path : fs.joinPath(this.path, t);
-        const projects = await this.loadProjectsInPath(p).then(projects => {
-            return projects
-        }).catch(_ => {
-            return [];
-        });
+
+        const loadOrEmpty = async (path): Promise<ProjectModel[]> => {
+            return await this.loadProjectsInPath(path).then(projects => {
+                return projects
+            }).catch(e => {
+                console.log(e);
+                return [];
+            });
+        }
+
+        const projects = await (async (): Promise<ProjectModel[]> => {
+            const type = this.getFocusedTypeString();
+            let projects = [];
+            if(type == "All") {
+                for(const t of this.types) {
+                    const path = fs.joinPath(this.path, t);
+                    console.log(path);
+                    projects = [...projects, ...await loadOrEmpty(path)];
+                }
+            } else {
+                const path = fs.joinPath(this.path, type);
+                projects = [...projects, ...await loadOrEmpty(path)];
+            }
+            return projects;
+        })();
+        
+        console.log("loaded: ", projects);
 
         // Clear db
         await projectdb.clear_db();
@@ -48,12 +72,12 @@ export class PortfolioModel {
         // ToDo create sqlite query builder
         const f: string = (() => {
             if (filter) {
-                if (this.focused_type != -1)
+                if (this.getFocusedTypeString() != "All")
                     return filter + ` AND type LIKE '${this.getFocusedTypeString()}'`;
 
                 return filter;
             } else {
-                if (this.focused_type != -1)
+                if (this.getFocusedTypeString() != "All")
                     return `type LIKE '${this.getFocusedTypeString()}'`
 
                 return null;
@@ -63,10 +87,6 @@ export class PortfolioModel {
         const where = f ? "SELECT * FROM project WHERE " + f : null;
 
         return await projectdb.get_projects(where);
-    }
-
-    getFocusedTypeString(): string {
-        return this.focused_type == -1 ? "all" : this.types[this.focused_type];
     }
 
     toJSON(): any {
