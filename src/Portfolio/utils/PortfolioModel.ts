@@ -6,7 +6,6 @@ import { fs } from '$src/utils/Path';
 export class PortfolioModel {
     uid: string;
     path: string;
-    projects: ProjectModel[];
     focused_type: number;
     types = ["Concept", "Sandbox", "Release"];
 
@@ -14,7 +13,6 @@ export class PortfolioModel {
         this.uid = path;
         this.path = path;
         this.focused_type = -1;
-        this.projects = [];
     }
 
     private async loadProjectsInPath(path: string): Promise<ProjectModel[]> {
@@ -31,23 +29,40 @@ export class PortfolioModel {
         return projects;
     }
 
-    async loadProjects(): Promise<ProjectModel[]> {
+    async loadProjects() {
         const t = this.getFocusedTypeString();
         const p = t == "all" ? this.path : fs.joinPath(this.path, t);
-        this.projects = await this.loadProjectsInPath(p).then(projects => {
+        const projects = await this.loadProjectsInPath(p).then(projects => {
             return projects
         }).catch(_ => {
             return [];
         });
 
         // Clear db
-        projectdb.clear_db();
+        await projectdb.clear_db();
         // Write Projects to db
-        projectdb.insert_projects(this.projects);
+        await projectdb.insert_projects(projects);
+    }
 
-        console.log("Loaded projects: ", await projectdb.get_projects());
+    async getProjects(filter?: string): Promise<ProjectModel[]> {
+        // ToDo create sqlite query builder
+        const f: string = (() => {
+            if (filter) {
+                if (this.focused_type != -1)
+                    return filter + ` AND type LIKE '${this.getFocusedTypeString()}'`;
 
-        return this.projects;
+                return filter;
+            } else {
+                if (this.focused_type != -1)
+                    return `type LIKE '${this.getFocusedTypeString()}'`
+
+                return null;
+            }
+        })();
+
+        const where = f ? "SELECT * FROM project WHERE " + f : null;
+
+        return await projectdb.get_projects(where);
     }
 
     getFocusedTypeString(): string {
@@ -55,7 +70,7 @@ export class PortfolioModel {
     }
 
     toJSON(): any {
-        const {projects, focused_type, ...omitted} = this;
+        const {focused_type, ...omitted} = this;
         return omitted;
     }
 }

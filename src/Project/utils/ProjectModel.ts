@@ -6,14 +6,10 @@ export class ProjectModel {
     name: string;
     description: string;
     path: string;
-    image: string;
     git: {
         url: string;
         branch: string;
     };
-    tags: string[];
-    technologies: string[];
-    date: string;
     type: string;
 
     config_folder_path = (): string => {
@@ -28,10 +24,6 @@ export class ProjectModel {
         this.name = "";
         this.description = "";
         this.path = "";
-        this.image = "";
-        this.tags = [];
-        this.technologies = [];
-        this.date = "";
         this.type= "";
         this.git = {
             url: "",
@@ -45,7 +37,6 @@ export class ProjectModel {
             if(!await invoke("file_exists", {path: img_path}))
                 return Err("Image not found").asRejected();
     
-            this.image = await invoke("load_image", { path: img_path })
             return Ok(null).asResolved();
         }
         catch (err) {

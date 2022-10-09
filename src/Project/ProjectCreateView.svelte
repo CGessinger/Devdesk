@@ -49,7 +49,6 @@
             return;
         }
         const fb = new ProjectFileHandler(built.unwrap() as ProjectModel);
-        console.log(fb.p.description);
         await fb.createConfigFolder();
         await fb.writeToConfig();
         fb.cloneGit();

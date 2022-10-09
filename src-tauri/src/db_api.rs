@@ -11,8 +11,10 @@ impl Database {
         let conn = Connection::open_in_memory().unwrap();
         conn.execute("CREATE TABLE project (
                       id              INTEGER PRIMARY KEY,
-                      name            TEXT NOT NULL,
-                      description     TEXT
+                      name            TEXT,
+                      description     TEXT,
+                      path            TEXT,
+                      type            TEXT
                       )", []).unwrap();
         Self {
             conn: Mutex::new(conn)
@@ -24,14 +26,18 @@ impl Database {
 pub struct Project {
     name: String,
     description: String,
+    path: String,
+    #[serde(rename = "type")]
+    ptype: String,
 }
 
 #[tauri::command]
 pub fn insert_project(db: tauri::State<'_, Database>, project: Project) -> Result<(), String> {
     let conn = db.conn.lock().unwrap();
-    conn.execute("INSERT INTO project (name, description)
-                  VALUES (?1, ?2)",
-                 &[&project.name, &project.description]).map_err(|e| e.to_string())?;
+    conn.execute("INSERT INTO project (name, description, path, type)
+                VALUES (?1, ?2, ?3, ?4)",
+                &[&project.name, &project.description, &project.path, &project.ptype])
+                .map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -39,21 +45,24 @@ pub fn insert_project(db: tauri::State<'_, Database>, project: Project) -> Resul
 pub fn insert_projects(db: tauri::State<'_, Database>, projects: Vec<Project>) -> Result<(), String> {
     let conn = db.conn.lock().unwrap();
     for p in projects {
-        conn.execute("INSERT INTO project (name, description)
-                      VALUES (?1, ?2)",
-                     &[&p.name, &p.description]).map_err(|e| e.to_string())?;
+        conn.execute("INSERT INTO project (name, description, path, type)
+                    VALUES (?1, ?2, ?3, ?4)",
+                    &[&p.name, &p.description, &p.path, &p.ptype])
+                    .map_err(|e| e.to_string())?;
     }
     Ok(())
 }
 
 #[tauri::command]
-pub fn get_projects(db: tauri::State<'_, Database>) -> Result<Vec<Project>, String> {
+pub fn get_projects_filter(filter: String, db: tauri::State<'_, Database>) -> Result<Vec<Project>, String> {
     let conn = db.conn.lock().unwrap();
-    let mut stmt = conn.prepare("SELECT * FROM project").map_err(|e| e.to_string())?;
+    let mut stmt = conn.prepare(&filter).map_err(|e| e.to_string())?;
     let project_iter = stmt.query_map([], |row| {
         Ok(Project {
             name: row.get(1)?,
             description: row.get(2)?,
+            path: row.get(3)?,
+            ptype: row.get(4)?
         })
     }).map_err(|e| e.to_string());
 
@@ -62,6 +71,11 @@ pub fn get_projects(db: tauri::State<'_, Database>) -> Result<Vec<Project>, Stri
         projects.push(project.map_err(|e| e.to_string())?);
     }
     Ok(projects)
+}
+
+#[tauri::command]
+pub fn get_projects(db: tauri::State<'_, Database>) -> Result<Vec<Project>, String> {
+    get_projects_filter("SELECT * FROM project".to_string(), db)
 }
 
 #[tauri::command]

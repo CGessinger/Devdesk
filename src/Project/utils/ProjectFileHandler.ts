@@ -46,15 +46,8 @@ export class ProjectFileHandler {
         const path = this.p.config_path();
         const config = {
             name: this.p.name,
-            description: this.p.description,
-            tags: this.p.tags,
-            technologies: this.p.technologies,
+            description: this.p.description
         };
-
-        if (this.p.image != "") {
-            const img_path = fs.joinPath(this.p.config_folder_path(), "icon.png");
-            fs.write_image(img_path, this.p.image);
-        }
 
         return fs.write_to_file(path, JSON.stringify(config)).then(() => {
             return Ok(this).asResolved();

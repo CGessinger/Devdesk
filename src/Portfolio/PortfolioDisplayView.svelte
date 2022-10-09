@@ -7,6 +7,11 @@
 
 	export let data: PortfolioModel;
 
+	let projects: ProjectModel[] = [];
+	$: (async () => {
+		projects = await data.getProjects();
+	})();
+
 	async function addProject() {
 		// ToDo use ProjectBuilder instead
 		const p = new ProjectModel();
@@ -14,14 +19,16 @@
 		StateController.switchToProjectCreation(new ProjectModelBuilder(p).withPortfolio(data));
 	}
 
-	function clickProject(project: ProjectModel) {
+	function clickProject(p: ProjectModel) {
+		const project = new ProjectModel();
+		Object.assign(project, p);
 		StateController.switchToProject(project);
 	}
 </script>
 
 <div class="portfolio-scroll">
 	<ul class="overflow-scroll h-100 list-group">
-		{#each data.projects as project}
+		{#each projects as project}
 		<li on:click={(_) => clickProject(project)}>
 			<ProjectTileView {project}/>
 		</li>

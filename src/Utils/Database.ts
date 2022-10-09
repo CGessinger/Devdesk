@@ -10,7 +10,10 @@ export namespace projectdb {
         return invoke('insert_projects', {projects: projects});
     }
 
-    export function get_projects () {
+    export function get_projects (filter?: string): Promise<ProjectModel[]> {
+        if(filter)
+            return invoke('get_projects_filter', {filter: filter});
+
         return invoke('get_projects');
     }
 

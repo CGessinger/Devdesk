@@ -5,14 +5,6 @@
 
 <div class="project_item">
     <div class="project_name">
-        {#if project.image != ""}
-            <img
-                async
-                class="project_logo"
-                src="data:image/png;base64, {project.image}"
-                alt={project.name}
-            />
-        {/if}
         <span>{project.name}</span>
     </div>
     <div class="project_git">
@@ -42,11 +34,6 @@
 		grid-area: header;
 		font-size: 1.5rem;
 		font-weight: bold;
-	}
-
-	.project_logo {
-		width: 32px;
-		height: 32px;
 	}
 
 	.project_git {

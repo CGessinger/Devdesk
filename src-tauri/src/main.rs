@@ -24,6 +24,7 @@ fn main() {
       cmd_api::git_clone,
       db_api::insert_project,
       db_api::insert_projects,
+      db_api::get_projects_filter,
       db_api::get_projects,
       db_api::clear_db,
       ])
