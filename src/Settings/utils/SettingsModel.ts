@@ -11,7 +11,7 @@ export class SettingsModel {
         this.dark_mode = true;
     }
 
-    public async add_portfolio() {
+    public async addPortfolio() {
         const selected = await open({
             directory: true,
             multiple: false,
@@ -20,7 +20,11 @@ export class SettingsModel {
         this.portfolios = [...this.portfolios, new PortfolioModel(selected.toString())];
     }
 
-    public async safe_settings() {
+    public async removePortfolioByPath(removeTargetPath: string) {
+        this.portfolios = this.portfolios.filter(p => p.path != removeTargetPath);
+    }
+
+    public async safeSettings() {
         const folder_path = fs.joinPath(await fs.appDir(), "config");
         fs.create_folder(folder_path)
             .then(() => {

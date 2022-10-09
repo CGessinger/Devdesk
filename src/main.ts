@@ -1,3 +1,6 @@
+import '$bootstrap/css/bootstrap.min.css'
+import '$bootstrap_icons/bootstrap-icons.css'
+import * as bootstrap from "$bootstrap/js/bootstrap"
 import '$src/app.css'
 import App from './App.svelte'
 

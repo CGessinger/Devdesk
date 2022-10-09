@@ -8,7 +8,9 @@ export default defineConfig({
   resolve: {
     alias: {
       $src: resolve('./src'),
-      $utils: resolve('./src/utils')
+      $utils: resolve('./src/utils'),
+      $bootstrap: resolve('./node_modules/bootstrap/dist'),
+      $bootstrap_icons: resolve('./node_modules/bootstrap-icons/font')
     }
   }
 })

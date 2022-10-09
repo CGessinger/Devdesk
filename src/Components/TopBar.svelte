@@ -1,4 +1,5 @@
 <script lang="ts">
+    import {Modal} from "bootstrap"
     import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
     import {
         focused_portfolio,
@@ -13,7 +14,7 @@
         focus = value;
     });
 
-    function focus_type(i: number) {
+    function focusType(i: number) {
         focused_project.update((pr) => (pr = undefined));
         focus_settings.update((fs) => (fs = false));
         new_project.update((np) => (np = undefined));
@@ -21,113 +22,88 @@
         focused_portfolio.update((p) => (p = p));
     }
 
-    function add_type() {
-        const input = document.getElementById("type_input") as HTMLInputElement;
-        const name = input.value;
-        if (name.length > 0 && !focus.types.includes(name)) {
-            focus.types.push(name);
-            input.value = "";
-            $cached_settings.safe_settings();
+    function addType(e) {
+        const inputObject = e.target.firstChild.firstChild;
+        if (!inputObject || inputObject.value == "") 
+            return;
+        
+        const input = inputObject.value;
+        if(!focus.types.includes(input)) {
+            focus.types.push(input);
+            $cached_settings.safeSettings();
             focused_portfolio.update((p) => (p = p));
+            inputObject.value = "";
+            const modalCloseButton = document.getElementById('new-type-modal-close');
+            modalCloseButton.click();
         }
     }
 
-    function remove_type(i: number) {
-        focus.focused_type = i - 1;
-        focus.types.splice(i, 1);
-        $cached_settings.safe_settings();
+    function removeType(e) {
+        const targettedTypeIndex = focus.focused_type;
+        focus.focused_type = targettedTypeIndex - 1;
+        focus.types.splice(targettedTypeIndex, 1);
+        $cached_settings.safeSettings();
         focused_portfolio.update((p) => (p = p));
     }
 </script>
 
-<div class="TopBar">
-    <div id="search_nav">
-        <input id="search_input" type="text" placeholder="Search..." />
-        <button id="search_button" class="button">Search</button>
-    </div>
-
-    <div id="type_nav">
-        {#if focus}
-            <div class="type_item" on:click={(_) => focus_type(-1)}>
-                All
-                {#if "all" == focus.get_focused_type()}
-                    <hr />
-                {/if}
+<div class="top-bar-all mt-3">
+    {#if focus}
+        <form class="mb-3">
+            <input class="form-control text-bg-dark" type="text" placeholder="Search..." />
+        </form>
+        <div class="d-flex justify-content-center mb-3">
+            <ul class="nav justify-content-center pt-pb-1 ms-auto overflow-auto">
+                <li class="nav-link text-white" on:click={(_) => focusType(-1)}>All</li>
+                {#each focus.types as type, i}
+                    <li class="nav-link text-white" on:click={(_) => focusType(i)}>
+                        {type}
+                    </li>
+                {/each}
+            </ul>
+            <div class="text-white ms-auto me-1">
+                <button class="btn btn-dark" type="button" data-bs-toggle="modal" data-bs-target="#new-type-modal">
+                    <i class="bi bi-plus text-white"/>
+                </button>
             </div>
-            {#each focus.types as type, i}
-                <div class="type_item" on:click={(_) => focus_type(i)}>
-                    {type}
-                    {#if type == focus.get_focused_type()}
-                        <i
-                            class="fa fa-minus remove_type"
-                            on:click={(_) => remove_type(i)}
-                        />
-                        <hr />
-                    {/if}
-                </div>
-            {/each}
-            <input
-                id="type_input"
-                type="text"
-                placeholder="Add type..."
-                on:keypress={(e) => {
-                    if (e.key == "Enter") add_type();
-                }}
-            />
-            <button id="type_add" on:click={(_) => add_type()}>Add</button>
-        {/if}
-    </div>
+            <div class="text-white">
+                <button class="btn btn-dark" type="button" on:click="{removeType}">
+                    <i class="bi bi-trash"/>
+                </button>
+            </div>
+        </div>
+    {/if}
 </div>
+<div class="modal" id="new-type-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content text-bg-dark">
+        <div class="modal-header">
+          <h5 class="modal-title">New Type</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form on:submit|preventDefault="{addType}">
+            <div class="modal-body">
+                <input class="form-control" type="text" id="type-input" placeholder="New Type" aria-label="Type">
+            </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="button" id="new-type-modal-close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 <style>
-    .TopBar {
-        grid-row: 1;
-        display: grid;
-        grid-template-columns: 16em 1fr;
-        top: 0;
-        padding: 1rem;
-        padding-bottom: calc(1rem - 5px);
+    .top-bar-all {
+        height: 7rem;
     }
 
-    #search_nav {
-        grid-column: 1;
-        padding-top: 3px;
+    .nav {
+        height: 3rem;
     }
 
-    #search_input {
-        width: 10em;
-        float: left;
-    }
-
-    #search_button {
-        width: 4.5em;
-        margin-left: 0.5rem;
-        float: left;
-        grid-column: 1;
-    }
-
-    #type_nav {
-        border: none;
-        overflow-x: scroll;
-        white-space: nowrap;
-        grid-column: 2;
-    }
-
-    .type_item {
-        display: inline-block;
-        text-align: center;
-        padding: 8px 10px;
+    .nav-link {
         cursor: pointer;
-        color: var(--font-color-light);
-    }
-
-    .remove_type {
-        cursor: pointer;
-        color: var(--primary-color);
-        padding-left: 2px;
-    }
-
-    .remove_type:hover {
-        color: #cb5c6e;
     }
 </style>

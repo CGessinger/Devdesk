@@ -25,30 +25,22 @@
 	}
 </script>
 
-<div id="portfolio_view">
-	<ul>
+<div class="portfolio-scroll">
+	<ul class="overflow-scroll h-100 list-group">
 		{#each projects as project}
-		<span on:click={(_) => project_click(project)}>
+		<li on:click={(_) => project_click(project)}>
 			<ProjectTileView {project}/>
-		</span>
+		</li>
 		{/each}
 	</ul>
-	<button id="add_project" class="fa" on:click={(_) => add_project()}
-		>&#xf067;</button
-	>
+	<button id="add_project" class="fa" on:click={(_) => add_project()}>
+		<i class="bi bi-plus"/>
+	</button>
 </div>
 
 <style>
-	#portfolio_view {
-		grid-row: 2;
-		padding: 0 1rem;
-		overflow-y: scroll;
-	}
-
-	#portfolio_view ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
+	.portfolio-scroll {
+		height: calc(100% - 7rem - 1rem);		
 	}
 
 	#add_project {

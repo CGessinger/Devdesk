@@ -36,12 +36,10 @@
 	});
 </script>
 
-<div id="beta_alert">This is a beta and is not fully tested yet. Use at your own risk!</div>
-<div id="main">
-	<div id="panel_left">
-		<LeftPanel/>
-	</div>
-	<div id="panel_center">
+<!-- <div id="beta_alert">This is a beta and is not fully tested yet. Use at your own risk!</div> -->
+<div id="main" class="d-flex flex-nowrap h-100">
+	<LeftPanel/>
+	<div class="w-100 h-100 container">
 		<TopBar/>
 		{#if $focus_settings}
 			<SettingsView/>
@@ -65,27 +63,5 @@
 		position: fixed;
 		height: 0.8rem;
 		font-size: 0.5rem;
-	}
-
-	#main {
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		height: 100%;
-
-		display: flex;
-		align-items: stretch;
-		justify-content: start;
-	}
-
-	#panel_left {
-		display: inline-block;
-		flex: 1;
-	}
-
-	#panel_center {
-		display: grid;
-		grid-template-rows: 5rem 1fr;
-		flex: 3;
 	}
 </style>

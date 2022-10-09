@@ -8,7 +8,7 @@
     function toggle_dark_mode(): void {
         settings.dark_mode = !settings.dark_mode;
         cached_settings.update((_settings) => (_settings = settings));
-        settings.safe_settings();
+        settings.safeSettings();
     }
 </script>
 

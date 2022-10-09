@@ -7,6 +7,10 @@ export namespace fs {
         return paths.join(seperator);
     }
 
+    export function splitPath(path: string): string[] {
+        return path.split(seperator);
+    }
+
     export function typeFromPath(path: string): string {
         return path.split(seperator).at(-2);
     }
