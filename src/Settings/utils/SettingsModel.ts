@@ -5,10 +5,12 @@ import { fs } from "$src/utils/Path";
 export class SettingsModel {
     portfolios: PortfolioModel[];
     dark_mode: boolean;
+    runThree: boolean;
 
     constructor() {
         this.portfolios = [];
         this.dark_mode = true;
+        this.runThree = false;
     }
 
     public async addPortfolio() {

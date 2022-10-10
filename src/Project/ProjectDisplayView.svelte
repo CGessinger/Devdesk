@@ -8,14 +8,12 @@
 
     function editModel() {
         // ToDo implement
-        throw new Error("Not implemented"); 
-        // StateController.switchToProjectCreation(new ProjectModelBuilder(data))
+        throw new Error("Not implemented");
     }
 
     function initModel() {
         // ToDo implement
         throw new Error("Not implemented");
-        // StateController.switchToProjectCreation(new ProjectModelBuilder(data))
     }
 
     function terminalHere() {

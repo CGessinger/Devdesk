@@ -25,7 +25,11 @@
 		// ToDo use ProjectBuilder instead
 		const p = new ProjectModel();
 		p.type = data.getFocusedTypeString();
-		StateController.switchToProjectCreation(new ProjectModelBuilder(p).withPortfolio(data));
+		const builder = new ProjectModelBuilder({
+			targetPortfolioPath: data.path,
+			type: data.getFocusedTypeString()
+		})
+		StateController.switchToProjectCreation(builder);
 	}
 
 	function clickProject(p: ProjectModel) {

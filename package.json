@@ -26,6 +26,7 @@
     "@tauri-apps/api": "^1.1.0",
     "bootstrap": "^5.2.2",
     "bootstrap-icons": "^1.9.1",
-    "sqlstring-sqlite": "^0.1.1"
+    "sqlstring-sqlite": "^0.1.1",
+    "three": "^0.145.0"
   }
 }

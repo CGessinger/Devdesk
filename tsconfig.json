@@ -19,7 +19,11 @@
 			"$src/*": ["src/*"],
 			"$utils/*": ["src/utils/*"],
       "$bootstrap/*": ["node_modules/bootstrap/dist/*"]
-    }
+    },
+    "types": [
+      "requirejs",
+      "three"
+    ]
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]
