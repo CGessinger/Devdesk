@@ -67,9 +67,9 @@
 <div class="top-bar-all mt-3 w-100">
     {#if portfolio}
         <form class="mb-3 d-flex">
-            <input class="form-control text-bg-dark me-2" type="text" placeholder="Search..." on:input="{searchChange}" />
-            <button class="btn btn-dark dropdown-toggle w-25 me-2" data-bs-toggle="dropdown" aria-expanded="false">{portfolio.getFocusedTypeString()}</button>
-            <button class="btn btn-dark" type="button" on:click="{removeType}">
+            <input class="form-control text-bg-dark me-2 border-white" type="text" placeholder="Search..." on:input="{searchChange}" />
+            <button class="btn btn-dark dropdown-toggle w-25 me-2 border-white" data-bs-toggle="dropdown" aria-expanded="false">{portfolio.getFocusedTypeString()}</button>
+            <button class="btn btn-dark border-white" type="button" on:click="{removeType}">
                 <i class="bi bi-trash"/>
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">

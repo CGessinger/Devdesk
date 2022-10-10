@@ -69,6 +69,7 @@ export const ComponentStateController = () => {
         switchToProject: (p: ProjectModel) => updateTo(new StateHolder(WindowStates.Project, p)),
         switchToPortfolio,
         update,
+        switchToPrev: () => update(state => state = new StateHolder(state._prevWindowState, state._prevValue)),
 		reset: () => set(new StateHolder(WindowStates.Dasboard, null)),
 	};
 }

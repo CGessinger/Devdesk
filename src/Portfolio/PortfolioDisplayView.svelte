@@ -63,4 +63,8 @@
 		float: right;
 		bottom: 1rem;
 	}
+
+	i.bi-plus {
+		font-size: 1.5rem;
+	}
 </style>

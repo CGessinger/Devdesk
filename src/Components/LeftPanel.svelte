@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cached_settings, StateController } from "$src/store";
 	import { fs } from "$utils/Path"
-	import type { SettingsModel } from "$src/Settings/utils/SettingsModel";
+	import { SettingsModel } from "$src/Settings/utils/SettingsModel";
 	import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 	import { getVersion } from '@tauri-apps/api/app';
 
@@ -45,6 +45,11 @@
 	}
 
 	function focusSettings() {
+		if (value instanceof SettingsModel) {
+			StateController.switchToPrev();
+			return;
+		}
+
 		StateController.switchToSettings(s);
 	}
 </script>
@@ -79,9 +84,9 @@
 		</button>
 	</div>
 	<!-- <button id="add_portfolio" class="fa" on:click={(_) => add_portfolio()}>&#xf067;</button> -->
-	<span class="d-flex align-items-center text-white text-decoration-none">
+	<span class="text-white text-decoration-none">
 		Made By
-		<a class="text-white text-decoration-none" href="https://www.github.com/CGessinger"> CGessinger</a>
+		<a class="text-white text-decoration-none fw-bold" href="https://www.github.com/CGessinger"> CGessinger</a>
 		<span>({appVersion})</span>
 	</span>
 </div>
@@ -97,6 +102,6 @@
 	}
 
 	.nav-link.active {
-		background-color: var(--primary-color);
+		background-color: rgba(255, 255, 255, 0.1);
 	}
 </style>

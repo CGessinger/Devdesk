@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { cached_settings } from "$src/store";
     import type { SettingsModel } from "./utils/SettingsModel";
 
     export let data: SettingsModel;
@@ -14,8 +13,8 @@
 
 </script>
 
-<div>
-    <h1 id="settings_name">Settings</h1>
+<div class="container mt-3">
+    <h1 class="text-white mb-3">Settings</h1>
 
     <div class="container">
         <div class="form-check form-switch">
@@ -31,12 +30,4 @@
 </div>
 
 <style>
-    #settings_name {
-        font-size: 2rem;
-        font-weight: 600;
-        margin: 0 0 1rem 0;
-        text-align: center;
-        color: var(--font-color-dark);
-        background-color: var(--primary-color);
-    }
 </style>

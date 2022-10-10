@@ -3,7 +3,7 @@
 </script>
 
 
-<div class="project_item">
+<div class="project_item text-bg-dark">
     <div class="project_name">
         <span>{project.name}</span>
     </div>
@@ -22,8 +22,6 @@
 			"header header header header git git"
 			"main main main main right right"
 			"footer footer footer footer footer footer";
-		background-color: var(--primary-color);
-		color: whitesmoke;
 		margin-bottom: 1rem;
 		padding: 10px;
 		gap: 10px;
