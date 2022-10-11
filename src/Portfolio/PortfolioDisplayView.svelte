@@ -4,8 +4,10 @@
     import { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
 	import { StateController } from "$src/store";
     import { projectdb } from "$src/utils/Database";
+    import { end } from "@popperjs/core";
     import { listen } from "@tauri-apps/api/event";
     import type { PortfolioModel } from "./utils/PortfolioModel";
+	import ScrollBarComponent from "$src/Utils/ScrollBarComponent.svelte";
 
 	export let data: PortfolioModel;
 
@@ -37,24 +39,48 @@
 		Object.assign(project, p);
 		StateController.switchToProject(project);
 	}
+
+	let scrollTarget;
 </script>
 
 <div class="portfolio-scroll">
-	<ul class="overflow-scroll h-100 list-group">
-		{#each projects as project}
-		<li on:click={(_) => clickProject(project)}>
-			<ProjectTileView {project}/>
-		</li>
-		{/each}
-	</ul>
-	<button class="add-project btn btn-dark sticky-bottom border border-white" on:click={(_) => addProject()}>
+	<div class="grid h-100 pe-3">
+		<ScrollBarComponent getScrollTarget={() => scrollTarget}/>
+		<ul class="overflow-auto h-100 list-group me-1" bind:this="{scrollTarget}">
+			{#each projects as project}
+			<li on:click={(_) => clickProject(project)}>
+				<ProjectTileView {project}/>
+			</li>
+			{/each}
+		</ul>
+	</div>
+	<button class="add-project btn btn-dark sticky-bottom border border-white me-1" on:click={(_) => addProject()}>
 		<i class="bi bi-plus"/>
 	</button>
 </div>
 
 <style>
 	.portfolio-scroll {
-		height: calc(100% - 3rem - 1rem);		
+		height: calc(100% - 3rem - 1rem);
+	}
+
+	.grid {
+		display: grid;
+	}
+
+	.grid * {
+        grid-column: 1;
+        grid-row: 1;
+	}
+
+	.list-group {
+		-ms-overflow-style: none; /* for Internet Explorer, Edge */
+		scrollbar-width: none; /* for Firefox */
+		overflow-y: scroll; 
+	}
+
+	.list-group::-webkit-scrollbar {
+		display: none; /* for Chrome, Safari, and Opera */
 	}
 
 	.add-project {

@@ -50,43 +50,54 @@
     }
 </script>
 
-<canvas bind:this="{canvas}" class="webgl w-100 h-100 position-absolute"></canvas>
-<div class="container mt-5 position-relative">
-    <form class="needs-validation w-75 mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
-        <div class="input-group flex-nowrap">
-            <span class="input-group-text text-bg-dark">Name</span>
-            <input name="name" type="text" class="form-control text-bg-dark" placeholder="Project Name" required>
-        </div>
+<div class="grid h-100">
+    <canvas bind:this="{canvas}" class="webgl w-100 h-100"></canvas>
+    <div class="container mt-5">
+        <form class="needs-validation w-75 mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text text-bg-dark">Name</span>
+                <input name="name" type="text" class="form-control text-bg-dark" placeholder="Project Name" required>
+            </div>
 
-        <div class="input-group mb-3 mt-3">
-            <span class="input-group-text text-bg-dark"><i class="bi bi-github"/></span>
-            <input name="git_url" class="col form-control text-bg-dark" type="text" placeholder="GitHub Url"/>
-            <span class="input-group-text text-bg-dark"><i class="bi bi-bezier2"/></span>
-            <input name="git_branch" class="form-control col text-bg-dark" type="text" placeholder="Repository Branch"/>
-        </div>
+            <div class="input-group mb-3 mt-3">
+                <span class="input-group-text text-bg-dark"><i class="bi bi-github"/></span>
+                <input name="git_url" class="col form-control text-bg-dark" type="text" placeholder="GitHub Url"/>
+                <span class="input-group-text text-bg-dark"><i class="bi bi-bezier2"/></span>
+                <input name="git_branch" class="form-control col text-bg-dark" type="text" placeholder="Repository Branch"/>
+            </div>
 
-        <div class="input-group">
-            <span class="input-group-text text-bg-dark">Description</span>
-            <textarea name="description" class="form-control text-bg-dark"></textarea>
-        </div>
+            <div class="input-group">
+                <span class="input-group-text text-bg-dark">Description</span>
+                <textarea name="description" class="form-control text-bg-dark"></textarea>
+            </div>
 
-        <div class="input-group mt-3">
-          <select  name="type" class="form-select text-bg-dark" required>
-            {#each targetPortfolio.types as type}
-                <option value="{type}" selected="{type == data.parameters.type}">{type}</option>
-            {/each}
-          </select>
-          <span class="input-group-text text-bg-dark">Type</span>
-        </div>
+            <div class="input-group mt-3">
+            <select  name="type" class="form-select text-bg-dark" required>
+                {#each targetPortfolio.types as type}
+                    <option value="{type}" selected="{type == data.parameters.type}">{type}</option>
+                {/each}
+            </select>
+            <span class="input-group-text text-bg-dark">Type</span>
+            </div>
 
-        <div class="col-12 mb-0 mt-3">
-            <button class="btn btn-dark border-white" type="submit">Create Project</button>
-        </div>
+            <div class="col-12 mb-0 mt-3">
+                <button class="btn btn-dark border-white" type="submit">Create Project</button>
+            </div>
 
-    </form>
+        </form>
+    </div>
 </div>
 
 <style>
+    .grid {
+        display: grid;
+    }
+
+    .grid * {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
     .input-group input {
         background-color: black;
     }

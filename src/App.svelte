@@ -29,7 +29,7 @@
 </script>
 
 <!-- <div id="beta_alert">This is a beta and is not fully tested yet. Use at your own risk!</div> -->
-<div id="main" class="d-flex flex-nowrap h-100">
+<div id="main" class="d-flex flex-nowrap h-100 w-100">
 	<LeftPanel/>
 	<div class="w-100 h-100 container">
 		<TopBar/>

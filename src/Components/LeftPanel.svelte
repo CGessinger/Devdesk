@@ -54,7 +54,7 @@
 	}
 </script>
 
-<div class="container d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100">
+<div class="container d-flex flex-column flex-shrink-0 p-3 text-bg-dark h-100 mx-0">
 	<div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white">
 		<h2>Portfolios</h2>
 		<i class="settings bi bi-gear mb-1 ms-3" on:click={focusSettings}/>
