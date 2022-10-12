@@ -3,11 +3,10 @@
 	import { ProjectModel } from "$src/Project/utils/ProjectModel";
     import { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
 	import { StateController } from "$src/store";
-    import { projectdb } from "$src/utils/Database";
-    import { end } from "@popperjs/core";
+    import { projectdb } from "$utils/Database";
     import { listen } from "@tauri-apps/api/event";
     import type { PortfolioModel } from "./utils/PortfolioModel";
-	import ScrollBarComponent from "$src/Utils/ScrollBarComponent.svelte";
+	import ScrollBarComponent from "$utils/ScrollBarComponent.svelte";
 
 	export let data: PortfolioModel;
 
@@ -54,7 +53,7 @@
 			{/each}
 		</ul>
 	</div>
-	<button class="add-project btn btn-dark sticky-bottom border border-white me-1" on:click={(_) => addProject()}>
+	<button class="add-project btn btn-scheme sticky-bottom border border-white me-1" on:click={(_) => addProject()}>
 		<i class="bi bi-plus"/>
 	</button>
 </div>

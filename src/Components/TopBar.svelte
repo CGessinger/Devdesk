@@ -1,9 +1,8 @@
 <script lang="ts">
-    import {Modal} from "bootstrap"
+    import { Modal } from "bootstrap"
     import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
     import { StateController, cached_settings } from "$src/store";
     import { emit } from "@tauri-apps/api/event";
-    import { projectdb } from "$src/utils/Database";
 
     $: value = $StateController.value;
     $: prevValue = $StateController._prevValue;
@@ -67,23 +66,23 @@
 <div class="top-bar-all mt-3 w-100">
     {#if portfolio}
         <form class="mb-3 d-flex">
-            <input class="form-control text-bg-dark me-2 border-white" type="text" placeholder="Search..." on:input="{searchChange}" />
-            <button class="btn btn-dark dropdown-toggle w-25 me-2 border-white" data-bs-toggle="dropdown" aria-expanded="false">{portfolio.getFocusedTypeString()}</button>
-            <button class="btn btn-dark border-white" type="button" on:click="{removeType}">
+            <input class="form-control text-bg-scheme me-2" type="text" placeholder="Search..." on:input="{searchChange}" />
+            <button class="btn btn-scheme dropdown-toggle w-25 me-2" data-bs-toggle="dropdown" aria-expanded="false">{portfolio.getFocusedTypeString()}</button>
+            <button class="btn btn-scheme" type="button" on:click="{removeType}">
                 <i class="bi bi-trash"/>
             </button>
-            <ul class="dropdown-menu dropdown-menu-dark">
+            <ul class="dropdown-menu dropdown-menu-dark text-bg-scheme">
                 {#each portfolio.types as type, i}
-                    <li class="dropdown-item text-white" on:click={(_) => focusType(i)}>
+                    <li class="dropdown-item text-on-dark" on:click={(_) => focusType(i)}>
                         {type}
                     </li>
                 {/each}
                 <li><hr class="dropdown-divider"></li>
                 <li class="dropdown-item">
                     <form class="d-flex" on:submit|preventDefault="{addType}">
-                        <input type="text" class="form-control text-bg-dark me-1" placeholder="New Type"/>
-                        <button class="btn btn-dark" type="submit">
-                            <i class="bi bi-plus text-white"/>
+                        <input type="text" class="form-control text-bg-scheme me-1" placeholder="New Type"/>
+                        <button class="btn btn-scheme-darker" type="submit">
+                            <i class="bi bi-plus"/>
                         </button>
                     </form>
                 </li>

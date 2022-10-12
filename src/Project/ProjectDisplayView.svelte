@@ -2,7 +2,7 @@
     import SvelteMarkdown from 'svelte-markdown'
     import type { ProjectModel } from "./utils/ProjectModel";
     import { terminal } from "$utils/Scripts";
-    import { fs } from "$src/utils/Path";
+    import { fs } from "$utils/Path";
 
     export let data: ProjectModel;
     let configExists = false;
@@ -18,7 +18,7 @@
 </script>
 
 <div class="mt-3 container">
-    <h1 class="text-white">
+    <h1 class="text-on-light">
         {data.name}
     </h1>
     <ol class="breadcrumb">
@@ -27,10 +27,10 @@
         {/each}
     </ol>
     <div class="d-flex justify-content-start">
-        <button class="btn btn-dark me-2" on:click="{terminalHere}">Terminal</button>
-        <button class="btn btn-dark" on:click="{vscodeHere}">Editor</button>
+        <button class="btn btn-scheme me-2" on:click="{terminalHere}">Terminal</button>
+        <button class="btn btn-scheme" on:click="{vscodeHere}">Editor</button>
     </div>
-    <div class="text-white mt-3">
+    <div class="text-on-dark mt-3">
         <SvelteMarkdown source={data.description} />
     </div>
 </div>

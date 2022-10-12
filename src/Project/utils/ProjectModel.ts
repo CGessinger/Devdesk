@@ -1,4 +1,4 @@
-import { fs } from "$src/utils/Path";
+import { fs } from "$utils/Path";
 import { Ok, Err } from "$utils/Result";
 import { invoke } from "@tauri-apps/api";
 

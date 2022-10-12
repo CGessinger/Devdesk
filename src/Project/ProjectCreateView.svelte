@@ -55,33 +55,33 @@
     <div class="container mt-5">
         <form class="needs-validation w-75 mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
             <div class="input-group flex-nowrap">
-                <span class="input-group-text text-bg-dark">Name</span>
-                <input name="name" type="text" class="form-control text-bg-dark" placeholder="Project Name" required>
+                <span class="input-group-text text-bg-scheme">Name</span>
+                <input name="name" type="text" class="form-control text-bg-scheme" placeholder="Project Name" required>
             </div>
 
             <div class="input-group mb-3 mt-3">
-                <span class="input-group-text text-bg-dark"><i class="bi bi-github"/></span>
-                <input name="git_url" class="col form-control text-bg-dark" type="text" placeholder="GitHub Url"/>
-                <span class="input-group-text text-bg-dark"><i class="bi bi-bezier2"/></span>
-                <input name="git_branch" class="form-control col text-bg-dark" type="text" placeholder="Repository Branch"/>
+                <span class="input-group-text text-bg-scheme"><i class="bi bi-github"/></span>
+                <input name="git_url" class="col form-control text-bg-scheme" type="text" placeholder="GitHub Url"/>
+                <span class="input-group-text text-bg-scheme"><i class="bi bi-bezier2"/></span>
+                <input name="git_branch" class="form-control col text-bg-scheme" type="text" placeholder="Repository Branch"/>
             </div>
 
             <div class="input-group">
-                <span class="input-group-text text-bg-dark">Description</span>
-                <textarea name="description" class="form-control text-bg-dark"></textarea>
+                <span class="input-group-text text-bg-scheme">Description</span>
+                <textarea name="description" class="form-control text-bg-scheme"></textarea>
             </div>
 
             <div class="input-group mt-3">
-            <select  name="type" class="form-select text-bg-dark" required>
+            <select  name="type" class="form-select text-bg-scheme" required>
                 {#each targetPortfolio.types as type}
                     <option value="{type}" selected="{type == data.parameters.type}">{type}</option>
                 {/each}
             </select>
-            <span class="input-group-text text-bg-dark">Type</span>
+            <span class="input-group-text text-bg-scheme">Type</span>
             </div>
 
             <div class="col-12 mb-0 mt-3">
-                <button class="btn btn-dark border-white" type="submit">Create Project</button>
+                <button class="btn btn-scheme border-white" type="submit">Create Project</button>
             </div>
 
         </form>

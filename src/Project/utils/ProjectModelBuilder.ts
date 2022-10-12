@@ -1,6 +1,5 @@
-import type { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 import { ProjectModel } from "$src/Project/utils/ProjectModel";
-import { fs } from "$src/utils/Path";
+import { fs } from "$utils/Path";
 import { Ok, Err, type Result } from "$utils/Result";
 
 interface ProjectModelBuilderParameters {

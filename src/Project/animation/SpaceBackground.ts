@@ -3,12 +3,14 @@ import * as THREE from "three";
 
 export class SpaceBackground {
     readonly canvas;
-    readonly active;
+    readonly active: boolean;
+    readonly color: boolean;
     readonly particlesCount = 2000;
 
     constructor(_canvas, _settings: SettingsModel) {
         this.canvas = _canvas;
         this.active = _settings.runThree;
+        this.color = _settings.dark_mode;
     }
 
     setup(): Function {
@@ -18,22 +20,26 @@ export class SpaceBackground {
         const scene = new THREE.Scene()
 
         const positions = new Float32Array(this.particlesCount * 3);
+        const color = new Float32Array(this.particlesCount * 3);
 
-        for(let i = 0; i < this.particlesCount; i++) {
-            positions[i * 3] = (Math.random() - 0.5) * 10;
-            positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-            positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+        for(let i = 0; i < this.particlesCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 10;
+            color[i] = Math.random();
         }
         const particlesGeometry = new THREE.BufferGeometry();
         particlesGeometry.setAttribute(
             "position", 
             new THREE.BufferAttribute(positions, 3)
         );
+        particlesGeometry.setAttribute(
+            "color", 
+            new THREE.BufferAttribute(color, 3)
+        );
 
         const particlesMaterial = new THREE.PointsMaterial({
-            color: "white",
             sizeAttenuation: true,
-            size: 0.01
+            size: 0.05,
+            vertexColors: true
         });
 
         const particles = new THREE.Points(particlesGeometry, particlesMaterial);

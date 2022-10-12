@@ -21,9 +21,9 @@
 	function clickScroll(e) {
 		const targetRect = progressContainer.getBoundingClientRect();
 		const y = e.clientY - targetRect.top;
-		const progress = y / targetRect.height * 0.75;
+		const progress = y / targetRect.height;
 		scrollTarget.scroll({
-			top: progress * scrollTarget.scrollHeight,
+			top: progress * (scrollTarget.scrollHeight - targetRect.height),
   			behavior: 'smooth'
 		});
 	}
@@ -47,9 +47,9 @@
 		const target = progressContainer;
 		const targetRect = target.getBoundingClientRect();
 		const y = e.clientY - targetRect.top;
-		const progress = y / targetRect.height * 0.75;
+		const progress = y / targetRect.height;
 		scrollTarget.scroll({
-			top: progress * scrollTarget.scrollHeight,
+			top: progress * (scrollTarget.scrollHeight - targetRect.height),
 			behavior: 'instant'
 		});
 	}
@@ -57,12 +57,12 @@
 
 <svelte:window on:mousemove={mouseMove} on:mouseup={dragEnd}/>
 
-<div class="progress bg-dark" 
-    bind:this="{progressContainer}" 
+<div class="progress bg-scheme" 
+    bind:this={progressContainer}
     on:mousedown|preventDefault="{clickScroll}">
     <div class="progress-bar h-100 w-25 ms-auto" 
         bind:this="{progressBar}" 
-        on:mousedown={dragStart}>
+        on:mousedown|preventDefault={dragStart}>
     </div>
 </div>
 
@@ -79,7 +79,7 @@
 	}
 
 	.progress-bar {
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: rgba(255, 255, 255, 0.2);
         cursor: grab;
 	}
 </style>

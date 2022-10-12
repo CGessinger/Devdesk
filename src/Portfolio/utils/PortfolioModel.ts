@@ -1,7 +1,7 @@
 import { ProjectFileHandler } from '$src/Project/utils/ProjectFileHandler';
 import type { ProjectModel } from '$src/Project/utils/ProjectModel';
-import { projectdb } from '$src/utils/Database';
-import { fs } from '$src/utils/Path';
+import { projectdb } from '$utils/Database';
+import { fs } from '$utils/Path';
 
 export class PortfolioModel {
     uid: string;

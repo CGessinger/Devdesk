@@ -1,6 +1,6 @@
 import { open } from "@tauri-apps/api/dialog";
 import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
-import { fs } from "$src/utils/Path";
+import { fs } from "$utils/Path";
 
 export class SettingsModel {
     portfolios: PortfolioModel[];

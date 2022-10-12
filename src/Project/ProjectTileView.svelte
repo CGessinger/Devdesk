@@ -3,7 +3,7 @@
 </script>
 
 
-<div class="project_item text-bg-dark">
+<div class="project_item text-bg-scheme">
     <div class="project_name">
         <span>{project.name}</span>
     </div>
