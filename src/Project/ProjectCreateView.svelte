@@ -16,6 +16,8 @@
         tick();
     });
 
+    let experimental = $cached_settings.experimental;
+
     // pass builder which might already have some values
     export let data: ProjectModelBuilder;
     $: targetPortfolio = $StateController._prevValue;
@@ -54,24 +56,26 @@
     <canvas bind:this="{canvas}" class="webgl w-100 h-100"></canvas>
     <div class="container mt-5">
         <form class="needs-validation w-75 mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
-            <div class="input-group flex-nowrap">
+            <div class="input-group flex-nowrap mb-3">
                 <span class="input-group-text text-bg-scheme">Name</span>
                 <input name="name" type="text" class="form-control text-bg-scheme" placeholder="Project Name" required>
             </div>
 
-            <div class="input-group mb-3 mt-3">
+            {#if experimental}
+            <div class="input-group mb-3">
                 <span class="input-group-text text-bg-scheme"><i class="bi bi-github"/></span>
                 <input name="git_url" class="col form-control text-bg-scheme" type="text" placeholder="GitHub Url"/>
                 <span class="input-group-text text-bg-scheme"><i class="bi bi-bezier2"/></span>
                 <input name="git_branch" class="form-control col text-bg-scheme" type="text" placeholder="Repository Branch"/>
             </div>
+            {/if}
 
-            <div class="input-group">
+            <div class="input-group mb-3">
                 <span class="input-group-text text-bg-scheme">Description</span>
                 <textarea name="description" class="form-control text-bg-scheme"></textarea>
             </div>
 
-            <div class="input-group mt-3">
+            <div class="input-group mb-3">
             <select  name="type" class="form-select text-bg-scheme" required>
                 {#each targetPortfolio.types as type}
                     <option value="{type}" selected="{type == data.parameters.type}">{type}</option>
@@ -80,7 +84,7 @@
             <span class="input-group-text text-bg-scheme">Type</span>
             </div>
 
-            <div class="position-relative mb-0 mt-3">
+            <div class="position-relative mb-0">
                 <button class="btn btn-scheme border-white" type="submit">Create Project</button>
             </div>
 
