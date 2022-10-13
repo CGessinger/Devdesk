@@ -5,22 +5,26 @@
     import { terminal } from "$utils/Scripts";
     import { fs } from "$utils/Path";
     import { stats } from "$utils/Stats";
-
-    //console.log(LanguageStatComponent);
+    import { cached_settings } from "$src/store";
 
     export let data: ProjectModel;
     let configExists = false;
     data.config_exists().then(exists => configExists = exists);
+
+    let experimental = $cached_settings.experimental;
     
     let languageStats: [string, number][] = [];
-    stats.get_language_stats(data.path)
-        .then(res => {
-            const total = res.total;
-            for (const [key, value] of Object.entries(res.languages)) {
-                languageStats = [...languageStats, [key, value / total]];
-            }
-        })
-        .catch(e => console.log(e));
+    if (experimental) {
+        stats.get_language_stats(data.path)
+            .then(res => {
+                languageStats = [];
+                const total = res.total;
+                for (const [key, value] of Object.entries(res.languages)) {
+                    languageStats = [...languageStats, [key, value / total]];
+                }
+            })
+            .catch(e => console.log(e));
+    }
 
     function terminalHere() {
         terminal.terminal_here(data.path);
@@ -50,9 +54,11 @@
         </div>
     </div>
     <div class="right-bar h-100 w-100">
-        <div class="language-stats bg-scheme mb-auto">
-            <LanguageStatComponent {languageStats}/>
-        </div>
+        {#if experimental}
+            <div class="language-stats bg-scheme mb-auto">
+                <LanguageStatComponent {languageStats}/>
+            </div>
+        {/if}
     </div>
 </div>
 

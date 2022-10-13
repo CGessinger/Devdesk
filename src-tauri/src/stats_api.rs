@@ -1,7 +1,5 @@
 use std::{path::PathBuf, collections::HashMap};
 
-use serde_json::Value;
-
 use crate::{files_api as fs, state_api::AppState};
 
 pub const LAN_JSON: &str = include_str!("languages.json");

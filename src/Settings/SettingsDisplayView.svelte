@@ -4,9 +4,11 @@
     export let data: SettingsModel;
     let darkMode = data.dark_mode;
     let runAnimations = data.runThree;
+    let experimental = data.experimental;
 
     $: {
         data.runThree = runAnimations;
+        data.experimental = experimental;
     }
 
     $: {
@@ -33,6 +35,10 @@
         <div class="form-check form-switch">
             <input class="form-check-input bg-scheme border-white" type="checkbox" role="switch" id="flexSwitchCheckDefault" bind:checked={runAnimations}>
             <label class="form-check-label text-on-light" for="flexSwitchCheckDefault">Toggle Animations</label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input bg-scheme border-white" type="checkbox" role="switch" id="flexSwitchCheckDefault" bind:checked={experimental}>
+            <label class="form-check-label text-on-light" for="flexSwitchCheckDefault">Enable Experimental Features</label>
         </div>
     </div>
 

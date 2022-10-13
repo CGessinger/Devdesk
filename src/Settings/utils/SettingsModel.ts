@@ -6,11 +6,13 @@ export class SettingsModel {
     portfolios: PortfolioModel[];
     dark_mode: boolean;
     runThree: boolean;
+    experimental: boolean;
 
     constructor() {
         this.portfolios = [];
         this.dark_mode = true;
         this.runThree = false;
+        this.experimental = false;
     }
 
     public async addPortfolio() {
