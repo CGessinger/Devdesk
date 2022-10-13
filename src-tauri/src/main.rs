@@ -6,10 +6,12 @@
 mod files_api;
 mod cmd_api;
 mod db_api;
+mod stats_api;
+mod state_api;
 
 fn main() {
   tauri::Builder::default()
-    .manage(db_api::Database::new())
+    .manage(state_api::AppState::default())
     .invoke_handler(tauri::generate_handler![
       files_api::read_dir,
       files_api::read_file,
@@ -27,6 +29,7 @@ fn main() {
       db_api::get_projects_filter,
       db_api::get_projects,
       db_api::clear_db,
+      stats_api::read_language_stats
       ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

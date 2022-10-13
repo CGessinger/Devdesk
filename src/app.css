@@ -67,7 +67,7 @@ body {
 .btn-scheme {
     background-color: var(--bg-front-color);
     border-color: var(--bg-front-color);
-    color: var(--font-color-on-dark)
+    color: var(--font-color-on-dark);
 }
 
 .btn-scheme:hover {

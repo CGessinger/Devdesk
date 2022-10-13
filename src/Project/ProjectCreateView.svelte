@@ -80,7 +80,7 @@
             <span class="input-group-text text-bg-scheme">Type</span>
             </div>
 
-            <div class="col-12 mb-0 mt-3">
+            <div class="position-relative mb-0 mt-3">
                 <button class="btn btn-scheme border-white" type="submit">Create Project</button>
             </div>
 
