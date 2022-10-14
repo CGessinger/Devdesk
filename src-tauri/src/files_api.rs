@@ -64,3 +64,14 @@ pub fn write_to_file(path: String, content: String) -> Result<(), String> {
   fs::write(path, content.as_bytes()).map_err(|e| e.to_string())?;
   Ok(())
 }
+
+#[tauri::command]
+pub fn makefile_exists(path: String) -> Result<bool, String> {
+    let dir = read_dir(path.to_string())?;
+    for d in dir {
+      if d == "makefile" || d == "Makefile" || d == "make.bat" {
+        return Ok(true);
+      }
+    }
+    return Ok(false);
+}

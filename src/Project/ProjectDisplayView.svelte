@@ -11,6 +11,9 @@
     let configExists = false;
     data.config_exists().then(exists => configExists = exists);
 
+    let makefileExists = false;
+    fs.makefile_exists(data.path).then(res => makefileExists = res);
+
     let experimental = $cached_settings.experimental;
     
     let languageStats: [string, number][] = [];
@@ -33,6 +36,10 @@
     function vscodeHere() {
         terminal.vscode_here(data.path);
     }
+
+    function makeHere() {
+        terminal.make_here(data.path);
+    }
 </script>
 
 <div class="mt-3 container display-grid h-100">
@@ -45,9 +52,12 @@
                 <li class="breadcrumb-item text-muted">{part}</li>
             {/each}
         </ol>
-        <div class="d-flex justify-content-start">
-            <button class="btn btn-scheme me-2" on:click="{terminalHere}">Terminal</button>
+        <div class="d-flex justify-content-start gap-3">
+            <button class="btn btn-scheme" on:click="{terminalHere}">Terminal</button>
             <button class="btn btn-scheme" on:click="{vscodeHere}">Editor</button>
+            {#if experimental && makefileExists}
+                <button class="btn btn-scheme" on:click="{makeHere}">Make</button>
+            {/if}
         </div>
         <div class="text-on-dark mt-3 description mb-auto">
             <SvelteMarkdown source={data.description} />

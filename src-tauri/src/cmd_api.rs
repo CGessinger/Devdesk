@@ -93,3 +93,12 @@ pub fn git_clone(url: String, branch: String, path: String) -> Result<(), String
         .map_err(|e| e.to_string())?;
     Ok(())
 }
+
+#[tauri::command]
+pub fn run_make(path: String) -> Result<(), String> {
+    Command::new("make")
+        .current_dir(&path)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}

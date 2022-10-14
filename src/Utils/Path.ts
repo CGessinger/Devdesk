@@ -51,6 +51,10 @@ export namespace fs {
         return invoke("file_exists", { path: path });
     }
 
+    export async function makefile_exists(path: string): Promise<boolean> {
+        return invoke("makefile_exists", { path: path });
+    }
+
     export async function write_image(path: string, data: string): Promise<void> {
         return invoke("write_image", { path: path, data: data });
     }
