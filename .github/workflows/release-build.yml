@@ -1,0 +1,33 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: build for supported plattforms
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16
+        
+    - name: install Rust stable
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    
+    - uses: JonasKruckenberg/tauri-build@v1
+      id: tauri_build
