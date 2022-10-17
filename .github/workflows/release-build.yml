@@ -28,6 +28,10 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    
-    - uses: JonasKruckenberg/tauri-build@v1
-      id: tauri_build
+        
+    - name: install app dependencies and build it
+      run: yarn && yarn build
+    - uses: tauri-apps/tauri-action@v0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
