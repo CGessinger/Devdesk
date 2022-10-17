@@ -95,10 +95,13 @@ pub fn git_clone(url: String, branch: String, path: String) -> Result<(), String
 }
 
 #[tauri::command]
-pub fn run_make(path: String) -> Result<(), String> {
-    Command::new("make")
+pub fn run_make(path: String) -> Result<Vec<String>, String> {
+    let child = Command::new("make")
         .current_dir(&path)
-        .spawn()
-        .map_err(|e| e.to_string())?;
-    Ok(())
+        .output()
+        .expect("failed to execute make process");
+
+    let stdout = std::str::from_utf8(&child.stdout).map_err(|e| e.to_string())?;
+    let stderr = std::str::from_utf8(&child.stderr).map_err(|e| e.to_string())?;
+    Ok(Vec::from([stdout.to_string(), stderr.to_string()]))
 }

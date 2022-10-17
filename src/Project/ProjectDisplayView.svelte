@@ -1,6 +1,7 @@
 <script lang="ts">
     import SvelteMarkdown from 'svelte-markdown'
     import LanguageStatComponent from '$src/Components/LanguageStatsComponent.svelte'
+    import { Offcanvas } from "bootstrap"
     import type { ProjectModel } from "./utils/ProjectModel";
     import { terminal } from "$utils/Scripts";
     import { fs } from "$utils/Path";
@@ -37,8 +38,17 @@
         terminal.vscode_here(data.path);
     }
 
-    function makeHere() {
-        terminal.make_here(data.path);
+    let terminalOutput = {
+        stdout: "",
+        stderr: "" 
+    }
+    async function makeHere() {
+        const result = await terminal.make_here(data.path);
+        console.log(result);
+        terminalOutput.stdout = result[0];
+        terminalOutput.stderr = result[1];
+        const offcanvas = new Offcanvas('#staticBackdrop');
+        offcanvas.toggle();
     }
 </script>
 
@@ -71,6 +81,24 @@
         {/if}
     </div>
 </div>
+<div class="offcanvas offcanvas-bottom text-bg-scheme" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="staticBackdropLabel">Terminal</h5>
+    <button type="button" class="btn-close text-on-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="container">
+        Output: 
+        <p class="w-100 p-3 terminal-text">
+            <code>{terminalOutput.stdout}</code>
+        </p>
+        Error: 
+        <p class="w-100 p-3 terminal-text">
+            <code>{terminalOutput.stderr}</code>
+        </p>
+    </div>
+  </div>
+</div>
 
 <style>
     .display-grid {
@@ -83,6 +111,7 @@
         height:100%;
         display:flex;
         flex-direction:column;
+        overflow-y: scroll;
     }
 
     .main-display > div {

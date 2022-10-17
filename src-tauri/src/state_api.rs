@@ -13,7 +13,7 @@ pub struct AppState {
       fn default() -> Self {
           Self { 
             db: Database::new(),
-            languages: serde_json::from_str(stats_api::LAN_JSON).unwrap()
+            languages: serde_json::from_str(stats_api::LAN_JSON).unwrap(),
           }
       }
 }

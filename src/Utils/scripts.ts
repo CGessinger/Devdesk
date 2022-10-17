@@ -9,8 +9,8 @@ export namespace terminal {
         invoke("vscode_at", { path });
     }
 
-    export function make_here(path: string) {
-        invoke("run_make", { path });
+    export function make_here(path: string): Promise<string[]> {
+        return invoke("run_make", { path });
     }
 
     export function clone_git_repo(git: {url: string, branch: string}, path: string) {
