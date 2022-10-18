@@ -1,48 +1,77 @@
-# Svelte + TS + Vite
+## Public Project Assistant
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+An easy-to-use gui overlay to represent your project file structure.
 
-## Recommended IDE Setup
+#### Concept
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+The idea is to have multiple **Main Directories** that contain many **Types**. Each type is represented by a subdirectory in its parent folder. 
 
-## Need an official Svelte framework?
+For Example: you have a main programming directory in your document folder, called *Programming*. In that folder you can have multiple types of projects like *Release*, *Concept*, *Sanbox* etc.
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+Your file structure could look like:
 
-## Technical considerations
+1. Programming
 
-**Why use this over SvelteKit?**
+   1. Release
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-  `vite dev` and `vite build` wouldn't work in a SvelteKit environment, for example.
+      1. ProjectA
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+      2. ProjectB
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+   2. Concept
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+      1. ProjectC
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+   3. Sanbox
 
-**Why include `.vscode/extensions.json`?**
+      1. ProjectD
+      
+##### Features
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+* [x] List all of your projects and search through them
 
-**Why enable `allowJs` in the TS template?**
+* [x] Create new projects
 
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
+* [x] Open your terminal and editor on one of your projects
 
-**Why is HMR not preserving my local component state?**
+* [x] Light and Darkmode support!
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+* [x] Configuration
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+##### Experimental Features
 
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+You can enable these features in the app by going into `settings > Enable Experimental Features`. These features are in an early state of implementation and not fully tested yet.
+
+* [x] Display stats of technologies used in your project
+
+* [x] Integrate Make button if makefile exists
+
+* [ ] Git clone integration when creating new project (Temporarily disabled)
+
+#### ToDo
+
+* [ ] Integrate Npm run option when package file exists
+
+##### Download and Installation
+
+Public Project Assistant is currently supported for Windows and Mac. Linux is not fully tested, so you might run into issues there.
+
+Executables will be available on the first release. Please feel free to use the beta version already by following these steps:
+
+`git clone https://github.com/publicsoftwaredeploy/Public-Project-Assistant`
+
+`npm install`
+
+`npm run tauri build`
+
+Make sure you have rust installed and all [tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) properly setup!
+
+##### Contribute
+
+Every contribution and feedback is very welcome! Just fork the repo. Clone it to your local machine and run:
+
+`npm install`
+
+`npm run tauri dev`
+
+Make sure you have rust installed and all [tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) properly setup!
