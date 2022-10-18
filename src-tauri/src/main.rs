@@ -23,7 +23,7 @@ fn main() {
       files_api::write_to_file,
       files_api::makefile_exists,
       cmd_api::terminal_at,
-      cmd_api::vscode_at,
+      cmd_api::editor_at,
       cmd_api::git_clone,
       cmd_api::run_make,
       db_api::insert_project,

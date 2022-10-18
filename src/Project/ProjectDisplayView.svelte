@@ -16,6 +16,8 @@
     fs.makefile_exists(data.path).then(res => makefileExists = res);
 
     let experimental = $cached_settings.experimental;
+    let editorCmd = $cached_settings.editorCmd;
+    let terminalCmd = $cached_settings.terminalCmd;
     
     let languageStats: [string, number][] = [];
     if (experimental) {
@@ -30,25 +32,48 @@
             .catch(e => console.log(e));
     }
 
-    function terminalHere() {
-        terminal.terminal_here(data.path);
-    }
-
-    function vscodeHere() {
-        terminal.vscode_here(data.path);
-    }
-
     let terminalOutput = {
         stdout: "",
         stderr: "" 
     }
     async function makeHere() {
         const result = await terminal.make_here(data.path);
-        console.log(result);
         terminalOutput.stdout = result[0];
         terminalOutput.stderr = result[1];
         const offcanvas = new Offcanvas('#staticBackdrop');
         offcanvas.toggle();
+    }
+
+    function editorHere() {
+        terminal.editorHere(data.path, editorCmd).catch(e => {
+            terminalOutput.stdout = "";
+            terminalOutput.stderr = e;
+            const offcanvas = new Offcanvas('#staticBackdrop');
+            offcanvas.toggle();
+        }).then(res => {
+            if(res[1]) {
+                terminalOutput.stdout = res[0];
+                terminalOutput.stderr = res[1];
+                const offcanvas = new Offcanvas('#staticBackdrop');
+                offcanvas.toggle();
+            }
+        });
+    }
+
+    function terminalHere() {
+        terminal.terminal_here(data.path, terminalCmd).catch(e => {
+            terminalOutput.stdout = "";
+            terminalOutput.stderr = e;
+            const offcanvas = new Offcanvas('#staticBackdrop');
+            offcanvas.toggle();
+        }).then(res => {
+            if(res[1]) {
+                terminalOutput.stdout = res[0];
+                terminalOutput.stderr = res[1];
+                const offcanvas = new Offcanvas('#staticBackdrop');
+                offcanvas.toggle();
+            }
+        });
     }
 </script>
 
@@ -64,7 +89,7 @@
         </ol>
         <div class="d-flex justify-content-start gap-3">
             <button class="btn btn-scheme" on:click="{terminalHere}">Terminal</button>
-            <button class="btn btn-scheme" on:click="{vscodeHere}">Editor</button>
+            <button class="btn btn-scheme" on:click="{editorHere}">Editor</button>
             {#if experimental && makefileExists}
                 <button class="btn btn-scheme" on:click="{makeHere}">Make</button>
             {/if}

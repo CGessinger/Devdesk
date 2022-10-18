@@ -1,18 +1,23 @@
 import { open } from "@tauri-apps/api/dialog";
 import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 import { fs } from "$utils/Path";
+import { commandDefaults } from "$utils/Scripts";
 
 export class SettingsModel {
     portfolios: PortfolioModel[];
     dark_mode: boolean;
     runThree: boolean;
     experimental: boolean;
+    editorCmd: string;
+    terminalCmd: string;
 
     constructor() {
         this.portfolios = [];
         this.dark_mode = true;
         this.runThree = false;
         this.experimental = false;
+        this.editorCmd = "";
+        this.terminalCmd = "";
     }
 
     public async addPortfolio() {
@@ -29,6 +34,7 @@ export class SettingsModel {
     }
 
     public async safeSettings() {
+        console.log("safeSettings")
         const folder_path = fs.joinPath(await fs.appDir(), "config");
         fs.create_folder(folder_path)
             .then(() => {
@@ -59,6 +65,14 @@ export class SettingsModel {
             console.log("Error reading settings file: " + err);
             sett = new SettingsModel();
         });
+
+        if(!sett.editorCmd) {
+            sett.editorCmd = await commandDefaults.defaultEditorCommand();
+        }
+
+        if(!sett.terminalCmd) {
+            sett.terminalCmd = await commandDefaults.defaultTerminalCommand();
+        }
 
         return Object.assign(new SettingsModel, sett);
     }

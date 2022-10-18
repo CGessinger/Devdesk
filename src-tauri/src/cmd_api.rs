@@ -1,72 +1,39 @@
-use std::{env, process::Command};
+use std::process::Command;
 
-#[tauri::command]
-pub fn terminal_at(path: String) -> Result<(), String> {
-    match env::consts::OS {
-        "macos" => {
-            Command::new("open")
-                .arg("-a")
-                .arg("Terminal")
-                .arg(path)
-                .spawn()
-                .map_err(|e| e.to_string())?;
-        }
-        "windows" => {
-            Command::new("cmd")
-                .arg("/C")
-                .arg("start")
-                .arg("cmd")
-                .arg("/K")
-                .arg("cd")
-                .arg(path)
-                .spawn()
-                .map_err(|e| e.to_string())?;
-        }
-        "linux" => {
-            Command::new("gnome-terminal")
-                .arg("--working-directory")
-                .arg(path)
-                .spawn()
-                .map_err(|e| e.to_string())?;
-        }
-        _ => {
-            return Err("Unsupported OS".to_string());
-        }
-    }
-    Ok(())
+fn arbitrary_command<I>(path: &str, command: &str, args: I) -> Result<Vec<String>, String> 
+    where I: Iterator<Item = String> 
+{
+    let child = Command::new(command)
+                    .current_dir(path)
+                    .args(args)
+                    .output()
+                    .map_err(|e| e.to_string())?;
+
+    let stdout = std::str::from_utf8(&child.stdout).map_err(|e| e.to_string())?;
+    let stderr = std::str::from_utf8(&child.stderr).map_err(|e| e.to_string())?;
+    Ok(Vec::from([stdout.to_string(), stderr.to_string()]))
 }
 
 #[tauri::command]
-pub fn vscode_at(path: String) -> Result<(), String> {
-    match env::consts::OS {
-        "macos" => {
-            Command::new("open")
-                .arg("-a")
-                .arg("Visual Studio Code")
-                .arg(path)
-                .spawn()
-                .map_err(|e| e.to_string())?;
-        }
-        "windows" => {
-            Command::new("cmd")
-                .arg("/C")
-                .arg("start")
-                .arg("code")
-                .arg(path)
-                .spawn()
-                .map_err(|e| e.to_string())?;
-        }
-        "linux" => {
-            Command::new("code")
-                .arg(path)
-                .spawn()
-                .map_err(|e| e.to_string())?;
-        }
-        _ => {
-            return Err("Unsupported OS".to_string());
-        }
-    }
-    Ok(())
+pub fn terminal_at(path: String, command_line: String) -> Result<Vec<String>, String> {
+    let mut parts = shellwords::split(&command_line)
+        .map_err(|e| e.to_string())?
+        .into_iter();
+    let command = parts.next().unwrap();
+    let args = parts;
+
+    arbitrary_command(&path, &command, args)
+}
+
+#[tauri::command]
+pub fn editor_at( path: String, command_line: String) -> Result<Vec<String>, String> {
+    let mut parts = shellwords::split(&command_line)
+        .map_err(|e| e.to_string())?
+        .into_iter();
+    let command = parts.next().unwrap();
+    let args = parts;
+
+    arbitrary_command(&path, &command, args)
 }
 
 #[tauri::command]
@@ -96,12 +63,5 @@ pub fn git_clone(url: String, branch: String, path: String) -> Result<(), String
 
 #[tauri::command]
 pub fn run_make(path: String) -> Result<Vec<String>, String> {
-    let child = Command::new("make")
-        .current_dir(&path)
-        .output()
-        .expect("failed to execute make process");
-
-    let stdout = std::str::from_utf8(&child.stdout).map_err(|e| e.to_string())?;
-    let stderr = std::str::from_utf8(&child.stderr).map_err(|e| e.to_string())?;
-    Ok(Vec::from([stdout.to_string(), stderr.to_string()]))
+    arbitrary_command(&path, "make", [].into_iter())
 }
