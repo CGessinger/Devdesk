@@ -2,7 +2,7 @@
 
 An easy-to-use gui overlay to represent your project file structure.
 
-#### Concept
+### Concept
 
 The idea is to have multiple **Main Directories** that contain many **Types**. Each type is represented by a subdirectory in its parent folder. 
 
@@ -26,7 +26,7 @@ Your file structure could look like:
 
       1. ProjectD
       
-##### Features
+### Features
 
 * [x] List all of your projects and search through them
 
@@ -38,7 +38,7 @@ Your file structure could look like:
 
 * [x] Configuration
 
-##### Experimental Features
+#### Experimental Features
 
 You can enable these features in the app by going into `settings > Enable Experimental Features`. These features are in an early state of implementation and not fully tested yet.
 
@@ -52,7 +52,7 @@ You can enable these features in the app by going into `settings > Enable Experi
 
 * [ ] Integrate Npm run option when package file exists
 
-##### Download and Installation
+### Download and Installation
 
 Public Project Assistant is currently supported for Windows and Mac. Linux is not fully tested, so you might run into issues there.
 
@@ -66,7 +66,7 @@ Executables will be available on the first release. Please feel free to use the 
 
 Make sure you have rust installed and all [tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites) properly setup!
 
-##### Contribute
+### Contribute
 
 Every contribution and feedback is very welcome! Just fork the repo. Clone it to your local machine and run:
 
