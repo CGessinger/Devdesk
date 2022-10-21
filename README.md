@@ -1,4 +1,16 @@
-## Public Project Assistant
+
+<div align="center">
+   <img alt="App Icon" src="/src-tauri/icons/icon.png" height="150">
+   
+   [![Windows Support](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/publicsoftwaredeploy/Public-Project-Assistant/) 
+   [![Ubuntu Support](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://github.com/publicsoftwaredeploy/Public-Project-Assistant/) 
+   [![Arch Linux Support](https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)](https://github.com/publicsoftwaredeploy/Public-Project-Assistant/) 
+   [![MacOS Support](https://img.shields.io/badge/MACOS-adb8c5?style=for-the-badge&logo=macos&logoColor=white)](https://github.com/publicsoftwaredeploy/Public-Project-Assistant/)
+   
+</div>
+
+
+# Public Project Assistant
 
 An easy-to-use gui overlay to represent your project file structure.
 
