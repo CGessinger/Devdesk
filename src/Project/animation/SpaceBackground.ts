@@ -1,4 +1,4 @@
-import type { SettingsModel } from "$src/Settings/utils/SettingsModel";
+import type { Settings } from "$utils/Data";
 import * as THREE from "three";
 
 export class SpaceBackground {
@@ -7,10 +7,10 @@ export class SpaceBackground {
     readonly color: boolean;
     readonly particlesCount = 2000;
 
-    constructor(_canvas, _settings: SettingsModel) {
+    constructor(_canvas, _settings: Settings.Switches) {
         this.canvas = _canvas;
         this.active = _settings.runThree;
-        this.color = _settings.dark_mode;
+        this.color = _settings.darkMode;
     }
 
     setup(): Function {

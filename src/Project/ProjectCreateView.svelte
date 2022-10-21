@@ -3,20 +3,29 @@
     import { ProjectModelBuilder } from "./utils/ProjectModelBuilder";
     import type { ProjectModel } from "./utils/ProjectModel";
     import { ProjectFileHandler } from "./utils/ProjectFileHandler";
-    import { cached_settings, StateController } from "$src/store";
+    import { StateController } from "$src/store";
 	import { onMount } from 'svelte';
 
     // Animations
     import { SpaceBackground } from "./animation/SpaceBackground"
+    import { Settings } from "$src/utils/Data";
+    
+    let experimental = false;
 
     let canvas;
-	onMount(() => {
-        const space = new SpaceBackground(canvas, $cached_settings);
-        const tick = space.setup();
-        tick();
-    });
+    Settings.getSwitches()
+        .then((s) => {
+            experimental = s.experimental;
+        });
 
-    let experimental = $cached_settings.experimental;
+    onMount(() => {
+        Settings.getSwitches()
+        .then((s) => {
+            const space = new SpaceBackground(canvas, s);
+            const tick = space.setup();
+            tick();
+        });
+    });
 
     // pass builder which might already have some values
     export let data: ProjectModelBuilder;

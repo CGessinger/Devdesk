@@ -1,68 +1,58 @@
 <script lang="ts">
-	import { cached_settings, StateController } from "$src/store";
+	import { StateController } from "$src/store";
 	import { fs } from "$utils/Path"
-	import { SettingsModel } from "$src/Settings/utils/SettingsModel";
-	import { PortfolioModel } from "$src/Portfolio/utils/PortfolioModel";
 	import { getVersion } from '@tauri-apps/api/app';
+    import { Settings, Portfolio } from "$utils/Data";
+    import { WindowStates, type StateHolder } from "$utils/ComponentStateController";
+
+	export let state: StateHolder;
 
 	let appVersion = "";
 	getVersion().then((v) => {
 		appVersion = v;
 	});
 
-	$: value = $StateController.value;
-    $: prevValue = $StateController._prevValue;
+    let activePortfolio = null;
+    $: {
+        if(state.windowState == WindowStates.Portfolio) {
+            activePortfolio = state.value;
+        }
+    }
 
-    $: activePortfolio = ((): PortfolioModel => {
-        if (value instanceof PortfolioModel) 
-            return value;
-        else if (prevValue instanceof PortfolioModel)
-            return prevValue;
-
-        return null;
-    })()
-
-	let s: SettingsModel;
-	cached_settings.subscribe((value) => (s = value));
+	let portfolios: Portfolio.Model[] = [];
+	Settings.get_portfolios().then(ps => { portfolios = ps; });
 
 	function addPortfolio(_e) {
-		s.addPortfolio().finally(() => {
-			s.safeSettings();
-			cached_settings.update((settings) => (settings = s));
+		Settings.addPortfolioFromDialog().then(res => {
+			portfolios = res;
 		});
 	}
 
 	function removePortfolio(_e) {
-		s.removePortfolioByPath(activePortfolio.path).finally(() => {
-			StateController.switchToPortfolio(s.portfolios[s.portfolios.length - 1])
-			s.safeSettings();
-			cached_settings.update((settings) => (settings = s));
+		Settings.remove_portfolio(activePortfolio.path).then(res => {
+			portfolios = res;
 		});
 	}
-
-	function focusPortfolio(f: PortfolioModel) {
-		StateController.switchToPortfolio(f);
+	
+	function focusPortfolio(p: Portfolio.Model) {
+		StateController.switchToPortfolio(p);
 	}
 
 	function focusSettings() {
-		if (value instanceof SettingsModel) {
-			StateController.switchToPrev();
-			return;
-		}
-
-		StateController.switchToSettings(s);
+		StateController.switchToSettings();
 	}
+
 </script>
 
 <div class="left-panel container d-flex flex-column flex-shrink-0 p-0 text-bg-scheme h-100 mx-0">
 	<div class="container h-100">
 		<div class="d-flex align-items-center mb-3 pt-3 text-on-dark">
 			<h2>Portfolios</h2>
-			<i class="settings bi bi-gear mb-1 ms-3" on:click={focusSettings}/>
+			<i class="settings bi bi-gear mb-1 ms-3" on:click={_ => focusSettings()}/>
 		</div>
 		<hr>
 		<ul class="nav nav-pills flex-column">
-			{#each s.portfolios as portfolio}
+			{#each portfolios as portfolio}
 				<li class="nav-item">
 					<span class="nav-link text-on-dark px-1" class:active="{activePortfolio && activePortfolio.path == portfolio.path}" on:click={(_) => focusPortfolio(portfolio)}>
 						<!-- <i class="bi bi-book me-1"/> -->

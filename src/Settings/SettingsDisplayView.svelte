@@ -1,31 +1,48 @@
 <script lang="ts">
-    import type { SettingsModel } from "./utils/SettingsModel";
+    import { Settings } from "$utils/Data";
 
-    export let data: SettingsModel;
+    export let data;
+    data = null;
 
-    let darkMode = data.dark_mode;
-    $: {
-        data.dark_mode = darkMode;
+    let settings: Settings.Model = Settings.DefaultSettings;
+    Settings.getSettings().then((s) => {
+        settings = s;
+    });
+
+    function darkModeChange(e) {
+        const darkMode = e.target.checked;
         if (darkMode) {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
         else {
             document.documentElement.setAttribute('data-theme', 'light');
-        } 
+        }
+        const newSettings = Settings.modelFrom(settings, {switches: {darkMode: darkMode}});
+        Settings.changeSettings(newSettings);
     }
 
-    $: {
-        data.safeSettings();
+    function experimentalChange(e) {
+        const experimental = e.target.checked;
+        const newSettings = Settings.modelFrom(settings, {switches: {experimental: experimental}});
+        Settings.changeSettings(newSettings);
+    }
+
+    function animationChange(e) {
+        const animation = e.target.checked;
+        const newSettings = Settings.modelFrom(settings, {switches: {runThree: animation}});
+        Settings.changeSettings(newSettings);
     }
 
     function editorCommandChange (e) {
         const input = e.target.value;
-        data.editorCmd = input;
+        const newSettings = Settings.modelFrom(settings, {commands: {editorCmd: input}});
+        Settings.changeSettings(newSettings);
     }
     
     function terminalCommandChange (e) {
         const input = e.target.value;
-        data.terminalCmd = input;
+        const newSettings = Settings.modelFrom(settings, {commands: {terminalCmd: input}});
+        Settings.changeSettings(newSettings);
     }
 
 </script>
@@ -37,15 +54,22 @@
         <h3 class="text-on-light">General</h3>
         <div class="container">
             <div class="form-check form-switch">
-                <input class="form-check-input bg-scheme border-white" type="checkbox" role="switch" id="flexSwitchCheckDefault" bind:checked={darkMode}>
+                <input class="form-check-input bg-scheme border-white" 
+                    type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                    data-for-prop="darkMode"
+                    on:change={darkModeChange} checked="{settings.switches.darkMode}">
                 <label class="form-check-label text-on-light" for="flexSwitchCheckDefault">Toggle Dark Mode!</label>
             </div>
             <div class="form-check form-switch">
-                <input class="form-check-input bg-scheme border-white" type="checkbox" role="switch" id="flexSwitchCheckDefault" bind:checked={data.runThree}>
+                <input class="form-check-input bg-scheme border-white" 
+                    type="checkbox" role="switch" id="flexSwitchCheckDefault" 
+                    on:change={animationChange} checked="{settings.switches.runThree}">
                 <label class="form-check-label text-on-light" for="flexSwitchCheckDefault">Toggle Animations</label>
             </div>
             <div class="form-check form-switch">
-                <input class="form-check-input bg-scheme border-white" type="checkbox" role="switch" id="flexSwitchCheckDefault" bind:checked={data.experimental}>
+                <input class="form-check-input bg-scheme border-white" 
+                    type="checkbox" role="switch" id="flexSwitchCheckDefault" 
+                    on:change={experimentalChange} checked="{settings.switches.experimental}">
                 <label class="form-check-label text-on-light" for="flexSwitchCheckDefault">Enable Experimental Features</label>
             </div>
         </div>
@@ -53,11 +77,11 @@
         <div class="container">
             <div>
                 <span class="text-on-light">Standard Editor Command</span>
-                <input class="form-control w-50 text-bg-scheme" type="text" on:change="{editorCommandChange}" value="{data.editorCmd}"/>
+                <input class="form-control w-50 text-bg-scheme" type="text" on:change="{editorCommandChange}" value="{settings.commands.editorCmd}"/>
             </div>
             <div class="mt-2">
                 <span class="text-on-light">Standard Terminal Open Command</span>
-                <input class="form-control w-50 text-bg-scheme" type="text" on:change="{terminalCommandChange}" value="{data.terminalCmd}"/>
+                <input class="form-control w-50 text-bg-scheme" type="text" on:change="{terminalCommandChange}" value="{settings.commands.terminalCmd}"/>
             </div>
         </div>
     </div>

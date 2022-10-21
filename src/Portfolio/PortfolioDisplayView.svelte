@@ -5,30 +5,31 @@
 	import { StateController } from "$src/store";
     import { projectdb } from "$utils/Database";
     import { listen } from "@tauri-apps/api/event";
-    import type { PortfolioModel } from "./utils/PortfolioModel";
 	import ScrollBarComponent from "$utils/ScrollBarComponent.svelte";
+    import { Portfolio } from "$utils/Data";
 
-	export let data: PortfolioModel;
-
+	export let data: Portfolio.Model;
 	let projects: ProjectModel[] = [];
-	$: (async () => {
-		projects = await data.getProjects();
-	})();
+	$: {
+		Portfolio.getProjectsFromDatabase(data).then(pr => {
+			projects = pr;
+		})
+	}
 
 	listen<string>('searchInputChange', (event) => {
 		const query = new projectdb.query({ textSearch: [event.payload] });
-		(async () => {
-			projects = await data.getProjects(query);
-		})();
+		Portfolio.getProjectsFromDatabase(data, query).then(pr => {
+			projects = pr;
+		});
 	})
 
 	async function addProject() {
 		// ToDo use ProjectBuilder instead
 		const p = new ProjectModel();
-		p.type = data.getFocusedTypeString();
+		p.type = Portfolio.focusedTypeString(data);
 		const builder = new ProjectModelBuilder({
 			targetPortfolioPath: data.path,
-			type: data.getFocusedTypeString()
+			type: Portfolio.focusedTypeString(data)
 		})
 		StateController.switchToProjectCreation(builder);
 	}

@@ -6,7 +6,7 @@
     import { terminal } from "$utils/Scripts";
     import { fs } from "$utils/Path";
     import { stats } from "$utils/Stats";
-    import { cached_settings } from "$src/store";
+    import { Settings } from '$utils/Data';
 
     export let data: ProjectModel;
     let configExists = false;
@@ -15,22 +15,24 @@
     let makefileExists = false;
     fs.makefile_exists(data.path).then(res => makefileExists = res);
 
-    let experimental = $cached_settings.experimental;
-    let editorCmd = $cached_settings.editorCmd;
-    let terminalCmd = $cached_settings.terminalCmd;
-    
+    let settings: Settings.Model = Settings.DefaultSettings;
     let languageStats: [string, number][] = [];
-    if (experimental) {
-        stats.get_language_stats(data.path)
-            .then(res => {
-                languageStats = [];
-                const total = res.total;
-                for (const [key, value] of Object.entries(res.languages)) {
-                    languageStats = [...languageStats, [key, value / total]];
-                }
-            })
-            .catch(e => console.log(e));
-    }
+    Settings.getSettings().then(s => {
+        settings = s;
+        
+        if (settings.switches.experimental) {
+            stats.get_language_stats(data.path)
+                .then(res => {
+                    languageStats = [];
+                    const total = res.total;
+                    for (const [key, value] of Object.entries(res.languages)) {
+                        languageStats = [...languageStats, [key, value / total]];
+                    }
+                })
+                .catch(e => console.log(e));
+        }
+    });
+    
 
     let terminalOutput = {
         stdout: "",
@@ -45,7 +47,7 @@
     }
 
     function editorHere() {
-        terminal.editorHere(data.path, editorCmd).catch(e => {
+        terminal.editorHere(data.path, settings.commands.editorCmd).catch(e => {
             terminalOutput.stdout = "";
             terminalOutput.stderr = e;
             const offcanvas = new Offcanvas('#staticBackdrop');
@@ -61,7 +63,7 @@
     }
 
     function terminalHere() {
-        terminal.terminal_here(data.path, terminalCmd).catch(e => {
+        terminal.terminal_here(data.path, settings.commands.terminalCmd).catch(e => {
             terminalOutput.stdout = "";
             terminalOutput.stderr = e;
             const offcanvas = new Offcanvas('#staticBackdrop');
@@ -90,7 +92,7 @@
         <div class="d-flex justify-content-start gap-3">
             <button class="btn btn-scheme" on:click="{terminalHere}">Terminal</button>
             <button class="btn btn-scheme" on:click="{editorHere}">Editor</button>
-            {#if experimental && makefileExists}
+            {#if settings.switches.experimental && makefileExists}
                 <button class="btn btn-scheme" on:click="{makeHere}">Make</button>
             {/if}
         </div>
@@ -99,7 +101,7 @@
         </div>
     </div>
     <div class="right-bar h-100 w-100">
-        {#if experimental}
+        {#if settings.switches.experimental}
             <div class="language-stats bg-scheme mb-auto">
                 <LanguageStatComponent {languageStats}/>
             </div>

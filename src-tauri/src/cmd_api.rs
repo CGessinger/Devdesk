@@ -1,5 +1,20 @@
 use std::process::Command;
 
+#[cfg(target_os = "linux")]
+pub static DEFAULT_TERMINAL_COMMAND: &str = "gnome-terminal --working-directory .";
+#[cfg(target_os = "macos")]
+pub static DEFAULT_TERMINAL_COMMAND: &str = "open -a Terminal .";
+#[cfg(target_os = "windows")]
+pub static DEFAULT_TERMINAL_COMMAND: &str = "cmd.exe /K \"cd .\"";
+
+#[cfg(target_os = "linux")]
+pub static DEFAULT_EDITOR_COMMAND: &str = "code .";
+#[cfg(target_os = "macos")]
+pub static DEFAULT_EDITOR_COMMAND: &str = "open -a \"Visual Studio Code\" .";
+#[cfg(target_os = "windows")]
+pub static DEFAULT_TEDITORCOMMAND: &str = "cmd /C start code .";
+
+
 fn arbitrary_command<I>(path: &str, command: &str, args: I) -> Result<Vec<String>, String> 
     where I: Iterator<Item = String> 
 {
@@ -62,6 +77,6 @@ pub fn git_clone(url: String, branch: String, path: String) -> Result<(), String
 }
 
 #[tauri::command]
-pub fn run_make(path: String) -> Result<Vec<String>, String> {
+pub async fn run_make(path: String) -> Result<Vec<String>, String> {
     arbitrary_command(&path, "make", [].into_iter())
 }

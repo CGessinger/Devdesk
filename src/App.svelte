@@ -1,33 +1,28 @@
 <script lang="ts">
-	import { cached_settings, StateController } from "$src/store";
-	import { SettingsModel } from "$src/Settings/utils/SettingsModel";
+	import { StateController } from "$src/store";
 	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
+    import { Settings } from "$utils/Data";
+    import type { StateHolder } from "$utils/ComponentStateController";
 
-	SettingsModel.get_settings_from_config().then((s_) => {
-		cached_settings.update(s => (s = s_));
-        if (s_.dark_mode) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-        else {
-            document.documentElement.setAttribute('data-theme', 'light');
-        }    
+	let state: StateHolder = null;
+	StateController.subscribe((value) => {
+		state = value;
 	});
 
-	let component = null;
-	let data = null;
-	StateController.subscribe((value) => {
-		component = value.getComponent();
-		data = value.value;
+	Settings.getSwitches().then((s) => {
+        if (s.darkMode) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
 	});
 </script>
 
 <!-- <div id="beta_alert">This is a beta and is not fully tested yet. Use at your own risk!</div> -->
 <div id="main" class="d-flex flex-nowrap h-100 w-100">
-	<LeftPanel/>
+	<LeftPanel {state}/>
 	<div class="w-100 h-100 container">
-		<TopBar/>
-		<svelte:component this="{component}" {data}></svelte:component>
+		<TopBar {state}/>
+		<svelte:component this="{state.getComponent()}" data={state.value}></svelte:component>
 	</div>
 </div>
 
