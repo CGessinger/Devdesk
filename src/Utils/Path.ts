@@ -39,6 +39,10 @@ export namespace fs {
         return invoke("read_file", { path: path });
     }
 
+    export async function is_dir(path: string): Promise<string> {
+        return invoke("is_dir", { path: path });
+    }
+
     export async function write_to_file(path: string, content: string): Promise<void> {
         return invoke("write_to_file", { path: path, content: content });
     }

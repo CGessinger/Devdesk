@@ -25,6 +25,7 @@ fn main() {
       files_api::create_folder,
       files_api::write_to_file,
       files_api::makefile_exists,
+      files_api::is_dir,
       cmd_api::terminal_at,
       cmd_api::editor_at,
       cmd_api::git_clone,

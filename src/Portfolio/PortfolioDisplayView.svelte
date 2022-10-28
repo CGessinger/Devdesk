@@ -5,7 +5,7 @@
 	import { StateController } from "$src/store";
     import { projectdb } from "$utils/Database";
     import { listen } from "@tauri-apps/api/event";
-	import ScrollBarComponent from "$utils/ScrollBarComponent.svelte";
+	import ScrollBarComponent from "$src/Components/ScrollBarComponent.svelte";
     import { Portfolio } from "$utils/Data";
 
 	export let data: Portfolio.Model;

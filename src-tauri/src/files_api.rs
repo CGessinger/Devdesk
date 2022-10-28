@@ -14,6 +14,12 @@ pub fn read_dir(path: String) -> Result<Vec<String>, String> {
 }
 
 #[tauri::command]
+pub fn is_dir(path: String) -> Result<bool, String> {
+  let path = Path::new(&path);
+  Ok(path.is_dir())
+}
+
+#[tauri::command]
 pub fn read_file (path: String) -> Result<String, String> {
   let path = Path::new(&path);
   let contents = fs::read_to_string(&path).map_err(|e| e.to_string())?;
