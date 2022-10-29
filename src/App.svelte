@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { StateController } from "$src/store";
-	import TopBar from "./Components/TopBar.svelte";
 	import LeftPanel from "./Components/LeftPanel.svelte";
     import { Settings } from "$utils/Data";
     import type { StateHolder } from "$utils/ComponentStateController";
@@ -21,7 +20,6 @@
 <div id="main" class="d-flex flex-nowrap h-100 w-100">
 	<LeftPanel {state}/>
 	<div class="w-100 h-100 container">
-		<TopBar {state}/>
 		<svelte:component this="{state.getComponent()}" data={state.value}></svelte:component>
 	</div>
 </div>

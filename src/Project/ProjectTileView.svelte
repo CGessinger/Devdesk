@@ -22,7 +22,6 @@
 			"header header header header git git"
 			"main main main main right right"
 			"footer footer footer footer footer footer";
-		margin-bottom: 1rem;
 		padding: 10px;
 		gap: 10px;
 		cursor: pointer;

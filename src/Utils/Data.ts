@@ -9,28 +9,25 @@ export namespace Portfolio {
 
     export interface Model {
         readonly path: string;
-        readonly types: string[];
-        readonly focusedTypeIndex: number;
+        readonly subDirFilter: string[];
     }
 
-    export function focusedTypeString (portfolio: Model): string {
+    export function subDirFilterString (portfolio: Model): string {
         const p = portfolio;
-        return p.focusedTypeIndex >= p.types.length ? "" : p.types[p.focusedTypeIndex];
+        return p.subDirFilter ? fs.joinPath(...p.subDirFilter) : "All";
     }
 
     export function modelFromPath(path: string): Model {
         return {
             path: path,
-            types: ["All", "Concept", "Sandbox", "Release"],
-            focusedTypeIndex: 0,
+            subDirFilter: [],
         }
     }
 
     export function modelFrom(m: Model, changes: Partial<Model>): Model {
         return {
             path: changes.path || m.path,
-            types: changes.types || m.types,
-            focusedTypeIndex: changes.focusedTypeIndex || m.focusedTypeIndex,
+            subDirFilter: changes.subDirFilter || m.subDirFilter,
         }
     }
 
@@ -60,17 +57,10 @@ export namespace Portfolio {
         }
 
         const projects = await (async (): Promise<ProjectModel[]> => {
-            const type = focusedTypeString(portfolio);
             let projects = [];
-            if(type == "All") {
-                for(const t of portfolio.types) {
-                    const path = fs.joinPath(portfolio.path, t);
-                    projects = [...projects, ...await loadOrEmpty(path)];
-                }
-            } else {
-                const path = fs.joinPath(portfolio.path, type);
-                projects = [...projects, ...await loadOrEmpty(path)];
-            }
+            console.log(portfolio);
+            const path = fs.joinPath(portfolio.path, ...portfolio.subDirFilter);
+            projects = [...projects, ...await loadOrEmpty(path)];
             return projects;
         })();
 
@@ -82,12 +72,9 @@ export namespace Portfolio {
 
     export async function getProjectsFromDatabase(portfolio: Model, filter?: projectdb.query): Promise<ProjectModel[]> {
         const query = filter ?? new projectdb.query();
-        const focusedType = focusedTypeString(portfolio);
+        const focusedType = subDirFilterString(portfolio);
 
-        if (focusedType == "All")
-            query.withTypes(portfolio.types);
-        else
-            query.withTypes([focusedType]);
+        query.withDir(fs.joinPath(portfolio.path, ...portfolio.subDirFilter));
 
         return await projectdb.get_projects(query.build());
     }

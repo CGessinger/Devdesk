@@ -8,9 +8,8 @@ use crate::cmd_api;
 #[derive(serde::Deserialize, serde::Serialize, Clone, Debug)]
 pub struct Portfolio {
     pub path: String,
-    pub types: Vec<String>,
     #[serde(default)]
-    pub focusedTypeIndex: usize
+    pub subDirFilter: Vec<String>
 }
 
 impl PartialEq for Portfolio {
@@ -81,6 +80,7 @@ impl Settings {
         if !guard.contains(&portfolio) {
             guard.push(portfolio);
         }
+        println!("Portfolios: {:?}", guard);
         Ok(guard.clone())
     }
 

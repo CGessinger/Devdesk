@@ -26,10 +26,10 @@
 	async function addProject() {
 		// ToDo use ProjectBuilder instead
 		const p = new ProjectModel();
-		p.type = Portfolio.focusedTypeString(data);
+		p.type = Portfolio.subDirFilterString(data);
 		const builder = new ProjectModelBuilder({
 			targetPortfolioPath: data.path,
-			type: Portfolio.focusedTypeString(data)
+			type: Portfolio.subDirFilterString(data)
 		})
 		StateController.switchToProjectCreation(builder);
 	}
@@ -61,7 +61,9 @@
 
 <style>
 	.portfolio-scroll {
-		height: calc(100% - 3rem - 1rem);
+		height: 100%;
+		display: inline-block;
+		width: 100%;
 	}
 
 	.grid {
@@ -76,7 +78,10 @@
 	.list-group {
 		-ms-overflow-style: none; /* for Internet Explorer, Edge */
 		scrollbar-width: none; /* for Firefox */
-		overflow-y: scroll; 
+		overflow-y: scroll;
+		display: flex;
+		padding: 1rem 0 1rem 0;
+		gap: 1rem;
 	}
 
 	.list-group::-webkit-scrollbar {

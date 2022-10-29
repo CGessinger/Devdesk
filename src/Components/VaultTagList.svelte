@@ -56,7 +56,8 @@
 
 	.vaults span {
 		cursor: pointer;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
+        text-transform: capitalize;
         border-radius: 2em;
         display: inline-block;
         padding: 0.2em 0.5em;

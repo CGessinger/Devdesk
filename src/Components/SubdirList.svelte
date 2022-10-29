@@ -18,12 +18,8 @@
     function focusType(type: string) {
         if (!activePortfolio)
             return;
-
-        const index = activePortfolio.types.indexOf(type);
-        if (index == -1)
-            return;
-        
-        const newPortfolio = Portfolio.modelFrom(activePortfolio, {focusedTypeIndex: index});
+            
+        const newPortfolio = Portfolio.modelFrom(activePortfolio, {subDirFilter: [type]});
         StateController.switchToPortfolio(newPortfolio);
     }
 </script>
@@ -31,7 +27,7 @@
 <div class="subdir-container">
     {#each subdirs as subdir}
     <span class="subdir-item"
-    class:active={Portfolio.focusedTypeString(activePortfolio).toUpperCase() == subdir.toUpperCase()}
+    class:active={activePortfolio?.subDirFilter[0]?.toUpperCase() == subdir.toUpperCase()}
     on:click={_ => focusType(subdir)}>
         {subdir}
     </span>  

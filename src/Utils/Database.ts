@@ -23,7 +23,7 @@ export namespace projectdb {
     }
 
     type queryParamteters = {
-        types?: string[],
+        dir?: string,
         textSearch?: string[],
     }
     export class query {
@@ -31,18 +31,18 @@ export namespace projectdb {
 
         constructor (param?: queryParamteters) {
             this.parameters = {
-                types: [],
+                dir: "",
                 textSearch: []
             };
             if (param)
                 Object.assign(this.parameters, param);
         }
 
-        withTypes(_types?: string[]): query {
-            if(!_types)
+        withDir(_dir: string): query {
+            if(!_dir)
                 return this;
 
-            this.parameters.types = _types;
+            this.parameters.dir = _dir;
             return this;
         }
 
@@ -55,6 +55,8 @@ export namespace projectdb {
         }
 
         build(): string {
+            const conditions = [];
+
             const searchConditions = [];
             for(const text of this.parameters.textSearch) {
                 const safeText = SqlString.escape(`%${text}%`);
@@ -63,17 +65,14 @@ export namespace projectdb {
                 const cp = `path LIKE ${safeText}`
                 searchConditions.push(cn, cd, cp);
             }
-            const typeConditions = [];
-            for(const type of this.parameters.types) {
-                const safeText = SqlString.escape(`%${type}%`);
-                const ct = `type LIKE ${safeText}`
-                typeConditions.push(ct);
-            }
-            const conditions = [];
             if (searchConditions.length)
                 conditions.push("(" + searchConditions.join(" OR ") + ")");
-            if(typeConditions.length)
-                conditions.push("(" + typeConditions.join(" OR ") + ")");
+
+            if (this.parameters.dir) {
+                const safeText = SqlString.escape(`%${this.parameters.dir}%`);
+                const ct = `path LIKE ${safeText}`
+                conditions.push(ct);
+            }
 
             return `SELECT * FROM project WHERE ${conditions.join(" AND ")}`
         }
