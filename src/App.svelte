@@ -17,12 +17,29 @@
 </script>
 
 <!-- <div id="beta_alert">This is a beta and is not fully tested yet. Use at your own risk!</div> -->
-<div id="main" class="d-flex flex-nowrap h-100 w-100">
-	<LeftPanel {state}/>
-	<div class="w-100 h-100 container">
+<div id="main">
+	<div class="left-panel">
+		<LeftPanel {state}/>
+	</div>
+	<div class="right-panel">
 		<svelte:component this="{state.getComponent()}" data={state.value}></svelte:component>
 	</div>
 </div>
 
 <style>
+	#main {
+		display: flex;
+		flex-direction: row;
+		height: 100vh;
+		width: 100vw;
+		gap: 1rem;
+	}
+
+	.left-panel {
+		flex-basis: calc(100% / 5);
+	}
+
+	.right-panel {
+		flex-grow: 1;
+	}
 </style>
