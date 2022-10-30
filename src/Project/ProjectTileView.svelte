@@ -25,6 +25,11 @@
 		padding: 10px;
 		gap: 10px;
 		cursor: pointer;
+		transition: 0.2s ease;
+	}
+
+	.project_item:hover {
+		transform: scale(0.99);
 	}
 
 	.project_name {

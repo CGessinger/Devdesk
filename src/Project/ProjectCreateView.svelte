@@ -1,5 +1,4 @@
 <script lang="ts">
-    import * as bootstrap from "bootstrap"
     import { ProjectModelBuilder } from "./utils/ProjectModelBuilder";
     import type { ProjectModel } from "./utils/ProjectModel";
     import { ProjectFileHandler } from "./utils/ProjectFileHandler";
@@ -57,7 +56,11 @@
         await fileHandler.writeToConfig();
         // ToDo clone git here
 
-        StateController.switchToPortfolio(targetPortfolio);
+        StateController.switchToPrev;
+    }
+
+    function onNameInput(e) {
+        data.parameters.name = e.target.value
     }
 </script>
 
@@ -67,7 +70,8 @@
         <form class="needs-validation w-75 mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
             <div class="input-group flex-nowrap mb-3">
                 <span class="input-group-text text-bg-scheme">Name</span>
-                <input name="name" type="text" class="form-control text-bg-scheme" placeholder="Project Name" required>
+                <input name="name" type="text" class="form-control text-bg-scheme" placeholder="Project Name" 
+                on:input={onNameInput} required>
             </div>
 
             {#if experimental}
@@ -84,14 +88,9 @@
                 <textarea name="description" class="form-control text-bg-scheme"></textarea>
             </div>
 
-            <!-- <div class="input-group mb-3">
-            <select  name="type" class="form-select text-bg-scheme" required>
-                {#each targetPortfolio.types as type}
-                    <option value="{type}" selected="{type == data.parameters.type}">{type}</option>
-                {/each}
-            </select>
-            <span class="input-group-text text-bg-scheme">Type</span>
-            </div> -->
+            <div class="input-group mb-3 text-bg-scheme input-group-text">
+                <span>{data.getPathFormattedPortfolio().value}</span>
+            </div>
 
             <div class="submit-wrapper position-relative mb-0">
                 <button class="btn btn-scheme" type="submit">Create Project</button>

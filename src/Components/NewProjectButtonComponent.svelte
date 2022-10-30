@@ -1,9 +1,16 @@
 <script lang="ts">
     import { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
     import { StateController } from "$src/store";
+    import type { Portfolio } from "$src/utils/Data";
+    import { fs } from "$src/utils/Path";
+
+    export let activePortfolio: Portfolio.Model;
 
 	async function addProject() {
-		const builder = new ProjectModelBuilder();
+		const builder = new ProjectModelBuilder({
+            subDir: fs.joinPath(...activePortfolio.subDirFilter),
+            targetPortfolioPath: activePortfolio.path,
+        });
 		StateController.switchToProjectCreation(builder);
 	}
 </script>

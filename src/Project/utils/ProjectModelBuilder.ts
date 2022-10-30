@@ -7,7 +7,7 @@ interface ProjectModelBuilderParameters {
     description?: string | undefined,
     git_url?: string | undefined,
     git_branch?: string | undefined,
-    type?: string | undefined,
+    subDir?: string | undefined,
     targetPortfolioPath?: string | undefined
 }
 
@@ -36,20 +36,18 @@ export class ProjectModelBuilder {
         if (valid.is_err()) 
             return Err(valid.value as string);
 
-        const formattedType = this.formatString(this.parameters.type);
+        const formattedSubdir = this.formatString(this.parameters.subDir);
         const formattedName = this.formatString(this.parameters.name);
         const portfolioPath = this.parameters.targetPortfolioPath;
 
-        const formattedPath = fs.joinPath(portfolioPath, formattedType, formattedName);
+        const formattedPath = fs.joinPath(portfolioPath, formattedSubdir, formattedName);
 
         return Ok(formattedPath);
     }
 
     // ToDo false use of Result
     isValidForCreation(): Result<{}, string> {
-        if (!this.parameters.type || this.parameters.type == "") {
-            return Err("No type provided");
-        } else if (!this.parameters.name || this.parameters.name == "") {
+        if (!this.parameters.name || this.parameters.name == "") {
             return Err("No name provided");
         } else if (!this.parameters.targetPortfolioPath) {
             return Err("No portfolio provided");
@@ -66,7 +64,7 @@ export class ProjectModelBuilder {
         project.name = this.parameters.name;
         project.description = this.parameters.description;
         project.path = this.getPathFormattedPortfolio().unwrap();
-        project.type = this.parameters.type;
+        project.type = this.parameters.subDir;
         return Ok(project);
     }
 }

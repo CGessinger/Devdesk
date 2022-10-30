@@ -35,8 +35,8 @@
 
 <div class="portfolio-display">
 	<div class="portfolio-scroll">
-		<ul class="h-100 list-group me-1" bind:this="{scrollTarget}">
-			{#each projectFiltered ?? projects as project}
+		<ul class="h-100 list-group" bind:this="{scrollTarget}">
+			{#each projectFiltered || projects as project}
 			<li on:click={(_) => clickProject(project)}>
 				<ProjectTileView {project}/>
 			</li>
@@ -65,7 +65,6 @@
 		scrollbar-width: none; /* for Firefox */
 		overflow-y: scroll;
 		display: flex;
-		margin-right: 1rem;
 		gap: 1rem;
 	}
 

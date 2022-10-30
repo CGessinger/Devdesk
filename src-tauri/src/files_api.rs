@@ -40,7 +40,7 @@ pub fn guess_if_is_project<P: AsRef<Path>>(path: P) -> Result<bool, String> {
     let metadata = entry.metadata().map_err(|e| e.to_string())?;
     if metadata.is_dir() {
       let dir_name = entry.file_name().to_string_lossy().to_string();
-      if dir_name == "src" || dir_name == "lib" || dir_name == "bin" {
+      if dir_name == "src" || dir_name == "lib" || dir_name == "bin" || dir_name == ".ppa" {
         is_project = true;
         break;
       }

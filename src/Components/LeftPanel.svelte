@@ -6,10 +6,9 @@
     import TextSearchComponent from "./TextSearchComponent.svelte";
     import HeaderComponent from "./HeaderComponent.svelte";
     import Credits from "./Credits.svelte";
-    import NewProjectComponent from "./NewProjectComponent.svelte";
+    import NewProjectButtonComponent from "./NewProjectButtonComponent.svelte";
 
 	export let state: StateHolder;
-
 
     let activePortfolio = null;
     $: {
@@ -32,7 +31,7 @@
 		<hr>
 		<SubdirList {activePortfolio}/>
 	</div>
-	<NewProjectComponent/>
+	<NewProjectButtonComponent {activePortfolio}/>
 	<Credits/>
 </div>
 
