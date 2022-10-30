@@ -17,6 +17,11 @@
       },
       "path": {
         "all": true
+      },
+      "window": {
+        "startDragging": true,
+        "maximize": true,
+        "unmaximize": true
       }
     },
     "bundle": {
@@ -59,13 +64,6 @@
       "active": false
     },
     "windows": [
-      {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
-        "title": "Public Project Assistant",
-        "width": 800
-      }
     ]
   }
 }

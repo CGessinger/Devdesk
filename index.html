@@ -8,7 +8,19 @@
     <title>Vite + Svelte + TS</title>
   </head>
   <body>
+    <div class="dragbar"></div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
+
+  <style>
+    .dragbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      z-index: 1;
+    }
+  </style>
 </html>

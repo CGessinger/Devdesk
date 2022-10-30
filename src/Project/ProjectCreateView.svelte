@@ -67,10 +67,10 @@
 <div class="grid h-100">
     <canvas bind:this="{canvas}" class="webgl w-100 h-100"></canvas>
     <div class="container mt-5">
-        <form class="needs-validation w-75 mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
-            <div class="input-group flex-nowrap mb-3">
-                <span class="input-group-text text-bg-scheme">Name</span>
-                <input name="name" type="text" class="form-control text-bg-scheme" placeholder="Project Name" 
+        <form class="needs-validation mx-auto" on:submit|preventDefault="{submitProject}" novalidate>
+            <div class="name-input flex-nowrap mb-3">
+                <span>Name</span>
+                <input name="name" type="text" class="form-control text-bg-scheme"
                 on:input={onNameInput} required>
             </div>
 
@@ -83,8 +83,8 @@
             </div>
             {/if}
 
-            <div class="input-group mb-3">
-                <span class="input-group-text text-bg-scheme">Description</span>
+            <div class="description-input mb-3">
+                <span>Description</span>
                 <textarea name="description" class="form-control text-bg-scheme"></textarea>
             </div>
 
@@ -110,8 +110,36 @@
         grid-row: 1;
     }
 
+    form {
+        width: 60%;
+    }
+
     .input-group input {
         background-color: black;
+    }
+
+    .name-input,
+    .description-input {
+        position: relative;
+    }
+
+    .name-input > span,
+    .description-input > span {
+        position: absolute;
+        color: white;
+        top: 10px;
+        left: 12px;
+        font-weight: 300;
+    }
+
+    .description-input > textarea {
+        height: 200px;
+        padding-top: calc(1rem + 24px);
+    }
+
+    .name-input > input {
+        padding-top: calc(1rem + 24px);
+        left: 10px;
     }
 
     .submit-wrapper {

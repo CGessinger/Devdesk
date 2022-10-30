@@ -3,7 +3,7 @@
   windows_subsystem = "windows"
 )]
 
-use tauri::Manager;
+use tauri::{Manager, WindowBuilder};
 
 mod files_api;
 mod cmd_api;
@@ -43,6 +43,15 @@ fn main() {
       settings_api::set_settings
       ])
       .setup(|app| {
+        tauri::WindowBuilder::new(
+          app, "label", 
+          tauri::WindowUrl::App("index.html".into()))
+            .title("Project Manager")
+            .hidden_title(true)
+            .title_bar_style(tauri::TitleBarStyle::Overlay)
+            .build()
+            .unwrap();
+        
         let path_resolver = app.path_resolver();
         let app_dir = path_resolver.app_dir().ok_or("Could not find config dir".to_string())?;
         app.manage(settings_api::Settings::load(app_dir));

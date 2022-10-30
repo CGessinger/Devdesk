@@ -38,6 +38,7 @@
 <style>
 	.left-panel {
 		width: 350px;
+		padding-top: 20px;
 		display: flex;
 		flex-direction: column;
 		position: relative;
