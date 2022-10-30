@@ -3,13 +3,13 @@
 	import { ProjectModel } from "$src/Project/utils/ProjectModel";
     import { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
 	import { StateController } from "$src/store";
-    import { projectdb } from "$utils/Database";
     import { listen } from "@tauri-apps/api/event";
 	import ScrollBarComponent from "$src/Components/ScrollBarComponent.svelte";
     import { Portfolio } from "$utils/Data";
 
 	export let data: Portfolio.Model;
 	let projects: ProjectModel[] = [];
+	let projectFiltered: ProjectModel[] | null = null;
 	$: {
 		Portfolio.getProjectsFromDatabase(data).then(pr => {
 			projects = pr;
@@ -17,9 +17,11 @@
 	}
 	
 	listen<string>('searchInputChange', (event) => {
-		// I cannot currently support this feature because project data is
-		// not stored into database anymore and I would need to do way to many
-		// queries to get the data I need.
+		if (event.payload == "") {
+			projectFiltered = null;
+		} else {
+			projectFiltered = projects.filter(p => p.name.toLowerCase().includes(event.payload.toLowerCase()));
+		}
 	})
 
 	async function addProject() {
@@ -46,7 +48,7 @@
 	<div class="grid h-100 pe-3">
 		<ScrollBarComponent getScrollTarget={() => scrollTarget}/>
 		<ul class="overflow-auto h-100 list-group me-1" bind:this="{scrollTarget}">
-			{#each projects as project}
+			{#each projectFiltered ?? projects as project}
 			<li on:click={(_) => clickProject(project)}>
 				<ProjectTileView {project}/>
 			</li>
