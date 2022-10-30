@@ -30,17 +30,17 @@
 <div class="vaults">
     {#each portfolios as portfolio}
         <span 
-        class="text-on-dark px-1" 
+        class="text-on-dark btn-scheme" 
         class:active="{activePortfolio && activePortfolio.path == portfolio.path}" 
         on:click={(_) => focusPortfolio(portfolio)}>
             {fs.splitPath(portfolio.path).slice(-1).join(" / ")}
         </span>
     {/each}
     <div class="text-on-dark">
-        <span class="add" on:click="{addPortfolio}">
+        <span class="add btn-scheme" on:click="{addPortfolio}">
             <i class="bi bi-plus"/>
         </span>
-        <span class="remove" on:click="{removePortfolio}">
+        <span class="remove btn-scheme" on:click="{removePortfolio}">
             <i class="bi bi-trash"/>
         </span>
     </div>
@@ -63,16 +63,16 @@
         text-transform: capitalize;
         border-radius: 2em;
         display: inline-block;
-        padding: 0.2em 0.5em;
-        border: 2px solid rgba(255, 255, 255, 0.1);
+        padding: 0.2rem 0.6rem;
 	}
 
 	.vaults > span.active {
-		background-color: rgba(255, 255, 255, 0.1);
+        background-color: #78002e;
 	}
 
-    .vaults span:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+    .vaults span.add,
+    .vaults span.remove {
+        padding: 0.2rem 1rem !important;
     }
 
 </style>

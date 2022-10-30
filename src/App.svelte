@@ -32,7 +32,7 @@
 		flex-direction: row;
 		height: 100vh;
 		width: 100vw;
-		gap: 1rem;
+		gap: 0.5rem;
 	}
 
 	.left-panel {

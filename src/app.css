@@ -68,11 +68,15 @@ body {
     background-color: var(--bg-front-color);
     border-color: var(--bg-front-color);
     color: var(--font-color-on-dark);
+    transition: 0.1s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-scheme:hover {
-    background-color: white;
-    border-color: black !important;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.1));
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.02);
 }
 
 .btn-scheme-darker {

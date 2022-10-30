@@ -39,7 +39,7 @@
 
 <div class="subdir-container">
     {#each subdirs as subdir}
-    <span class="subdir-item"
+    <span class="subdir-item btn-scheme"
     class:active={activePortfolio?.subDirFilter[0]?.toUpperCase() == subdir.toUpperCase()}
     on:click={_ => focusType(subdir)}>
         {subdir}
@@ -64,10 +64,9 @@
         border-radius: 2em;
         display: inline-block;
         padding: 0.2em 0.5em;
-        border: 2px solid rgba(255, 255, 255, 0.1);
     }
 
     .subdir-item.active {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: #78002e;
     }
 </style>

@@ -84,17 +84,17 @@
                 <textarea name="description" class="form-control text-bg-scheme"></textarea>
             </div>
 
-            <div class="input-group mb-3">
+            <!-- <div class="input-group mb-3">
             <select  name="type" class="form-select text-bg-scheme" required>
                 {#each targetPortfolio.types as type}
                     <option value="{type}" selected="{type == data.parameters.type}">{type}</option>
                 {/each}
             </select>
             <span class="input-group-text text-bg-scheme">Type</span>
-            </div>
+            </div> -->
 
-            <div class="position-relative mb-0">
-                <button class="btn btn-scheme border-white" type="submit">Create Project</button>
+            <div class="submit-wrapper position-relative mb-0">
+                <button class="btn btn-scheme" type="submit">Create Project</button>
             </div>
 
         </form>
@@ -113,5 +113,17 @@
 
     .input-group input {
         background-color: black;
+    }
+
+    .submit-wrapper {
+        background-color: var(--bg-front-color);
+        display: inline-block;
+        border-radius: 0.375rem;
+    }
+
+    button[type="submit"] {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 </style>

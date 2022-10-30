@@ -80,7 +80,6 @@ impl Settings {
         if !guard.contains(&portfolio) {
             guard.push(portfolio);
         }
-        println!("Portfolios: {:?}", guard);
         Ok(guard.clone())
     }
 

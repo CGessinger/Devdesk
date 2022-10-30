@@ -6,6 +6,7 @@
     import TextSearchComponent from "./TextSearchComponent.svelte";
     import HeaderComponent from "./HeaderComponent.svelte";
     import Credits from "./Credits.svelte";
+    import NewProjectComponent from "./NewProjectComponent.svelte";
 
 	export let state: StateHolder;
 
@@ -31,6 +32,7 @@
 		<hr>
 		<SubdirList {activePortfolio}/>
 	</div>
+	<NewProjectComponent/>
 	<Credits/>
 </div>
 

@@ -24,17 +24,6 @@
 		}
 	})
 
-	async function addProject() {
-		// ToDo use ProjectBuilder instead
-		const p = new ProjectModel();
-		p.type = Portfolio.subDirFilterString(data);
-		const builder = new ProjectModelBuilder({
-			targetPortfolioPath: data.path,
-			type: Portfolio.subDirFilterString(data)
-		})
-		StateController.switchToProjectCreation(builder);
-	}
-
 	function clickProject(p: ProjectModel) {
 		const project = new ProjectModel();
 		Object.assign(project, p);
@@ -44,10 +33,9 @@
 	let scrollTarget;
 </script>
 
-<div class="portfolio-scroll">
-	<div class="grid h-100 pe-3">
-		<ScrollBarComponent getScrollTarget={() => scrollTarget}/>
-		<ul class="overflow-auto h-100 list-group me-1" bind:this="{scrollTarget}">
+<div class="portfolio-display">
+	<div class="portfolio-scroll">
+		<ul class="h-100 list-group me-1" bind:this="{scrollTarget}">
 			{#each projectFiltered ?? projects as project}
 			<li on:click={(_) => clickProject(project)}>
 				<ProjectTileView {project}/>
@@ -55,25 +43,21 @@
 			{/each}
 		</ul>
 	</div>
-	<button class="add-project btn btn-scheme sticky-bottom border border-white me-1" on:click={(_) => addProject()}>
-		<i class="bi bi-plus"/>
-	</button>
+	<ScrollBarComponent getScrollTarget={() => scrollTarget}/>
 </div>
 
 <style>
+	.portfolio-display {
+		position: relative;
+		display: inline-block;
+		height: 100%;
+		width: 100%;
+		padding: 0.5rem 0 0.5rem 0;
+	}
+
 	.portfolio-scroll {
 		height: 100%;
-		display: inline-block;
-		width: 100%;
-	}
-
-	.grid {
-		display: grid;
-	}
-
-	.grid * {
-        grid-column: 1;
-        grid-row: 1;
+		width: calc(100% - 1.5rem);
 	}
 
 	.list-group {
@@ -81,22 +65,11 @@
 		scrollbar-width: none; /* for Firefox */
 		overflow-y: scroll;
 		display: flex;
-		padding: 1rem 0 1rem 0;
+		margin-right: 1rem;
 		gap: 1rem;
 	}
 
 	.list-group::-webkit-scrollbar {
 		display: none; /* for Chrome, Safari, and Opera */
-	}
-
-	.add-project {
-		width: 4rem;
-		height: 4rem;
-		float: right;
-		bottom: 1rem;
-	}
-
-	i.bi-plus {
-		font-size: 1.5rem;
 	}
 </style>

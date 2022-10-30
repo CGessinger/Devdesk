@@ -15,7 +15,7 @@
 	function scrollEvent(e) {
 		const maxScroll = scrollTarget.scrollHeight - scrollTarget.getBoundingClientRect().height;
 		const progress = scrollTarget.scrollTop / maxScroll * 0.75;
-		progressBar.style.marginRight = progress * 100 + "%";
+		progressBar.style.marginLeft = progress * 100 + "%";
 	}
 
 	function clickScroll(e) {
@@ -60,7 +60,7 @@
 <div class="progress bg-scheme" 
     bind:this={progressContainer}
     on:mousedown|preventDefault="{clickScroll}">
-    <div class="progress-bar h-100 w-25 ms-auto" 
+    <div class="progress-bar h-100 w-25" 
         bind:this="{progressBar}" 
         on:mousedown|preventDefault={dragStart}>
     </div>
@@ -68,18 +68,21 @@
 
 <style>
 	.progress {
-		transform: rotate(-90deg);
-		transform-origin: right top;
-		-webkit-transform: rotate(-90deg);
-		-webkit-transform-origin:right top;
-		width: calc(100vh - 4rem);
-		margin-left: auto;
-        grid-column: 1;
-        grid-row: 1;
+		position: absolute;
+		display: inline-block;
+		transform: rotate(90deg);
+		transform-origin: left top;
+		-webkit-transform: rotate(90deg);
+		-webkit-transform-origin: left top;
+		width: calc(100vh - 1rem);
+		top: 0;
+		margin-top: 0.5rem;
+		margin-left: calc(100% - 0.4rem);
 	}
 
 	.progress-bar {
 		background-color: rgba(255, 255, 255, 0.2);
         cursor: grab;
+		margin-right: auto;
 	}
 </style>
