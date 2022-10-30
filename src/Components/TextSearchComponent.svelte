@@ -1,6 +1,15 @@
+<script lang="ts">
+    import { emit } from "@tauri-apps/api/event";
+
+    function searchChange(e) {
+        const value: String = e.target.value;
+        emit('searchInputChange', value);
+    }
+</script>
+
 <div class="wrapper">
     <i class="bi bi-search search-icon"></i>
-    <input class="search form-control" type="text"/>
+    <input class="search form-control" type="text" on:input={searchChange}/>
 </div>
 
 <style>

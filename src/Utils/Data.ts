@@ -31,53 +31,22 @@ export namespace Portfolio {
         }
     }
 
-    async function scanPathForProjects(path: string): Promise<ProjectModel[]> {
-        const folders: string[] = await fs.read_dir(path);
-        const projects: ProjectModel[] = [];
-        for (const f of folders) {
-            await ProjectFileHandler.readFromFolder(fs.joinPath(path, f)).then(p =>{
-                projects.push(p);
-            }).catch(err => {
-                console.log(err);
-            });      
-        }
+    export async function loadProjectsToDatabase(portfolio: Portfolio.Model) {
+        projectdb.load_recursive(portfolio.path, 1);
+    }
 
+    export async function getProjectsFromDatabase(portfolio: Portfolio.Model, q: projectdb.query | null = null): Promise<ProjectModel[]> {
+        const query = q || new projectdb.query();
+        query.withDir(fs.joinPath(portfolio.path, ...portfolio.subDirFilter));
+        query.projectsOnly();
+        const projectEntries = await projectdb.query_database(query.build());
+        const projects = [];
+        for (const p of projectEntries) {
+            projects.push(await ProjectFileHandler.readFromFolder(p.path));
+        }
         return projects;
     }
 
-    export async function loadProjectsToDatabase(portfolio: Portfolio.Model) {
-
-        const loadOrEmpty = async (path): Promise<ProjectModel[]> => {
-            return await scanPathForProjects(path).then(projects => {
-                return projects
-            }).catch(e => {
-                console.log(e);
-                return [];
-            });
-        }
-
-        const projects = await (async (): Promise<ProjectModel[]> => {
-            let projects = [];
-            console.log(portfolio);
-            const path = fs.joinPath(portfolio.path, ...portfolio.subDirFilter);
-            projects = [...projects, ...await loadOrEmpty(path)];
-            return projects;
-        })();
-
-        // Clear db
-        await projectdb.clear_db();
-        // Write Projects to db
-        await projectdb.insert_projects(projects);
-    }
-
-    export async function getProjectsFromDatabase(portfolio: Model, filter?: projectdb.query): Promise<ProjectModel[]> {
-        const query = filter ?? new projectdb.query();
-        const focusedType = subDirFilterString(portfolio);
-
-        query.withDir(fs.joinPath(portfolio.path, ...portfolio.subDirFilter));
-
-        return await projectdb.get_projects(query.build());
-    }
 }
 
 export namespace Settings {

@@ -2,15 +2,28 @@
     import { StateController } from "$src/store";
 
     import { Portfolio } from "$src/utils/Data";
+    import { projectdb } from "$src/utils/Database";
     import { fs } from "$utils/Path";
 
     export let activePortfolio: Portfolio.Model | null = null;
 
     let subdirs: string[] = [];
     $: {
+        // Maybe there is a better solution to this?
+        // Get all direct subfolders of the active portfolio
         if (activePortfolio) {
-            fs.read_dir(activePortfolio.path).then(res => {
-                subdirs = res;
+            const query = new projectdb.query();
+            query.withDir(activePortfolio.path);
+            query.foldersOnly();
+            projectdb.query_database(query.build()).then((res) => {
+                subdirs = [];
+                const targetDir = fs.splitPath(activePortfolio.path).at(-1);
+                res.forEach(dirEntry => {
+                    const pathParts = fs.splitPath(dirEntry.path);
+                    if (pathParts.at(-2) == targetDir) {
+                        subdirs = [...subdirs, pathParts.at(-1)];
+                    }
+                });
             });
         }
     };

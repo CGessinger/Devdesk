@@ -14,9 +14,45 @@ pub fn read_dir(path: String) -> Result<Vec<String>, String> {
 }
 
 #[tauri::command]
-pub fn is_dir(path: String) -> Result<bool, String> {
+pub fn read_dirs_in_dir(path: String) -> Result<Vec<String>, String> {
   let path = Path::new(&path);
-  Ok(path.is_dir())
+  let mut dirs = Vec::new();
+  for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
+    let entry = entry.map_err(|e| e.to_string())?;
+    let metadata = entry.metadata().map_err(|e| e.to_string())?;
+    if metadata.is_dir() {
+      dirs.push(entry.file_name().to_string_lossy().to_string());
+    }
+  }
+  Ok(dirs)
+}
+
+#[tauri::command]
+pub fn guess_if_is_project<P: AsRef<Path>>(path: P) -> Result<bool, String> {
+  let mut is_project = false;
+
+  if path.as_ref().is_file() {
+    return Ok(false);
+  }
+
+  for entry in fs::read_dir(path).map_err(|e| e.to_string())? {
+    let entry = entry.map_err(|e| e.to_string())?;
+    let metadata = entry.metadata().map_err(|e| e.to_string())?;
+    if metadata.is_dir() {
+      let dir_name = entry.file_name().to_string_lossy().to_string();
+      if dir_name == "src" || dir_name == "lib" || dir_name == "bin" {
+        is_project = true;
+        break;
+      }
+    } else {
+      let file_name = entry.file_name().to_string_lossy().to_string();
+      if file_name == "Cargo.toml" || file_name == "package.json" || file_name == "Makefile" {
+        is_project = true;
+        break;
+      }
+    }
+  }
+  Ok(is_project)
 }
 
 #[tauri::command]

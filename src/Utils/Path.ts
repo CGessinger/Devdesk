@@ -34,13 +34,13 @@ export namespace fs {
     export async function read_dir(path: string): Promise<string[]> {
         return invoke("read_dir", { path: path });
     }
+
+    export async function read_dirs_in_dir(path: string): Promise<string[]> {
+        return invoke("read_dirs_in_dir", { path: path });
+    }
     
     export async function read_file(path: string): Promise<string> {
         return invoke("read_file", { path: path });
-    }
-
-    export async function is_dir(path: string): Promise<string> {
-        return invoke("is_dir", { path: path });
     }
 
     export async function write_to_file(path: string, content: string): Promise<void> {

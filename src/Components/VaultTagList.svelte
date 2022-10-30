@@ -1,13 +1,16 @@
 <script lang="ts">
     import { StateController } from "$src/store";
+    import { projectdb } from "$src/utils/Database";
 
-    import { Settings, type Portfolio } from "$utils/Data";
+    import { Portfolio, Settings } from "$utils/Data";
     import { fs } from "$utils/Path";
 
     export let activePortfolio: Portfolio.Model | null = null;
     export let portfolios: Portfolio.Model[] = [];
 	
 	function focusPortfolio(p: Portfolio.Model) {
+        projectdb.clear_db();
+        Portfolio.loadProjectsToDatabase(p);
 		StateController.switchToPortfolio(p);
 	}
     

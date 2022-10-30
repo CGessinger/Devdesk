@@ -15,12 +15,11 @@
 			projects = pr;
 		})
 	}
-
+	
 	listen<string>('searchInputChange', (event) => {
-		const query = new projectdb.query({ textSearch: [event.payload] });
-		Portfolio.getProjectsFromDatabase(data, query).then(pr => {
-			projects = pr;
-		});
+		// I cannot currently support this feature because project data is
+		// not stored into database anymore and I would need to do way to many
+		// queries to get the data I need.
 	})
 
 	async function addProject() {

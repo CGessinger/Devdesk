@@ -1,8 +1,21 @@
 use std::{path::PathBuf, collections::HashMap};
 
-use crate::{files_api as fs, state_api::AppState};
+use crate::{files_api as fs};
 
 pub const LAN_JSON: &str = include_str!("languages.json");
+
+pub struct Languages {
+    pub languages: HashMap<String, Vec<String>>,
+}
+
+impl Languages {
+    pub fn new() -> Self {
+        let languages: HashMap<String, Vec<String>> = serde_json::from_str(LAN_JSON).unwrap();
+        Self {
+            languages
+        }
+    }
+}
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 pub struct LanguageStats {
@@ -11,7 +24,7 @@ pub struct LanguageStats {
 }
 
 #[tauri::command]
-pub fn read_language_stats (state: tauri::State<'_, AppState>, path: String) -> Result<LanguageStats, String> {
+pub fn read_language_stats (state: tauri::State<'_, Languages>, path: String) -> Result<LanguageStats, String> {
     let languages = &state.languages;
     read_language_stats_nostate(path, languages)
 }

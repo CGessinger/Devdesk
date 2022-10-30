@@ -9,14 +9,15 @@ mod files_api;
 mod cmd_api;
 mod db_api;
 mod stats_api;
-mod state_api;
 mod settings_api;
 
 fn main() {
   tauri::Builder::default()
-    .manage(state_api::AppState::default())
+    .manage(stats_api::Languages::new())
+    .manage(db_api::Database::new())
     .invoke_handler(tauri::generate_handler![
       files_api::read_dir,
+      files_api::read_dirs_in_dir,
       files_api::read_file,
       files_api::load_image,
       files_api::write_image,
@@ -25,15 +26,12 @@ fn main() {
       files_api::create_folder,
       files_api::write_to_file,
       files_api::makefile_exists,
-      files_api::is_dir,
       cmd_api::terminal_at,
       cmd_api::editor_at,
       cmd_api::git_clone,
       cmd_api::run_make,
-      db_api::insert_project,
-      db_api::insert_projects,
-      db_api::get_projects_filter,
-      db_api::get_projects,
+      db_api::load_recursive,
+      db_api::query_database,
       db_api::clear_db,
       stats_api::read_language_stats,
       settings_api::add_portfolio_to_settings,

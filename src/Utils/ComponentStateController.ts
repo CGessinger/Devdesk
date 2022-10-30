@@ -1,10 +1,10 @@
 import type { ProjectModel } from "$src/Project/utils/ProjectModel";
-import PortfolioView from "../Portfolio/PortfolioDisplayView.svelte";
+import PortfolioView from "../Components/PortfolioDisplayView.svelte";
 import ProjectView from "../Project/ProjectDisplayView.svelte";
 import NewProjectView from "../Project/ProjectCreateView.svelte";
 import SettingsView from "../Settings/SettingsDisplayView.svelte";
 import type { ProjectModelBuilder } from "$src/Project/utils/ProjectModelBuilder";
-import { Portfolio } from "$utils/Data";
+import type { Portfolio } from "$utils/Data";
 import { writable } from "svelte/store";
 
 export enum WindowStates {
@@ -47,11 +47,6 @@ export class StateHolder {
 export const ComponentStateController = () => {
 	const { subscribe, set, update } = writable(new StateHolder(WindowStates.Dasboard, null));
 
-    const switchToPortfolio = async (portfolio: Portfolio.Model) => {
-        await Portfolio.loadProjectsToDatabase(portfolio);
-        updateTo(new StateHolder(WindowStates.Portfolio, portfolio));
-    }
-
     const updateTo = (newState: StateHolder) => {
         update(state => {
             newState._prevValue = state.value;
@@ -65,7 +60,7 @@ export const ComponentStateController = () => {
         switchToSettings: () => updateTo(new StateHolder(WindowStates.Settings, null)),
         switchToProjectCreation: (p: ProjectModelBuilder) => updateTo(new StateHolder(WindowStates.ProjectCreation, p)),
         switchToProject: (p: ProjectModel) => updateTo(new StateHolder(WindowStates.Project, p)),
-        switchToPortfolio,
+        switchToPortfolio: (p: Portfolio.Model) => updateTo(new StateHolder(WindowStates.Portfolio, p)),
         update,
         switchToPrev: () => update(state => state = new StateHolder(state._prevWindowState, state._prevValue)),
 		reset: () => set(new StateHolder(WindowStates.Dasboard, null)),
