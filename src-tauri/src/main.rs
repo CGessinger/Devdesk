@@ -3,8 +3,7 @@
   windows_subsystem = "windows"
 )]
 
-use tauri::{Manager, WindowBuilder};
-use window_ext::WindowExt;
+use tauri::Manager;
 
 mod files_api;
 mod cmd_api;
