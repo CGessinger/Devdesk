@@ -15,12 +15,11 @@
 
 <style>
     .wrapper {
-        flex-basis: calc(100% / 8);
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         justify-content: flex-start;
-        align-items: center;
+        padding: 50px 0 1rem 1rem;
         gap: 0.5rem;
     }
 

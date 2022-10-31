@@ -4,12 +4,14 @@
 )]
 
 use tauri::{Manager, WindowBuilder};
+use window_ext::WindowExt;
 
 mod files_api;
 mod cmd_api;
 mod db_api;
 mod stats_api;
 mod settings_api;
+mod window_ext;
 
 fn main() {
   tauri::Builder::default()
@@ -43,14 +45,7 @@ fn main() {
       settings_api::set_settings
       ])
       .setup(|app| {
-        tauri::WindowBuilder::new(
-          app, "label", 
-          tauri::WindowUrl::App("index.html".into()))
-            .title("Project Manager")
-            .hidden_title(true)
-            .title_bar_style(tauri::TitleBarStyle::Overlay)
-            .build()
-            .unwrap();
+        window_ext::build_window(app);
         
         let path_resolver = app.path_resolver();
         let app_dir = path_resolver.app_dir().ok_or("Could not find config dir".to_string())?;
