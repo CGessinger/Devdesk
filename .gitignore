@@ -1,2 +1,5 @@
 /target
 /dev-test
+/node_modules
+/dist
+.DS_Stores
