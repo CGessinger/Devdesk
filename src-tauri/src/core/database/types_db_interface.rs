@@ -60,8 +60,9 @@ impl FromRow for Project {
     fn from_row(row: &rusqlite::Row) -> rusqlite::Result<Self> {
         Ok(Self {
             project_id: row.get(0)?,
-            name: row.get::<usize, String>(1)?,
-            modified: row.get::<usize, String>(3)?,
+            name: row.get(1)?,
+            path: row.get(2)?,
+            modified: row.get(3)?,
             vault_id: row.get(6)?,
         })
     }

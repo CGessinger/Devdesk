@@ -22,6 +22,7 @@ impl Vault {
 pub struct Project {
     pub project_id: i64,
     pub name: String,
+    pub path: String,
     pub modified: String,
     pub vault_id: i64,
 }
