@@ -1,3 +1,3 @@
 pub mod commands;
-pub mod sql_library;
+pub mod database;
 pub mod types;

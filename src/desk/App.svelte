@@ -8,7 +8,7 @@
     import SearchInput from "./lib/SearchInput.svelte";
     import SubdirSelector from "./lib/SubdirSelector.svelte";
     import Clock from "./lib/Clock.svelte";
-    // import Logo from "./assets/icon.ico";
+    import Logo from "./../assets/icon.ico";
 
     let current_vault = null;
     let current_projects = [];
@@ -20,6 +20,7 @@
         current_projects = info.projects;
         current_subdirs = info.sub_directories;
         recent_projects = info.recent;
+        window.info = info;
     });
     appWindow.listen("current_vault_change", (event) => {
         let info: any = event.payload;
@@ -28,20 +29,21 @@
         current_subdirs = info.sub_directories;
         recent_projects = info.recent;
         selected_id = info.selected_id;
+        window.info = info;
     });
 </script>
 
 <main>
     <div class="navbar">
+        <Breadcrump path={current_vault?.path.split("/")} />
+        <Clock />
         <a
             href="/"
             class="logo"
             on:click|preventDefault={(_) => invoke("reset_current_vault")}
         >
-            <!-- <img src={Logo} class="logo" alt="Projector Logo" /> -->
+            <img src={Logo} class="logo" alt="Projector Logo" />
         </a>
-        <Clock />
-        <Breadcrump path={current_vault?.path.split("/")} />
     </div>
     <div class="left-panel">
         <SearchInput />
@@ -86,7 +88,7 @@
         border-bottom: 1px solid rgb(44, 44, 46);
         padding: 0 1rem;
         display: flex;
-        flex-direction: row-reverse;
+        flex-direction: row;
         align-items: center;
         gap: 0.5rem;
     }

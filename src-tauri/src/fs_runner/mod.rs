@@ -1,10 +1,25 @@
-use std::{path::Path, fs::{self, DirEntry}};
 use chrono::prelude::{DateTime, Utc};
+use std::{
+    fs::{self, DirEntry},
+    path::{Path, PathBuf},
+};
 
-use crate::core::sql_library::Db;
+use crate::core::database::{
+    types_db_interface::{ProjectInsertData, VaultInsertData},
+    Db,
+};
 
-pub fn recursive_read_to_database(db: &Db, path: &Path, parent_vault_id: i64, recursion: u16) -> std::io::Result<()> {
-    let vault_id = db.insert_vault(path, parent_vault_id).unwrap();
+pub fn recursive_read_to_database(
+    db: &Db,
+    path: &Path,
+    parent_vault_id: i64,
+    recursion: u16,
+) -> std::io::Result<()> {
+    let vault_data = VaultInsertData {
+        path: PathBuf::from(path),
+        parent_vault_id,
+    };
+    let vault_id = db.upsert_vault(vault_data).unwrap();
 
     if recursion >= 2 {
         return Ok(());
@@ -13,17 +28,24 @@ pub fn recursive_read_to_database(db: &Db, path: &Path, parent_vault_id: i64, re
     let dir_entries = fs::read_dir(path)?;
     for entry in dir_entries {
         match entry {
-            Ok(file) => if !is_file(&file) {
-                let is_project = guess_is_project(&file);
-                let file_path = file.path();
-                if is_project {
-                    let name = file_path.file_name().unwrap();
-                    let modified = &modified_from(&file);
-                    db.insert_project(name, modified, vault_id);
-                } else {
-                    recursive_read_to_database(db, &file_path, vault_id, recursion + 1);
+            Ok(file) => {
+                if !is_file(&file) {
+                    let is_project = guess_is_project(&file);
+                    let file_path = file.path();
+                    if is_project {
+                        let project_data = ProjectInsertData {
+                            name: name_from(&file_path),
+                            path: file_path,
+                            modified: modified_from(&file),
+                            vault_id,
+                        };
+                        db.upsert_project(project_data).unwrap();
+                    } else {
+                        recursive_read_to_database(db, &file_path, vault_id, recursion + 1)
+                            .unwrap();
+                    }
                 }
-            },
+            }
             _ => continue,
         }
     }
@@ -34,7 +56,7 @@ pub fn is_file(file: &DirEntry) -> bool {
     let meta = file.metadata();
     match meta {
         Ok(m) => m.is_file(),
-        _ => false
+        _ => false,
     }
 }
 
@@ -45,10 +67,33 @@ pub fn modified_from(file: &DirEntry) -> String {
             return format!("{}", dt.format("%Y-%m-%d"));
         }
     }
-    return String::from("");
+    return String::from("Idk");
 }
 
+pub fn name_from(file_path: &PathBuf) -> String {
+    file_path.file_name().unwrap().to_str().unwrap().to_string()
+}
+
+const PROJECT_INDICATORS: &[&str] = &["src", ".prj", "lib", "bin", "Cargo.toml", "package.json"];
 pub fn guess_is_project(file: &DirEntry) -> bool {
     let path = file.path();
-    false
+    let dir_entries = fs::read_dir(path);
+    if dir_entries.is_err() {
+        return false;
+    }
+
+    for entry in dir_entries.unwrap() {
+        match entry {
+            Ok(file) => {
+                if is_file(&file) {
+                    let name = file.file_name();
+                    if PROJECT_INDICATORS.contains(&name.to_str().unwrap()) {
+                        return true;
+                    }
+                }
+            }
+            _ => return false,
+        }
+    }
+    return false;
 }

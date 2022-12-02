@@ -26,7 +26,6 @@
         gap: 0.5rem;
         box-sizing: border-box;
         opacity: 0.6;
-        margin-right: auto;
         user-select: none;
         -webkit-user-select: none;
     }

@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use devdesk::core::sql_library::Db;
+use devdesk::core::database::Db;
 use devdesk::core::types::Vault;
 use devdesk::glue::{tauri_commands, InitResponse};
 use std::path::Path;
@@ -19,9 +19,9 @@ fn get_init_info(app: tauri::State<'_, App>) -> InitResponse {
     let db = app.db.lock().unwrap();
     let id = app.vault_id.lock().unwrap();
     let vault = db.select_vault(*id).unwrap();
-    let projects = vec![]; //db.select_projects(vault.vault_id);
-    let recent = vec![]; //db.select_recent_projects();
-    let sub_directories = vec![]; //db.get_vaults_with_parent(*id);
+    let projects = db.select_projects_under_vault(*id);
+    let recent = db.select_recent_projects();
+    let sub_directories = db.select_vaults_with_parent(*id);
     InitResponse {
         vault,
         sub_directories,

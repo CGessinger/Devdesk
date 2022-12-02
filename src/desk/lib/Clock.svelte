@@ -97,6 +97,10 @@
 </div>
 
 <style>
+    .clock {
+        margin-left: auto;
+    }
+
     #clock-text {
         opacity: 0.8;
     }
