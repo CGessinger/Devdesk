@@ -103,6 +103,7 @@
 
     #clock-text {
         opacity: 0.8;
+        text-transform: capitalize;
     }
     :global(#clock-text .minutes) {
         color: gold;

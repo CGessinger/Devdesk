@@ -1,6 +1,7 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api";
     import { createEventDispatcher } from "svelte";
+    import { formatter } from "../../utils/formatter";
 
     export let subdirs = [];
     const dispatch = createEventDispatcher();
@@ -13,7 +14,7 @@
 <div>
     {#each subdirs as dir}
         <button on:click={(_) => subdirClick(dir.vault_id)}
-            >📂 {dir.path.split("/").at(-1)}
+            >📂 {formatter.formatName(dir.path.split("/").at(-1))}
         </button>
     {/each}
     <button on:click={(_) => dispatch("go_back")}>Back</button>
@@ -30,5 +31,6 @@
 
     button {
         height: unset;
+        text-transform: capitalize;
     }
 </style>

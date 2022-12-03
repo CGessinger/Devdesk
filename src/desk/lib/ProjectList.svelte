@@ -1,6 +1,7 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api";
     import { appWindow } from "@tauri-apps/api/window";
+    import { formatter } from "../../utils/formatter";
 
     export let projects = [];
     let selected: number = null;
@@ -11,6 +12,7 @@
         }
         invoke("focus_project", { id });
     }
+
     appWindow.listen("current_vault_change", (event) => {
         let info: any = event.payload;
         selected = info.selected_id;
@@ -24,7 +26,7 @@
             class:selected={project.project_id == selected}
             on:click={(_) => selectProject(project.project_id)}
         >
-            <span class="name">{project.name}</span>
+            <span class="name">{formatter.formatName(project.name)}</span>
             <span class="last-open">{project.modified}</span>
         </div>
     {/each}
@@ -60,6 +62,7 @@
 
     .project-item .name {
         font-weight: bold;
+        text-transform: capitalize;
     }
 
     :global(.project-item .last-open) {

@@ -13,6 +13,12 @@
     "allowlist": {
       "window": {
         "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "dialog": {
+        "open": true
       }
     },
     "bundle": {
@@ -30,7 +36,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.cgessinger.dev",
+      "identifier": "com.cgessinger.devdesk",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -54,15 +60,6 @@
     "updater": {
       "active": false
     },
-    "windows": [
-      {
-        "fullscreen": false,
-        "height": 600,
-        "resizable": true,
-        "width": 800,
-        "titleBarStyle": "Overlay",
-        "hiddenTitle": true
-      }
-    ]
+    "windows": []
   }
 }

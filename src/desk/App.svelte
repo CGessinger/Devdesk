@@ -16,6 +16,7 @@
     let recent_projects = [];
     let selected_id = null;
     invoke("get_init_info").then((info: any) => {
+        console.log("get info");
         current_vault = info.vault;
         current_projects = info.projects;
         current_subdirs = info.sub_directories;

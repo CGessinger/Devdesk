@@ -71,7 +71,8 @@ pub fn modified_from(file: &DirEntry) -> String {
 }
 
 pub fn name_from(file_path: &PathBuf) -> String {
-    file_path.file_name().unwrap().to_str().unwrap().to_string()
+    let mut name = file_path.file_name().unwrap().to_str().unwrap().to_string();
+    name
 }
 
 const PROJECT_INDICATORS: &[&str] = &["src", ".prj", "lib", "bin", "Cargo.toml", "package.json"];
