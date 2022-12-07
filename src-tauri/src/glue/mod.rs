@@ -10,3 +10,8 @@ pub struct InitResponse {
     pub recent: Vec<Project>,
     pub selected_id: Option<i64>,
 }
+
+#[derive(serde::Serialize)]
+pub struct ViewResponse {
+    pub readme: String,
+}

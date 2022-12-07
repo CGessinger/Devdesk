@@ -21,7 +21,7 @@ pub fn recursive_read_to_database(
     };
     let vault_id = db.upsert_vault(vault_data).unwrap();
 
-    if recursion >= 2 {
+    if recursion >= 3 {
         return Ok(());
     }
 
@@ -71,8 +71,7 @@ pub fn modified_from(file: &DirEntry) -> String {
 }
 
 pub fn name_from(file_path: &PathBuf) -> String {
-    let mut name = file_path.file_name().unwrap().to_str().unwrap().to_string();
-    name
+    file_path.file_name().unwrap().to_str().unwrap().to_string()
 }
 
 const PROJECT_INDICATORS: &[&str] = &["src", ".prj", "lib", "bin", "Cargo.toml", "package.json"];
@@ -97,4 +96,16 @@ pub fn guess_is_project(file: &DirEntry) -> bool {
         }
     }
     return false;
+}
+
+pub fn read_readme(project_path: &Path) -> String {
+    let readme_path = project_path.join("README.md");
+    if !readme_path.exists() {
+        return "".to_string();
+    }
+    let readme = fs::read_to_string(readme_path);
+    if readme.is_err() {
+        return "".to_string();
+    }
+    return readme.unwrap();
 }

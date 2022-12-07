@@ -2,7 +2,7 @@ mod sql_library;
 pub mod types_db_interface;
 use std::path::Path;
 
-use crate::fs_runner;
+use crate::core::filesystem;
 
 use self::types_db_interface::{FromRow, Insertable, ProjectInsertData, VaultInsertData};
 
@@ -57,8 +57,13 @@ impl Db {
     }
 
     pub fn fill_with_vault(&self, vault: &Vault) -> Result<(), String> {
-        fs_runner::recursive_read_to_database(self, vault.path.as_path(), vault.parent_vault_id, 0)
-            .map_err(|e| e.to_string())?;
+        filesystem::recursive_read_to_database(
+            self,
+            vault.path.as_path(),
+            vault.parent_vault_id,
+            0,
+        )
+        .map_err(|e| e.to_string())?;
         self.execute(sql_library::P_PURGE_KEEP, [])?;
         self.execute(sql_library::V_PURGE_KEEP, [])?;
         Ok(())
@@ -112,7 +117,10 @@ impl Db {
             return Vec::new();
         }
 
-        let sql = format!("SELECT * FROM Projects WHERE {}", id_query_string);
+        let sql = format!(
+            "SELECT * FROM Projects WHERE {} ORDER BY VaultId asc",
+            id_query_string
+        );
         self.query_many(&sql, [])
     }
 
