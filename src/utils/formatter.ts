@@ -4,4 +4,10 @@ export class formatter {
         name = name.split("_").join(" ");
         return name;
     }
+
+    static formatScriptName(name: string): string {
+        let lastPointIndex = name.lastIndexOf(".");
+        name = name.slice(0, lastPointIndex);
+        return this.formatName(name);
+    }
 }

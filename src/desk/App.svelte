@@ -14,7 +14,7 @@
     let current_projects = [];
     let current_subdirs = [];
     let recent_projects = [];
-    let selected_id = null;
+    let selected_id: number = null;
     invoke("get_init_info").then((info: any) => {
         console.log("get info");
         current_vault = info.vault;
@@ -59,11 +59,7 @@
     </div>
     <div class="main-panel">
         {#if selected_id}
-            <ProjectView
-                project={current_projects.find(
-                    (p) => p.project_id == selected_id
-                )}
-            />
+            <ProjectView projectId={selected_id} />
         {:else}
             <DefaultMain recent={recent_projects} />
         {/if}
@@ -75,11 +71,7 @@
         position: relative;
         display: grid;
         grid-template-columns: minmax(350px, 1fr) 3fr;
-        grid-template-rows: 3rem 1fr;
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
+        grid-template-rows: 3rem calc(100vh - 3rem);
     }
 
     .navbar {
@@ -114,7 +106,6 @@
     }
 
     .main-panel {
-        height: 100vh;
         grid-column: 2;
         grid-row: 2;
         background-color: rgb(28, 28, 30);

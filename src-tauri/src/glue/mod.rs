@@ -13,5 +13,7 @@ pub struct InitResponse {
 
 #[derive(serde::Serialize)]
 pub struct ViewResponse {
+    pub name: String,
     pub readme: String,
+    pub scripts: Vec<(String, String)>,
 }

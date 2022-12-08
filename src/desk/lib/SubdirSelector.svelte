@@ -13,7 +13,7 @@
 
 <div>
     {#each subdirs as dir}
-        <button on:click={(_) => subdirClick(dir.vault_id)}
+        <button on:click={(_) => subdirClick(dir.vault_id)} title={dir.path}
             >📂 {formatter.formatName(dir.path.split("/").at(-1))}
         </button>
     {/each}
@@ -32,5 +32,9 @@
     button {
         height: unset;
         text-transform: capitalize;
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap; /* Don't forget this one */
+        text-overflow: ellipsis;
     }
 </style>

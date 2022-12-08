@@ -15,6 +15,12 @@ pub fn recursive_read_to_database(
     parent_vault_id: i64,
     recursion: u16,
 ) -> std::io::Result<()> {
+    let name = name_from(&path);
+    // ToDo add ignore file
+    if name.starts_with(".") {
+        return Ok(());
+    }
+
     let vault_data = VaultInsertData {
         path: PathBuf::from(path),
         parent_vault_id,
@@ -34,7 +40,7 @@ pub fn recursive_read_to_database(
                     let file_path = file.path();
                     if is_project {
                         let project_data = ProjectInsertData {
-                            name: name_from(&file_path),
+                            name: name_from(file_path.as_path()),
                             path: file_path,
                             modified: modified_from(&file),
                             vault_id,
@@ -70,7 +76,7 @@ pub fn modified_from(file: &DirEntry) -> String {
     return String::from("Idk");
 }
 
-pub fn name_from(file_path: &PathBuf) -> String {
+pub fn name_from(file_path: &Path) -> String {
     file_path.file_name().unwrap().to_str().unwrap().to_string()
 }
 
@@ -108,4 +114,18 @@ pub fn read_readme(project_path: &Path) -> String {
         return "".to_string();
     }
     return readme.unwrap();
+}
+
+const CONFIG_FOLDER: &str = ".devdesk";
+const SCRIPTS_FOLDER: &str = "scripts";
+pub fn config_path_from(path: &Path) -> PathBuf {
+    path.join(CONFIG_FOLDER)
+}
+
+pub fn scripts_path_from(path: &Path) -> PathBuf {
+    let filename = path.file_name().unwrap();
+    if filename == CONFIG_FOLDER {
+        return path.join(SCRIPTS_FOLDER);
+    }
+    config_path_from(path).join(SCRIPTS_FOLDER)
 }

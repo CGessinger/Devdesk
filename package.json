@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.2.0",
-    "bootstrap-icons": "^1.10.2"
+    "bootstrap-icons": "^1.10.2",
+    "svelte-markdown": "^0.2.3"
   }
 }

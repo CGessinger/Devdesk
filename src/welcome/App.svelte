@@ -20,8 +20,14 @@
     }
 
     appWindow.listen("vault_set_success", () => {
-        console.log("success");
-        window.location.href = "/desk.html";
+        document.querySelector(".hello").classList.remove("active");
+        document.querySelector(".vault div").classList.remove("active");
+        document
+            .querySelector(".vault .button-wrapper")
+            .classList.remove("active");
+        setTimeout(() => {
+            window.location.href = "/desk.html";
+        }, 1 * 1000);
     });
 
     setTimeout(() => {
@@ -65,6 +71,7 @@
         text-align: center;
         font-size: 5rem;
         transform: translateY(-200%);
+        transition: 1.5s;
         transition-timing-function: ease-in;
         visibility: hidden;
     }
@@ -89,7 +96,8 @@
     .vault div {
         text-align: center;
 
-        transform: translateY(-100%);
+        transform: translateY(-50%);
+        transition: 1.5s;
         transition-timing-function: ease-in;
         visibility: hidden;
     }
@@ -104,6 +112,7 @@
 
     .vault .button-wrapper {
         transform: translateY(-100%);
+        transition: 1.5s;
         transition-timing-function: ease-in;
         visibility: hidden;
     }

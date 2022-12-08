@@ -50,6 +50,7 @@ fn main() {
             tauri_commands::terminal_at,
             tauri_commands::editor_at,
             tauri_commands::open,
+            tauri_commands::execute_script_by_name
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

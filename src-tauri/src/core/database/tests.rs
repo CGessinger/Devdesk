@@ -27,7 +27,7 @@ mod test {
         let sql = "SELECT * FROM Projects";
         assert!(fill_success.is_ok());
         let res: Vec<Project> = db.query_many(sql, []);
-        assert_eq!(res.len(), 3);
+        assert_eq!(res.len(), 4);
     }
 
     #[test]
@@ -37,7 +37,7 @@ mod test {
         let fill_success = db.fill_with_vault(&vault);
         assert!(fill_success.is_ok());
         let res: Vec<Project> = db.select_projects_under_vault(1);
-        assert_eq!(res.len(), 3);
+        assert_eq!(res.len(), 4);
     }
 
     #[test]

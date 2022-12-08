@@ -1,4 +1,9 @@
-use std::path::{Path, PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
+
+use super::filesystem::{config_path_from, scripts_path_from};
 
 // Vault
 #[derive(serde::Serialize, Debug)]
@@ -9,6 +14,10 @@ pub struct Vault {
 }
 impl Vault {
     pub fn top_level(path: &Path) -> Self {
+        let config_path = config_path_from(path);
+        fs::create_dir_all(&config_path).unwrap();
+        let scripts_path = scripts_path_from(config_path.as_path());
+        fs::create_dir_all(&scripts_path).unwrap();
         Self {
             vault_id: 1,
             path: PathBuf::from(path),

@@ -10,13 +10,37 @@ use crate::{
 use super::{InitResponse, ViewResponse};
 
 #[tauri::command]
+pub fn execute_script_by_name(
+    script_name: String,
+    project_id: i64,
+    app_state: tauri::State<'_, AppState>,
+) {
+    let db = app_state.database.lock().unwrap();
+    let project = db.select_project(project_id);
+    if project.is_none() {
+        return;
+    }
+
+    let scripts = app_state.scripts.lock().unwrap();
+    let script = scripts
+        .iter()
+        .find(|s| s.0.eq_ignore_ascii_case(&script_name));
+    if script.is_none() {
+        return;
+    }
+    // 3. sanbox script?
+    let project_path = PathBuf::from(&project.unwrap().path);
+    commands::custom::execute_custom_script(&script.unwrap().1, &project_path).unwrap();
+}
+
+#[tauri::command]
 pub fn terminal_at(path: String, command_line: Option<String>) {
-    commands::terminal_at(Path::new(&path), command_line).unwrap();
+    commands::prebuild::terminal_at(Path::new(&path), command_line).unwrap();
 }
 
 #[tauri::command]
 pub fn editor_at(path: String, command_line: Option<String>) {
-    commands::editor_at(Path::new(&path), command_line).unwrap();
+    commands::prebuild::editor_at(Path::new(&path), command_line).unwrap();
 }
 
 #[tauri::command]
@@ -25,9 +49,17 @@ pub fn open(url: &Path) {
 }
 
 #[tauri::command]
-pub fn get_project_view(path: &Path) -> ViewResponse {
-    let readme = filesystem::read_readme(path);
-    ViewResponse { readme }
+pub fn get_project_view(project_id: i64, app_state: tauri::State<'_, AppState>) -> ViewResponse {
+    let db = app_state.database.lock().unwrap();
+    let project = db.select_project(project_id).unwrap();
+    let project_path = PathBuf::from(project.path);
+    let readme = filesystem::read_readme(&project_path);
+    let scripts = app_state.scripts.lock().unwrap();
+    ViewResponse {
+        name: project.name,
+        scripts: scripts.to_vec(),
+        readme,
+    }
 }
 
 #[tauri::command]
