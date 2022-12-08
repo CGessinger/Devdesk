@@ -3,7 +3,10 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use super::filesystem::{config_path_from, scripts_path_from};
+use super::{
+    commands,
+    filesystem::{config_path_from, scripts_path_from},
+};
 
 // Vault
 #[derive(serde::Serialize, Debug)]
@@ -18,6 +21,7 @@ impl Vault {
         fs::create_dir_all(&config_path).unwrap();
         let scripts_path = scripts_path_from(config_path.as_path());
         fs::create_dir_all(&scripts_path).unwrap();
+        commands::prebuild::write_default_scripts(&scripts_path);
         Self {
             vault_id: 1,
             path: PathBuf::from(path),

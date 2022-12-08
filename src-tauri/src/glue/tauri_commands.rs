@@ -34,16 +34,6 @@ pub fn execute_script_by_name(
 }
 
 #[tauri::command]
-pub fn terminal_at(path: String, command_line: Option<String>) {
-    commands::prebuild::terminal_at(Path::new(&path), command_line).unwrap();
-}
-
-#[tauri::command]
-pub fn editor_at(path: String, command_line: Option<String>) {
-    commands::prebuild::editor_at(Path::new(&path), command_line).unwrap();
-}
-
-#[tauri::command]
 pub fn open(url: &Path) {
     open::that(url).unwrap();
 }

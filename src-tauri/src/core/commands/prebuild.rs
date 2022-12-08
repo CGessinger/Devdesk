@@ -1,28 +1,18 @@
+use std::fs;
 use std::path::Path;
 
 use super::arbitrary_command;
 use super::defaults;
 
-pub fn terminal_at(path: &Path, command_line: Option<String>) -> Result<Vec<String>, String> {
-    let command_line = command_line.unwrap_or(defaults::DEFAULT_TERMINAL_COMMAND.to_string());
-    let mut parts = shellwords::split(&command_line)
-        .map_err(|e| e.to_string())?
-        .into_iter();
-    let command = parts.next().unwrap();
-    let args = parts;
-
-    arbitrary_command(&path, &command, args)
-}
-
-pub fn editor_at(path: &Path, command_line: Option<String>) -> Result<Vec<String>, String> {
-    let command_line = command_line.unwrap_or(defaults::DEFAULT_EDITOR_COMMAND.to_string());
-    let mut parts = shellwords::split(&command_line)
-        .map_err(|e| e.to_string())?
-        .into_iter();
-    let command = parts.next().unwrap();
-    let args = parts;
-
-    arbitrary_command(&path, &command, args)
+pub fn write_default_scripts(scripts_path: &Path) {
+    let workon_path = scripts_path.join("workon.sh");
+    if !workon_path.exists() {
+        fs::write(workon_path, defaults::DEFAULT_EDITOR_COMMAND).unwrap();
+    }
+    let terminal_path = scripts_path.join("terminal.sh");
+    if !terminal_path.exists() {
+        fs::write(terminal_path, defaults::DEFAULT_TERMINAL_COMMAND).unwrap();
+    }
 }
 
 pub async fn run_make(path: &Path) -> Result<Vec<String>, String> {

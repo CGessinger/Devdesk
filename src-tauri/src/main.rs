@@ -47,8 +47,6 @@ fn main() {
             tauri_commands::focus_vault,
             tauri_commands::focus_project,
             tauri_commands::set_vault_path,
-            tauri_commands::terminal_at,
-            tauri_commands::editor_at,
             tauri_commands::open,
             tauri_commands::execute_script_by_name
         ])
