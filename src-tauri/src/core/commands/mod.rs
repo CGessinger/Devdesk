@@ -1,7 +1,7 @@
 use std::{path::Path, process::Command};
 
 pub mod custom;
-mod defaults;
+mod defaults_library;
 pub mod prebuild;
 
 fn arbitrary_command<I>(path: &Path, command: &str, args: I) -> Result<Vec<String>, String>

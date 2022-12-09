@@ -20,7 +20,7 @@ pub fn read_custom_scripts(scripts_path: &Path) -> Vec<(String, String)> {
             continue;
         }
 
-        let name = filesystem::name_from(script_path.as_path());
+        let name = filesystem::utils::name_from(script_path.as_path());
         let script = fs::read_to_string(script_path.as_path());
         if script.is_err() {
             continue;

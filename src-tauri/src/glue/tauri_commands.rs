@@ -43,7 +43,7 @@ pub fn get_project_view(project_id: i64, app_state: tauri::State<'_, AppState>) 
     let db = app_state.database.lock().unwrap();
     let project = db.select_project(project_id).unwrap();
     let project_path = PathBuf::from(project.path);
-    let readme = filesystem::read_readme(&project_path);
+    let readme = filesystem::utils::read_readme(&project_path);
     let scripts = app_state.scripts.lock().unwrap();
     ViewResponse {
         name: project.name,

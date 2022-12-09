@@ -57,7 +57,7 @@ impl Db {
     }
 
     pub fn fill_with_vault(&self, vault: &Vault) -> Result<(), String> {
-        filesystem::recursive_read_to_database(
+        filesystem::runner::recursive_read_to_database(
             self,
             vault.path.as_path(),
             vault.parent_vault_id,
