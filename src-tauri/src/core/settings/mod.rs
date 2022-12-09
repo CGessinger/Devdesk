@@ -6,15 +6,10 @@ pub mod utils;
 #[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 pub struct Settings {
     pub vault_path: Option<PathBuf>,
-    #[serde(skip)]
-    pub project_indicators: Vec<String>,
 }
 impl Default for Settings {
     fn default() -> Self {
-        Self {
-            vault_path: None,
-            project_indicators: Vec::new(),
-        }
+        Self { vault_path: None }
     }
 }
 impl Settings {
