@@ -67,3 +67,8 @@ input::placeholder {
     color: #fff;
     opacity: 0.8;
 }
+
+a {
+    font-weight: bold;
+    color: white;
+}

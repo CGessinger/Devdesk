@@ -26,7 +26,9 @@
         <span style="--tag-bg: #3178C6">Typescript</span> -->
     </div>
     <div class="md-wrapper">
-        <SvelteMarkdown source={readme} />
+        <div class="no-events-wrapper">
+            <SvelteMarkdown source={readme} />
+        </div>
     </div>
     <div class="foot-wrapper">
         <!-- <button on:click={(_) => invoke("editor_at", { path: project.path })}
@@ -75,6 +77,11 @@
     .md-wrapper {
         grid-row: 2;
         overflow-y: scroll;
+        cursor: text;
+    }
+
+    .md-wrapper > .no-events-wrapper {
+        pointer-events: none;
     }
 
     :global(.md-wrapper h1) {

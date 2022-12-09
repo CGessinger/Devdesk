@@ -11,6 +11,7 @@
     import Logo from "./../assets/icon.ico";
 
     let current_vault = null;
+    let breadcrumps = [];
     let current_projects = [];
     let current_subdirs = [];
     let recent_projects = [];
@@ -18,6 +19,7 @@
     invoke("get_init_info").then((info: any) => {
         console.log("get info");
         current_vault = info.vault;
+        breadcrumps = current_vault?.path.split("/");
         current_projects = info.projects;
         current_subdirs = info.sub_directories;
         recent_projects = info.recent;
@@ -30,13 +32,18 @@
         current_subdirs = info.sub_directories;
         recent_projects = info.recent;
         selected_id = info.selected_id;
+        const project = current_projects.find(
+            (p) => p.project_id == selected_id
+        );
+        const breadcrumpPath = project?.path || current_vault.path;
+        breadcrumps = breadcrumpPath.split("/");
         window.info = info;
     });
 </script>
 
 <main>
     <div class="navbar">
-        <Breadcrump path={current_vault?.path.split("/")} />
+        <Breadcrump path={breadcrumps} />
         <Clock />
         <a
             href="/"
