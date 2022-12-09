@@ -1,20 +1,19 @@
 use std::{path::Path, sync::Mutex};
 
-use crate::core::{
-    commands, database::Db, filesystem::configtree::scripts_path_from, settings::Settings,
-    types::Vault,
-};
+use crate::core::commands;
+use crate::core::database::Db;
+use crate::core::filesystem::configtree;
+use crate::core::types::Vault;
 
 pub struct AppState {
-    pub settings: Mutex<Settings>,
     pub database: Mutex<Db>,
     pub scripts: Mutex<Vec<(String, String)>>,
     pub vault_id: Mutex<i64>,
 }
 impl AppState {
-    pub fn new(path: &Path, settings: Settings) -> Self {
+    pub fn new(path: &Path) -> Self {
         let vault = Vault::top_level(path);
-        let scripts_path = scripts_path_from(&vault.path);
+        let scripts_path = configtree::scripts_path_from(&vault.path);
         let scripts = commands::custom::read_custom_scripts(&scripts_path);
         let config_path = vault.path.join(".devdesk");
         let db = Db::new(&config_path);
@@ -22,15 +21,10 @@ impl AppState {
 
         let app_state = AppState {
             database: Mutex::new(db),
-            settings: Mutex::new(settings),
             scripts: Mutex::new(scripts),
             vault_id: Mutex::new(1),
         };
 
         app_state
     }
-}
-
-pub struct InitState {
-    pub settings: Mutex<Settings>,
 }

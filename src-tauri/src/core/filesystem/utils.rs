@@ -23,18 +23,7 @@ pub fn name_from(file_path: &Path) -> String {
     file_path.file_name().unwrap().to_str().unwrap().to_string()
 }
 
-const PROJECT_INDICATORS: &[&str] = &[
-    "src",
-    ".prj",
-    "lib",
-    "bin",
-    "Cargo.toml",
-    "package.json",
-    ".git",
-    ".gitignore",
-    "main.py",
-];
-pub fn guess_is_project(folder: &fs::DirEntry) -> bool {
+pub fn guess_is_project(folder: &fs::DirEntry, indicators: &Vec<String>) -> bool {
     let path = folder.path();
     let dir_entries = fs::read_dir(path);
     if dir_entries.is_err() {
@@ -48,7 +37,7 @@ pub fn guess_is_project(folder: &fs::DirEntry) -> bool {
         let file = entry.unwrap();
         if is_file(&file) {
             let name = name_from(&file.path());
-            if PROJECT_INDICATORS.contains(&name.as_str()) {
+            if indicators.contains(&name) {
                 return true;
             }
         }

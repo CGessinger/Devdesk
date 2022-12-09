@@ -6,7 +6,10 @@ use crate::core::filesystem;
 
 use self::types_db_interface::{FromRow, Insertable, ProjectInsertData, VaultInsertData};
 
-use super::types::{Project, Vault};
+use super::{
+    filesystem::utils,
+    types::{Project, Vault},
+};
 
 pub struct Db(rusqlite::Connection);
 impl Db {
@@ -57,11 +60,13 @@ impl Db {
     }
 
     pub fn fill_with_vault(&self, vault: &Vault) -> Result<(), String> {
+        let indicators = &vault.config.as_ref().unwrap().project_indicators;
         filesystem::runner::recursive_read_to_database(
             self,
             vault.path.as_path(),
             vault.parent_vault_id,
             0,
+            indicators,
         )
         .map_err(|e| e.to_string())?;
         self.execute(sql_library::P_PURGE_KEEP, [])?;

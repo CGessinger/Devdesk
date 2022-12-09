@@ -1,5 +1,5 @@
 use std::{
-    fs,
+    fs::{self},
     path::{Path, PathBuf},
 };
 
@@ -15,6 +15,7 @@ pub fn recursive_read_to_database(
     path: &Path,
     parent_vault_id: i64,
     recursion: u16,
+    indicators: &Vec<String>,
 ) -> std::io::Result<()> {
     let name = utils::name_from(&path);
     // ToDo add ignore file
@@ -43,7 +44,7 @@ pub fn recursive_read_to_database(
             continue;
         }
 
-        let is_project = utils::guess_is_project(&folder);
+        let is_project = utils::guess_is_project(&folder, indicators);
         let file_path = folder.path();
         if is_project {
             let project_data = ProjectInsertData {
@@ -54,7 +55,8 @@ pub fn recursive_read_to_database(
             };
             db.upsert_project(project_data).unwrap();
         } else {
-            recursive_read_to_database(db, &file_path, vault_id, recursion + 1).unwrap();
+            recursive_read_to_database(db, &file_path, vault_id, recursion + 1, indicators)
+                .unwrap();
         }
     }
     Ok(())

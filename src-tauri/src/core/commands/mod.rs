@@ -1,8 +1,7 @@
 use std::{path::Path, process::Command};
 
 pub mod custom;
-mod defaults_library;
-pub mod prebuild;
+pub mod defaults;
 
 fn arbitrary_command<I>(path: &Path, command: &str, args: I) -> Result<Vec<String>, String>
 where

@@ -1,34 +1,11 @@
 <script>
     import { invoke } from "@tauri-apps/api";
 
-    import { open } from "@tauri-apps/api/dialog";
-    import { documentDir } from "@tauri-apps/api/path";
-    import { appWindow } from "@tauri-apps/api/window";
-
     import Logo from "./lib/Logo.svelte";
 
     async function selectVault() {
-        const selected = await open({
-            multiple: false,
-            directory: true,
-            defaultPath: await documentDir(),
-        });
-
-        if (!selected) return;
-        console.log("set");
-        invoke("set_vault_path", { path: selected });
+        invoke("pick_vault");
     }
-
-    appWindow.listen("vault_set_success", () => {
-        document.querySelector(".hello").classList.remove("active");
-        document.querySelector(".vault div").classList.remove("active");
-        document
-            .querySelector(".vault .button-wrapper")
-            .classList.remove("active");
-        setTimeout(() => {
-            window.location.href = "/desk.html";
-        }, 1 * 1000);
-    });
 
     setTimeout(() => {
         let hello = document.querySelector(".hello");

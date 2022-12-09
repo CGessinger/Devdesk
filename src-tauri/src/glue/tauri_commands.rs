@@ -1,11 +1,13 @@
 use std::path::{Path, PathBuf};
 
+use tauri::api::dialog::FileDialogBuilder;
 use tauri::Manager;
 
-use crate::{
-    core::{commands, filesystem},
-    state::{AppState, InitState},
-};
+use crate::app_windows::get_desk;
+use crate::core::commands;
+use crate::core::filesystem;
+use crate::core::settings::Settings;
+use crate::state::AppState;
 
 use super::{InitResponse, ViewResponse};
 
@@ -36,6 +38,33 @@ pub fn execute_script_by_name(
 #[tauri::command]
 pub fn open(url: &Path) {
     open::that(url).unwrap();
+}
+
+#[tauri::command]
+pub fn pick_vault(app_handle: tauri::AppHandle) {
+    FileDialogBuilder::new().pick_folder(move |folder_path| {
+        if folder_path.is_none() {
+            return;
+        }
+        let folder_path = folder_path.unwrap();
+
+        let path_resolver = app_handle.path_resolver();
+        let config_path = path_resolver.app_config_dir().unwrap();
+
+        // Update Settings
+        let mut settings = Settings::get_or_default(&config_path);
+        settings.set_vault_path(folder_path.clone());
+        // Save updated settings
+        settings.save(config_path);
+
+        // Construct App State
+        let app_state = AppState::new(folder_path.as_path());
+        app_handle.manage(app_state);
+
+        app_handle.get_window("welcome").unwrap().close().unwrap();
+        let window_builder = get_desk(&app_handle);
+        window_builder.build().unwrap();
+    });
 }
 
 #[tauri::command]
@@ -95,27 +124,4 @@ pub fn focus_project(
 #[tauri::command]
 pub fn reset_current_vault(app_state: tauri::State<'_, AppState>, window: tauri::Window) {
     focus_vault(1, app_state, window);
-}
-
-// When this function is called, the Settings are already initilized and only need to be updated
-#[tauri::command]
-pub fn set_vault_path(
-    path: PathBuf,
-    init_state: tauri::State<'_, InitState>,
-    app_handle: tauri::AppHandle,
-    window: tauri::Window,
-) {
-    // Update Settings
-    let mut settings = init_state.settings.lock().unwrap().clone();
-    settings.set_vault_path(path.clone());
-    let path_resolver = app_handle.path_resolver();
-    let config_path = path_resolver.app_config_dir().unwrap();
-    settings.save(config_path);
-
-    // Construct App State
-    let app_state = AppState::new(path.as_path(), settings);
-    app_handle.manage(app_state);
-
-    // Notify Client
-    window.emit("vault_set_success", {}).unwrap();
 }

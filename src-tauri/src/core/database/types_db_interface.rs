@@ -22,6 +22,7 @@ impl FromRow for Vault {
             vault_id: row.get(0)?,
             path: PathBuf::from(row.get::<usize, String>(1)?),
             parent_vault_id: row.get(3)?,
+            config: None,
         })
     }
 }
