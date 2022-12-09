@@ -1,7 +1,8 @@
 use std::{path::Path, sync::Mutex};
 
 use crate::core::{
-    commands, database::Db, filesystem::scripts_path_from, settings::Settings, types::Vault,
+    commands, database::Db, filesystem::configtree::scripts_path_from, settings::Settings,
+    types::Vault,
 };
 
 pub struct AppState {

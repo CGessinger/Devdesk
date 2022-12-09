@@ -1,11 +1,8 @@
-use std::{
-    fs,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 use super::{
     commands,
-    filesystem::{config_path_from, scripts_path_from},
+    filesystem::configtree::{self, scripts_path_from},
 };
 
 // Vault
@@ -17,10 +14,8 @@ pub struct Vault {
 }
 impl Vault {
     pub fn top_level(path: &Path) -> Self {
-        let config_path = config_path_from(path);
-        fs::create_dir_all(&config_path).unwrap();
-        let scripts_path = scripts_path_from(config_path.as_path());
-        fs::create_dir_all(&scripts_path).unwrap();
+        configtree::build_config_folders(path);
+        let scripts_path = scripts_path_from(path);
         commands::prebuild::write_default_scripts(&scripts_path);
         Self {
             vault_id: 1,

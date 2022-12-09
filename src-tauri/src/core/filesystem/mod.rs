@@ -9,6 +9,8 @@ use crate::core::database::{
     Db,
 };
 
+pub mod configtree;
+
 pub fn recursive_read_to_database(
     db: &Db,
     path: &Path,
@@ -80,7 +82,17 @@ pub fn name_from(file_path: &Path) -> String {
     file_path.file_name().unwrap().to_str().unwrap().to_string()
 }
 
-const PROJECT_INDICATORS: &[&str] = &["src", ".prj", "lib", "bin", "Cargo.toml", "package.json"];
+const PROJECT_INDICATORS: &[&str] = &[
+    "src",
+    ".prj",
+    "lib",
+    "bin",
+    "Cargo.toml",
+    "package.json",
+    ".git",
+    ".gitignore",
+    "main.py",
+];
 pub fn guess_is_project(file: &DirEntry) -> bool {
     let path = file.path();
     let dir_entries = fs::read_dir(path);
@@ -114,18 +126,4 @@ pub fn read_readme(project_path: &Path) -> String {
         return "".to_string();
     }
     return readme.unwrap();
-}
-
-const CONFIG_FOLDER: &str = ".devdesk";
-const SCRIPTS_FOLDER: &str = "scripts";
-pub fn config_path_from(path: &Path) -> PathBuf {
-    path.join(CONFIG_FOLDER)
-}
-
-pub fn scripts_path_from(path: &Path) -> PathBuf {
-    let filename = path.file_name().unwrap();
-    if filename == CONFIG_FOLDER {
-        return path.join(SCRIPTS_FOLDER);
-    }
-    config_path_from(path).join(SCRIPTS_FOLDER)
 }
