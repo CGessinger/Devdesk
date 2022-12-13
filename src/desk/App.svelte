@@ -10,34 +10,19 @@
     import Clock from "./lib/Clock.svelte";
     import Logo from "./../assets/icon.ico";
 
-    let current_vault = null;
-    let breadcrumps = [];
-    let current_projects = [];
-    let current_subdirs = [];
-    let recent_projects = [];
-    let selected_id: number = null;
-    invoke("get_init_info").then((info: any) => {
-        console.log("get info");
-        current_vault = info.vault;
-        breadcrumps = current_vault?.path.split("/");
-        current_projects = info.projects;
-        current_subdirs = info.sub_directories;
-        recent_projects = info.recent;
-        window.info = info;
+    import type { Dashboard } from "../utils/types";
+    import { formatter } from "../utils/formatter";
+
+    let dashboard: Dashboard = null;
+    let breadcrumps: string[] = [];
+    invoke("get_init_info").then((info: Dashboard) => {
+        dashboard = info;
+        breadcrumps = formatter.breadcrumpsFrom(dashboard.selected?.path, dashboard.vault.path);
     });
     appWindow.listen("current_vault_change", (event) => {
-        let info: any = event.payload;
-        current_vault = info.vault;
-        current_projects = info.projects;
-        current_subdirs = info.sub_directories;
-        recent_projects = info.recent;
-        selected_id = info.selected_id;
-        const project = current_projects.find(
-            (p) => p.project_id == selected_id
-        );
-        const breadcrumpPath = project?.path || current_vault.path;
-        breadcrumps = breadcrumpPath.split("/");
-        window.info = info;
+        let info: Dashboard = event.payload;
+        dashboard = info;
+        breadcrumps = formatter.breadcrumpsFrom(dashboard.selected?.path, dashboard.vault.path);
     });
 </script>
 
@@ -56,19 +41,19 @@
     <div class="left-panel">
         <SearchInput />
         <SubdirSelector
-            subdirs={current_subdirs}
+            subdirs={dashboard?.sub_directories}
             on:go_back={(_) =>
                 invoke("focus_vault", {
-                    id: Math.max(current_vault.parent_vault_id, 1),
+                    id: Math.max(dashboard?.vault.parent_vault_id, 1),
                 })}
         />
-        <ProjectList projects={current_projects} />
+        <ProjectList projects={dashboard?.projects} />
     </div>
     <div class="main-panel">
-        {#if selected_id}
-            <ProjectView projectId={selected_id} />
+        {#if dashboard?.selected}
+            <ProjectView project={dashboard?.selected} />
         {:else}
-            <DefaultMain recent={recent_projects} />
+            <DefaultMain recent={dashboard?.recent} />
         {/if}
     </div>
 </main>

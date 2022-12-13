@@ -10,4 +10,11 @@ export class formatter {
         name = name.slice(0, lastPointIndex);
         return this.formatName(name);
     }
+
+    static breadcrumpsFrom(path: string, fallbackPath: string = ""): string[] {
+        if (path) {
+            return path.split("/");
+        }
+        return fallbackPath.split("/");
+    }
 }

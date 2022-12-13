@@ -2,12 +2,13 @@
     import { invoke } from "@tauri-apps/api";
     import { appWindow } from "@tauri-apps/api/window";
     import { formatter } from "../../utils/formatter";
+    import type { Project } from "../../utils/types";
 
     export let projects = [];
-    let selected: number = null;
+    let selected: Project = null;
 
     function selectProject(id: number) {
-        if (selected == id) {
+        if (selected?.project_id == id) {
             id = null;
         }
         invoke("focus_project", { id });
@@ -15,20 +16,20 @@
 
     appWindow.listen("current_vault_change", (event) => {
         let info: any = event.payload;
-        selected = info.selected_id;
+        selected = info.selected;
     });
 </script>
 
 <div class="project-list">
     {#each projects as project}
-        <div
+        <button
             class="project-item"
-            class:selected={project.project_id == selected}
+            class:selected={project.project_id == selected?.project_id}
             on:click={(_) => selectProject(project.project_id)}
         >
             <span class="name">{formatter.formatName(project.name)}</span>
             <span class="last-open">{project.modified}</span>
-        </div>
+        </button>
     {/each}
 </div>
 
@@ -41,16 +42,21 @@
         flex: 1;
     }
 
-    :global(.project-item.selected) {
-        background-color: rgb(255, 45, 85);
+    .project-item.selected {
+        background: rgb(255, 45, 85);
     }
 
-    :global(.project-item.selected > .last-open) {
+    .project-item.selected > .last-open {
         color: white;
     }
 
     .project-item {
+        background: unset;
+        height: unset;
+        font-size: unset;
+        text-align: left;
         padding: 15px;
+
         display: grid;
         grid-template-columns: 1fr Auto;
         border-radius: 0.5em;
@@ -65,7 +71,7 @@
         text-transform: capitalize;
     }
 
-    :global(.project-item .last-open) {
+    .project-item .last-open {
         font-size: 0.9rem;
         color: rgb(255, 45, 85);
     }
