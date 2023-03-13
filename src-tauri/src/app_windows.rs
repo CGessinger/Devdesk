@@ -1,9 +1,14 @@
 fn get_window<'a>(app: &'a tauri::AppHandle, url: &str, label: &str) -> tauri::WindowBuilder<'a> {
-    tauri::WindowBuilder::new(app, label, tauri::WindowUrl::App(url.into()))
+    let window = tauri::WindowBuilder::new(app, label, tauri::WindowUrl::App(url.into()))
         .inner_size(800.0, 600.0)
+        .resizable(true);
+
+    #[cfg(target_os = "macos")]
+    window
         .title_bar_style(tauri::TitleBarStyle::Overlay)
-        .hidden_title(true)
-        .resizable(true)
+        .hidden_title(true);
+
+    window
 }
 
 pub fn get_desk(app: &tauri::AppHandle) -> tauri::WindowBuilder {
