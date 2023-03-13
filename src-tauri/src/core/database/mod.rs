@@ -6,10 +6,7 @@ use crate::core::filesystem;
 
 use self::types_db_interface::{FromRow, Insertable, ProjectInsertData, VaultInsertData};
 
-use super::{
-    filesystem::utils,
-    types::{Project, Vault},
-};
+use super::types::{Project, Vault};
 
 pub struct Db(rusqlite::Connection);
 impl Db {

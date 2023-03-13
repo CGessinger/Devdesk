@@ -43,7 +43,8 @@ fn main() {
             tauri_commands::focus_vault,
             tauri_commands::focus_project,
             tauri_commands::open,
-            tauri_commands::execute_script_by_name
+            tauri_commands::execute_script_by_name,
+            tauri_commands::backup_vault,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

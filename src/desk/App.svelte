@@ -10,34 +10,26 @@
     import Clock from "./lib/Clock.svelte";
     import Logo from "./../assets/icon.ico";
 
-    let current_vault = null;
-    let breadcrumps = [];
-    let current_projects = [];
-    let current_subdirs = [];
-    let recent_projects = [];
-    let selected_id: number = null;
-    invoke("get_init_info").then((info: any) => {
-        console.log("get info");
-        current_vault = info.vault;
-        breadcrumps = current_vault?.path.split("/");
-        current_projects = info.projects;
-        current_subdirs = info.sub_directories;
-        recent_projects = info.recent;
-        window.info = info;
+    import type { Dashboard } from "../utils/types";
+    import { formatter } from "../utils/formatter";
+    import Taskbar from "./lib/Taskbar.svelte";
+
+    let dashboard: Dashboard = null;
+    let breadcrumps: string[] = [];
+    invoke("get_init_info").then((info: Dashboard) => {
+        dashboard = info;
+        breadcrumps = formatter.breadcrumpsFrom(
+            dashboard.selected?.path,
+            dashboard.vault.path
+        );
     });
     appWindow.listen("current_vault_change", (event) => {
-        let info: any = event.payload;
-        current_vault = info.vault;
-        current_projects = info.projects;
-        current_subdirs = info.sub_directories;
-        recent_projects = info.recent;
-        selected_id = info.selected_id;
-        const project = current_projects.find(
-            (p) => p.project_id == selected_id
+        let info: Dashboard = event.payload;
+        dashboard = info;
+        breadcrumps = formatter.breadcrumpsFrom(
+            dashboard.selected?.path,
+            dashboard.vault.path
         );
-        const breadcrumpPath = project?.path || current_vault.path;
-        breadcrumps = breadcrumpPath.split("/");
-        window.info = info;
     });
 </script>
 
@@ -56,19 +48,22 @@
     <div class="left-panel">
         <SearchInput />
         <SubdirSelector
-            subdirs={current_subdirs}
+            subdirs={dashboard?.sub_directories}
             on:go_back={(_) =>
                 invoke("focus_vault", {
-                    id: Math.max(current_vault.parent_vault_id, 1),
+                    id: Math.max(dashboard?.vault.parent_vault_id, 1),
                 })}
         />
-        <ProjectList projects={current_projects} />
+        <ProjectList projects={dashboard?.projects} />
+    </div>
+    <div class="taskbar">
+        <Taskbar />
     </div>
     <div class="main-panel">
-        {#if selected_id}
-            <ProjectView projectId={selected_id} />
+        {#if dashboard?.selected}
+            <ProjectView project={dashboard?.selected} />
         {:else}
-            <DefaultMain recent={recent_projects} />
+            <DefaultMain recent={dashboard?.recent} />
         {/if}
     </div>
 </main>
@@ -78,7 +73,7 @@
         position: relative;
         display: grid;
         grid-template-columns: minmax(350px, 1fr) 3fr;
-        grid-template-rows: 3rem calc(100vh - 3rem);
+        grid-template-rows: 3rem calc(100vh - 5rem) 2rem;
     }
 
     .navbar {
@@ -101,20 +96,31 @@
 
     .left-panel {
         grid-row: 1 / span 2;
-        height: 100vh;
+        height: 100%;
         background: rgb(44, 44, 46);
         display: flex;
         box-sizing: border-box;
         flex-direction: column;
         align-items: flex-start;
-        padding: 3rem 1.5rem;
-        gap: 20px;
+        padding: 3rem 1rem 1rem 1rem;
+        border-right: 1px solid black;
+        gap: 0.5rem;
+    }
+
+    .taskbar {
+        grid-row: 3;
+        grid-column: 1;
+        background-color: rgb(69, 123, 157);
+        width: 100%;
+        border-top: 1px solid rgb(44, 44, 46);
+        align-items: center;
+        gap: 0.5rem;
         border-right: 1px solid black;
     }
 
     .main-panel {
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 2 / span 2;
         background-color: rgb(28, 28, 30);
     }
 </style>

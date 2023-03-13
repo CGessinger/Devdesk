@@ -5,20 +5,20 @@
 
 <div class="wrapper">
     <div class="content">
-        <div class="new">
+        <button class="action new">
             <i class="bi bi-plus-square" />
             <span>New Project</span>
-        </div>
-        <div class="about">
+        </button>
+        <button class="action about">
             <i class="bi bi-info-square" />
             <span>About</span>
-        </div>
+        </button>
 
-        <div class="settings">
+        <button class="action settings">
             <i class="bi bi-toggles" />
             <span>Settings</span>
-        </div>
-        <div class="recent">
+        </button>
+        <div class="action recent">
             <span>Recent <i class="bi bi-stars" /></span>
             <div class="recent-list">
                 <ProjectList projects={recent} />
@@ -43,11 +43,12 @@
         grid-template-rows: repeat(4, 1fr);
     }
 
-    .content > div:hover {
+    .content > .action:hover {
         background-color: rgb(255, 45, 85);
     }
 
-    .content > div {
+    .content > .action {
+        height: calc(100% - 1rem);
         margin: 0.5rem;
         background: rgb(44, 44, 46);
         border-radius: 0.325rem;

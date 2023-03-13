@@ -7,9 +7,10 @@ use crate::app_windows::get_desk;
 use crate::core::commands;
 use crate::core::filesystem;
 use crate::core::settings::Settings;
+use crate::core::types::Project;
 use crate::state::AppState;
 
-use super::{InitResponse, ViewResponse};
+use super::{DasboardResponse, ViewResponse};
 
 #[tauri::command]
 pub fn execute_script_by_name(
@@ -82,19 +83,19 @@ pub fn get_project_view(project_id: i64, app_state: tauri::State<'_, AppState>) 
 }
 
 #[tauri::command]
-pub fn get_init_info(app_state: tauri::State<'_, AppState>) -> InitResponse {
+pub fn get_init_info(app_state: tauri::State<'_, AppState>) -> DasboardResponse {
     let db = app_state.database.lock().unwrap();
     let id = app_state.vault_id.lock().unwrap();
     let vault = db.select_vault(*id).unwrap();
     let projects = db.select_projects_under_vault(*id);
     let recent = db.select_recent_projects();
     let sub_directories = db.select_vaults_with_parent(*id);
-    InitResponse {
+    DasboardResponse {
         vault,
         sub_directories,
         projects,
         recent,
-        selected_id: None,
+        selected: None,
     }
 }
 
@@ -111,17 +112,44 @@ pub fn focus_project(
     app_state: tauri::State<'_, AppState>,
     window: tauri::Window,
 ) {
+    let mut project: Option<Project> = None;
     if let Some(id) = id {
         let db = app_state.database.lock().unwrap();
         db.update_project_timestamp(id);
+        project = db.select_project(id);
     }
 
     let mut info = get_init_info(app_state);
-    info.selected_id = id;
+    info.selected = project;
     window.emit("current_vault_change", &info).unwrap();
 }
 
 #[tauri::command]
 pub fn reset_current_vault(app_state: tauri::State<'_, AppState>, window: tauri::Window) {
     focus_vault(1, app_state, window);
+}
+
+#[tauri::command]
+pub fn backup_vault(app_state: tauri::State<'_, AppState>, window: tauri::Window) {
+    let db = app_state.database.lock().unwrap();
+    let id = app_state.vault_id.lock().unwrap();
+    let vault = db.select_vault(*id).unwrap();
+    let path = PathBuf::from(vault.path);
+
+    FileDialogBuilder::new().pick_folder(move |folder_path| {
+        if folder_path.is_none() {
+            return;
+        }
+        window.emit("vault_backup_start", {}).unwrap();
+
+        let size = filesystem::utils::calculate_vault_size(&path);
+        window.emit("vault_size", &size).unwrap();
+
+        let folder_path = folder_path.unwrap();
+        let backup_path = PathBuf::from(folder_path);
+        filesystem::utils::backup_vault(&path, &backup_path, |progress| {
+            window.emit("vault_backup_progress", &progress).unwrap();
+        });
+        window.emit("vault_backup_end", {}).unwrap();
+    });
 }

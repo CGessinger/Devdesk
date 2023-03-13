@@ -2,20 +2,26 @@
     import { invoke } from "@tauri-apps/api";
     import SvelteMarkdown from "svelte-markdown";
     import { formatter } from "../../utils/formatter";
+    import type { Project } from "../../utils/types";
 
     // export let project: any = null;
-    export let projectId: number;
+    export let project: Project;
     let readme = "";
     let scripts = [];
     $: {
-        invoke("get_project_view", { projectId }).then((info: any) => {
-            readme = info.readme || `# ${info.name}`;
-            scripts = info.scripts;
-        });
+        invoke("get_project_view", { projectId: project.project_id }).then(
+            (info: any) => {
+                readme = info.readme || `# ${info.name}`;
+                scripts = info.scripts;
+            }
+        );
     }
 
     function executeScriptByName(scriptName: string) {
-        invoke("execute_script_by_name", { scriptName, projectId });
+        invoke("execute_script_by_name", {
+            scriptName,
+            projectId: project.project_id,
+        });
     }
 </script>
 
@@ -31,12 +37,6 @@
         </div>
     </div>
     <div class="foot-wrapper">
-        <!-- <button on:click={(_) => invoke("editor_at", { path: project.path })}
-            >Workon</button
-        >
-        <button on:click={(_) => invoke("terminal_at", { path: project.path })}
-            >Terminal</button
-        > -->
         {#each scripts as script}
             <button
                 title={script[1]}
