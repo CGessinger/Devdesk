@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use tauri::api::dialog::FileDialogBuilder;
+use tauri::window;
 use tauri::Manager;
 
 use crate::app_windows::get_desk;
@@ -127,4 +128,29 @@ pub fn focus_project(
 #[tauri::command]
 pub fn reset_current_vault(app_state: tauri::State<'_, AppState>, window: tauri::Window) {
     focus_vault(1, app_state, window);
+}
+
+#[tauri::command]
+pub fn backup_vault(app_state: tauri::State<'_, AppState>, window: tauri::Window) {
+    let db = app_state.database.lock().unwrap();
+    let id = app_state.vault_id.lock().unwrap();
+    let vault = db.select_vault(*id).unwrap();
+    let path = PathBuf::from(vault.path);
+
+    FileDialogBuilder::new().pick_folder(move |folder_path| {
+        if folder_path.is_none() {
+            return;
+        }
+        window.emit("vault_backup_start", {}).unwrap();
+
+        let size = filesystem::utils::calculate_vault_size(&path);
+        window.emit("vault_size", &size).unwrap();
+
+        let folder_path = folder_path.unwrap();
+        let backup_path = PathBuf::from(folder_path);
+        filesystem::utils::backup_vault(&path, &backup_path, |progress| {
+            window.emit("vault_backup_progress", &progress).unwrap();
+        });
+        window.emit("vault_backup_end", {}).unwrap();
+    });
 }

@@ -12,17 +12,24 @@
 
     import type { Dashboard } from "../utils/types";
     import { formatter } from "../utils/formatter";
+    import Taskbar from "./lib/Taskbar.svelte";
 
     let dashboard: Dashboard = null;
     let breadcrumps: string[] = [];
     invoke("get_init_info").then((info: Dashboard) => {
         dashboard = info;
-        breadcrumps = formatter.breadcrumpsFrom(dashboard.selected?.path, dashboard.vault.path);
+        breadcrumps = formatter.breadcrumpsFrom(
+            dashboard.selected?.path,
+            dashboard.vault.path
+        );
     });
     appWindow.listen("current_vault_change", (event) => {
         let info: Dashboard = event.payload;
         dashboard = info;
-        breadcrumps = formatter.breadcrumpsFrom(dashboard.selected?.path, dashboard.vault.path);
+        breadcrumps = formatter.breadcrumpsFrom(
+            dashboard.selected?.path,
+            dashboard.vault.path
+        );
     });
 </script>
 
@@ -49,6 +56,9 @@
         />
         <ProjectList projects={dashboard?.projects} />
     </div>
+    <div class="taskbar">
+        <Taskbar />
+    </div>
     <div class="main-panel">
         {#if dashboard?.selected}
             <ProjectView project={dashboard?.selected} />
@@ -63,7 +73,7 @@
         position: relative;
         display: grid;
         grid-template-columns: minmax(350px, 1fr) 3fr;
-        grid-template-rows: 3rem calc(100vh - 3rem);
+        grid-template-rows: 3rem calc(100vh - 5rem) 2rem;
     }
 
     .navbar {
@@ -86,20 +96,31 @@
 
     .left-panel {
         grid-row: 1 / span 2;
-        height: 100vh;
+        height: 100%;
         background: rgb(44, 44, 46);
         display: flex;
         box-sizing: border-box;
         flex-direction: column;
         align-items: flex-start;
-        padding: 3rem 1.5rem;
-        gap: 20px;
+        padding: 3rem 1rem 1rem 1rem;
+        border-right: 1px solid black;
+        gap: 0.5rem;
+    }
+
+    .taskbar {
+        grid-row: 3;
+        grid-column: 1;
+        background-color: rgb(69, 123, 157);
+        width: 100%;
+        border-top: 1px solid rgb(44, 44, 46);
+        align-items: center;
+        gap: 0.5rem;
         border-right: 1px solid black;
     }
 
     .main-panel {
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 2 / span 2;
         background-color: rgb(28, 28, 30);
     }
 </style>

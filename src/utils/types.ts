@@ -6,7 +6,7 @@ export const VaultConfigObj = z.object({
 export type VaultConfig = z.infer<typeof VaultConfigObj>;
 
 export const VaultObj = z.object({
-    vaul_id: z.number(),
+    vault_id: z.number(),
     path: z.string(),
     parent_vault_id: z.number(),
     config: VaultConfigObj.optional(),

@@ -23,6 +23,8 @@ rusqlite = "0.28"
 chrono = "0.4"
 open = "3"
 lazy_static = "1.4"
+zip = "0.6.4"
+walkdir = "2"
 
 [features]
 # by default Tauri runs in production mode
