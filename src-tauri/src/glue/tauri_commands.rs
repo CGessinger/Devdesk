@@ -1,7 +1,6 @@
 use std::path::{Path, PathBuf};
 
 use tauri::api::dialog::FileDialogBuilder;
-use tauri::window;
 use tauri::Manager;
 
 use crate::app_windows::get_desk;
