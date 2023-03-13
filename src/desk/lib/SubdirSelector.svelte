@@ -21,7 +21,7 @@
 <div>
     {#each subdirs.slice(0, limited) as dir}
         <button on:click={(_) => subdirClick(dir.vault_id)} title={dir.path}
-            >📂 {formatter.formatName(dir.path.split("/").at(-1))}
+            >📂 {formatter.formatName(formatter.fileNameFrom(dir.path))}
         </button>
     {/each}
     {#if limited && subdirs.length >= limited}

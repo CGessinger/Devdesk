@@ -1,3 +1,5 @@
+import { sep } from '@tauri-apps/api/path'
+
 export class formatter {
     static formatName(name: string): string {
         name = name.split("-").join(" ");
@@ -13,8 +15,12 @@ export class formatter {
 
     static breadcrumpsFrom(path: string, fallbackPath: string = ""): string[] {
         if (path) {
-            return path.split("/");
+            return path.split(sep);
         }
-        return fallbackPath.split("/");
+        return fallbackPath.split(sep);
+    }
+
+    static fileNameFrom(path: string): string {
+        return path.split(sep).at(-1);
     }
 }

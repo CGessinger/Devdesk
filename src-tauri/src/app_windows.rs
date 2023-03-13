@@ -1,5 +1,6 @@
 fn get_window<'a>(app: &'a tauri::AppHandle, url: &str, label: &str) -> tauri::WindowBuilder<'a> {
     let window = tauri::WindowBuilder::new(app, label, tauri::WindowUrl::App(url.into()))
+        .title("DevDesk")
         .inner_size(800.0, 600.0)
         .resizable(true);
 
