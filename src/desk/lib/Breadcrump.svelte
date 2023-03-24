@@ -1,7 +1,11 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api";
+    import { formatter } from "../../utils/formatter";
 
-    export let path: string[] = [];
+    let path: string[] = [];
+    window.addEventListener("spotlight_changed", (data: CustomEvent) => {
+        path = formatter.breadcrumpsFrom(data.detail.path);
+    });
 
     function partDblClick(index: number) {
         const parts = path.slice(0, index + 1);
@@ -12,9 +16,8 @@
 
 <span>
     {#each path as p, i}
-        <span class="part" on:dblclick={(_) => partDblClick(i)}>{p}</span><i
-            class="sep bi bi-caret-right-fill"
-        />
+        <span class="part" on:dblclick={(_) => partDblClick(i)}>{p}</span>
+        <i class="sep bi bi-caret-right-fill" />
     {/each}
 </span>
 

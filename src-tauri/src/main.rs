@@ -37,14 +37,17 @@ fn main() {
         .setup(|app| setup(app))
         .invoke_handler(tauri::generate_handler![
             tauri_commands::pick_vault,
-            tauri_commands::get_project_view,
             tauri_commands::get_init_info,
             tauri_commands::reset_current_vault,
             tauri_commands::focus_vault,
             tauri_commands::focus_project,
             tauri_commands::open,
-            tauri_commands::execute_script_by_name,
             tauri_commands::backup_vault,
+            tauri_commands::get_vault,
+            tauri_commands::read_directory,
+            tauri_commands::is_file,
+            tauri_commands::file_exists,
+            tauri_commands::read_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

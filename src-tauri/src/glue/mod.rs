@@ -10,10 +10,3 @@ pub struct DasboardResponse {
     pub recent: Vec<Project>,
     pub selected: Option<Project>,
 }
-
-#[derive(serde::Serialize)]
-pub struct ViewResponse {
-    pub name: String,
-    pub readme: String,
-    pub scripts: Vec<(String, String)>,
-}

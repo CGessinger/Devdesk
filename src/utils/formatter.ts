@@ -20,6 +20,10 @@ export class formatter {
         return fallbackPath.split(sep);
     }
 
+    static appendToPath(path: string, ...append: string[]): string {
+        return path + sep + append.join(sep);
+    }
+
     static fileNameFrom(path: string): string {
         return path.split(sep).at(-1);
     }

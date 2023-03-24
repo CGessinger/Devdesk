@@ -9,7 +9,7 @@ mod test {
 
     fn ensure_empty_db<'a>() -> (Db, &'a Path) {
         let path = Path::new("/Users/cgessinger/Documents/Programming/maintained/devdesk/dev-test");
-        fs::remove_file(path.join("reference"));
+        fs::remove_file(path.join("reference")).unwrap();
         (Db::new(path), path)
     }
 

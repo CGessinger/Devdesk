@@ -5,11 +5,11 @@ fn get_window<'a>(app: &'a tauri::AppHandle, url: &str, label: &str) -> tauri::W
         .resizable(true);
 
     #[cfg(target_os = "macos")]
-    window
+    return window
         .title_bar_style(tauri::TitleBarStyle::Overlay)
         .hidden_title(true);
 
-    window
+    return window;
 }
 
 pub fn get_desk(app: &tauri::AppHandle) -> tauri::WindowBuilder {

@@ -2,7 +2,6 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use super::defaults;
-use crate::core::commands;
 
 const CONFIG_FOLDER: &str = ".devdesk";
 pub fn config_path_from(path: &Path) -> PathBuf {
@@ -36,18 +35,7 @@ pub fn build_config_folders(vault_path: &Path) {
 
 pub fn write_default_files(vault_path: &Path) {
     let config_path = config_path_from(vault_path);
-    write_default_scripts(&config_path.join(SCRIPTS_FOLDER));
     write_default_indicators(&config_path.join(FABRIC_FOLDER));
-}
-
-fn write_default_scripts(scripts_path: &Path) {
-    for script in commands::defaults::DEFAULT_SCRIPTS {
-        let script_path = scripts_path.join(script.0);
-        if !script_path.exists() {
-            println!("{:?}", script_path);
-            fs::write(script_path, script.1).unwrap();
-        }
-    }
 }
 
 fn write_default_indicators(fabric_path: &Path) {

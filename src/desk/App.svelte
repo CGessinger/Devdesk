@@ -9,6 +9,7 @@
     import SubdirSelector from "./lib/SubdirSelector.svelte";
     import Clock from "./lib/Clock.svelte";
     import Logo from "./../assets/icon.ico";
+    import * as deskapi from "../utils/deskapi";
 
     import type { Dashboard } from "../utils/types";
     import { formatter } from "../utils/formatter";
@@ -35,7 +36,7 @@
 
 <main>
     <div class="navbar">
-        <Breadcrump path={breadcrumps} />
+        <Breadcrump />
         <Clock />
         <a
             href="/"
@@ -61,7 +62,7 @@
     </div>
     <div class="main-panel">
         {#if dashboard?.selected}
-            <ProjectView project={dashboard?.selected} />
+            <ProjectView />
         {:else}
             <DefaultMain recent={dashboard?.recent} />
         {/if}

@@ -1,40 +1,17 @@
+use std::fs::{self, File};
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use tauri::api::dialog::FileDialogBuilder;
 use tauri::Manager;
 
 use crate::app_windows::get_desk;
-use crate::core::commands;
 use crate::core::filesystem;
 use crate::core::settings::Settings;
-use crate::core::types::Project;
+use crate::core::types::{Project, Vault};
 use crate::state::AppState;
 
-use super::{DasboardResponse, ViewResponse};
-
-#[tauri::command]
-pub fn execute_script_by_name(
-    script_name: String,
-    project_id: i64,
-    app_state: tauri::State<'_, AppState>,
-) {
-    let db = app_state.database.lock().unwrap();
-    let project = db.select_project(project_id);
-    if project.is_none() {
-        return;
-    }
-
-    let scripts = app_state.scripts.lock().unwrap();
-    let script = scripts
-        .iter()
-        .find(|s| s.0.eq_ignore_ascii_case(&script_name));
-    if script.is_none() {
-        return;
-    }
-    // 3. sanbox script?
-    let project_path = PathBuf::from(&project.unwrap().path);
-    commands::custom::execute_custom_script(&script.unwrap().1, &project_path).unwrap();
-}
+use super::DasboardResponse;
 
 #[tauri::command]
 pub fn open(url: &Path) {
@@ -66,20 +43,6 @@ pub fn pick_vault(app_handle: tauri::AppHandle) {
         let window_builder = get_desk(&app_handle);
         window_builder.build().unwrap();
     });
-}
-
-#[tauri::command]
-pub fn get_project_view(project_id: i64, app_state: tauri::State<'_, AppState>) -> ViewResponse {
-    let db = app_state.database.lock().unwrap();
-    let project = db.select_project(project_id).unwrap();
-    let project_path = PathBuf::from(project.path);
-    let readme = filesystem::utils::read_readme(&project_path);
-    let scripts = app_state.scripts.lock().unwrap();
-    ViewResponse {
-        name: project.name,
-        scripts: scripts.to_vec(),
-        readme,
-    }
 }
 
 #[tauri::command]
@@ -121,7 +84,8 @@ pub fn focus_project(
 
     let mut info = get_init_info(app_state);
     info.selected = project;
-    window.emit("current_vault_change", &info).unwrap();
+    window.emit("current_vault_change", &info).unwrap(); // deprecated
+    window.emit("spotlight_changed", &info.selected).unwrap();
 }
 
 #[tauri::command]
@@ -152,4 +116,40 @@ pub fn backup_vault(app_state: tauri::State<'_, AppState>, window: tauri::Window
         });
         window.emit("vault_backup_end", {}).unwrap();
     });
+}
+
+#[tauri::command]
+pub fn get_vault(app_state: tauri::State<'_, AppState>) -> Vault {
+    let db = app_state.database.lock().unwrap();
+    db.select_vault(1).unwrap()
+}
+
+#[tauri::command]
+pub fn read_directory(path: String) -> Vec<String> {
+    let mut files = Vec::new();
+    for entry in fs::read_dir(path).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        files.push(path.to_str().unwrap().to_string());
+    }
+    files
+}
+
+#[tauri::command]
+pub fn is_file(path: String) -> bool {
+    let path = Path::new(&path);
+    path.is_file()
+}
+
+#[tauri::command]
+pub fn file_exists(path: String) -> bool {
+    Path::new(&path).exists()
+}
+
+#[tauri::command]
+pub fn read_file(path: String) -> String {
+    let mut file = File::open(path).unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    contents
 }
