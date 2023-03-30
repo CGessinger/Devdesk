@@ -1,4 +1,5 @@
 use chrono::prelude::{DateTime, Utc};
+use glob::Pattern;
 use std::{
     fs,
     io::{Read, Seek, Write},
@@ -14,7 +15,8 @@ pub fn is_file(file: &fs::DirEntry) -> bool {
     }
 }
 
-pub fn modified_from(file: &fs::DirEntry) -> String {
+pub fn modified_from(path: &Path) -> String {
+    let file = fs::File::open(path).unwrap();
     if let Ok(meta) = file.metadata() {
         if let Ok(modified) = meta.modified() {
             let dt: DateTime<Utc> = modified.into();
@@ -28,21 +30,11 @@ pub fn name_from(file_path: &Path) -> String {
     file_path.file_name().unwrap().to_str().unwrap().to_string()
 }
 
-pub fn guess_is_project(folder: &fs::DirEntry, indicators: &Vec<String>) -> bool {
-    let path = folder.path();
-    let dir_entries = fs::read_dir(path);
-    if dir_entries.is_err() {
-        return false;
-    }
-
-    for entry in dir_entries.unwrap() {
-        if entry.is_err() {
-            continue;
-        }
-        let file = entry.unwrap();
-        if is_file(&file) {
-            let name = name_from(&file.path());
-            if indicators.contains(&name) {
+pub fn guess_is_project(path: &Path, patterns: &Vec<String>) -> bool {
+    let walk = fs::read_dir(path).unwrap();
+    for entry in walk.into_iter().filter_map(|e| e.ok()) {
+        for pattern in patterns {
+            if Pattern::new(pattern).unwrap().matches_path(&entry.path()) {
                 return true;
             }
         }

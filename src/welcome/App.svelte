@@ -1,10 +1,10 @@
 <script>
-    import { invoke } from "@tauri-apps/api";
+    import { appWindow } from "@tauri-apps/api/window";
 
     import Logo from "./lib/Logo.svelte";
 
     async function selectVault() {
-        invoke("pick_vault");
+        appWindow.emit("pick_vault");
     }
 
     setTimeout(() => {

@@ -11,27 +11,8 @@
     import Logo from "./../assets/icon.ico";
     import * as deskapi from "../utils/deskapi";
 
-    import type { Dashboard } from "../utils/types";
     import { formatter } from "../utils/formatter";
     import Taskbar from "./lib/Taskbar.svelte";
-
-    let dashboard: Dashboard = null;
-    let breadcrumps: string[] = [];
-    invoke("get_init_info").then((info: Dashboard) => {
-        dashboard = info;
-        breadcrumps = formatter.breadcrumpsFrom(
-            dashboard.selected?.path,
-            dashboard.vault.path
-        );
-    });
-    appWindow.listen("current_vault_change", (event) => {
-        let info: Dashboard = event.payload;
-        dashboard = info;
-        breadcrumps = formatter.breadcrumpsFrom(
-            dashboard.selected?.path,
-            dashboard.vault.path
-        );
-    });
 </script>
 
 <main>
@@ -48,25 +29,19 @@
     </div>
     <div class="left-panel">
         <SearchInput />
-        <SubdirSelector
-            subdirs={dashboard?.sub_directories}
-            on:go_back={(_) =>
-                invoke("focus_vault", {
-                    id: Math.max(dashboard?.vault.parent_vault_id, 1),
-                })}
-        />
-        <ProjectList projects={dashboard?.projects} />
+        <SubdirSelector />
+        <ProjectList />
     </div>
     <div class="taskbar">
         <Taskbar />
     </div>
-    <div class="main-panel">
+    <!-- <div class="main-panel">
         {#if dashboard?.selected}
             <ProjectView />
         {:else}
             <DefaultMain recent={dashboard?.recent} />
         {/if}
-    </div>
+    </div> -->
 </main>
 
 <style>

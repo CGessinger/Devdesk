@@ -1,6 +1,14 @@
 import { invoke } from "@tauri-apps/api";
 import { appWindow } from "@tauri-apps/api/window";
-import type { Vault } from "./types";
+
+export type Node = {
+    id: number,
+    name: string,
+    path: string,
+    modified: string,
+    depth: number,
+    project: boolean,
+}
 
 appWindow.listen("spotlight_changed", (data) => {
     const SpotlightChangedEvent = new CustomEvent("spotlight_changed", {
@@ -11,8 +19,12 @@ appWindow.listen("spotlight_changed", (data) => {
     window.dispatchEvent(SpotlightChangedEvent);
 });
 
-export async function getVault(): Promise<Vault> {
+export async function getVault(): Promise<Node> {
     return invoke("get_vault");
+}
+
+export async function getAll(): Promise<Node[]> {
+    return invoke("get_all");
 }
 
 export async function readDirectory(path: string): Promise<string[]> {

@@ -1,32 +1,21 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api";
     import { appWindow } from "@tauri-apps/api/window";
+    import type { Node } from "../../utils/deskapi";
     import { formatter } from "../../utils/formatter";
-    import type { Project } from "../../utils/types";
 
-    export let projects = [];
-    let selected: Project = null;
+    let projects: Node[] = [];
 
-    function selectProject(id: number) {
-        if (selected?.project_id == id) {
-            id = null;
-        }
-        invoke("focus_project", { id });
-    }
-
-    appWindow.listen("current_vault_change", (event) => {
-        let info: any = event.payload;
-        selected = info.selected;
+    invoke("get_all").then((event) => {
+        const nodes = event as Node[];
+        projects = nodes.filter((n) => n.project);
+        console.log(nodes);
     });
 </script>
 
 <div class="project-list">
     {#each projects as project}
-        <button
-            class="project-item"
-            class:selected={project.project_id == selected?.project_id}
-            on:click={(_) => selectProject(project.project_id)}
-        >
+        <button class="project-item">
             <span class="name">{formatter.formatName(project.name)}</span>
             <span class="last-open">{project.modified}</span>
         </button>

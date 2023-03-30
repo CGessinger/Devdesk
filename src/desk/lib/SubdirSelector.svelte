@@ -1,11 +1,16 @@
 <script lang="ts">
     import { invoke } from "@tauri-apps/api";
-    import { createEventDispatcher } from "svelte";
     import { formatter } from "../../utils/formatter";
+    import type { Node } from "../../utils/deskapi";
 
     export let subdirs = [];
+    invoke("get_all").then((event) => {
+        const nodes = event as Node[];
+        subdirs = nodes.filter((n) => !n.project);
+        console.log(nodes);
+    });
+
     let limited: number = 6; // Decides if all subdirs are shown or not.
-    const dispatch = createEventDispatcher();
 
     $: subdirs, (limited = 6);
 
@@ -26,11 +31,6 @@
     {/each}
     {#if limited && subdirs.length >= limited}
         <button class="control-btn" on:click={showMore}>More</button>
-    {/if}
-    {#if subdirs[0]?.parent_vault_id != 1}
-        <button class="control-btn" on:click={(_) => dispatch("go_back")}
-            >Back</button
-        >
     {/if}
 </div>
 
